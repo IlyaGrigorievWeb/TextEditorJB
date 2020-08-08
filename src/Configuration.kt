@@ -1,14 +1,8 @@
-import TextEditorJB.Actions.LeftAction
-import TextEditorJB.Actions.MouseListener
-import TextEditorJB.Actions.RightAction
-import TextEditorJB.Actions.TextAction
+import TextEditorJB.Actions.*
 import TextEditorJB.Components.TextPanel
 import java.awt.Font
 import java.awt.event.KeyEvent
-import javax.swing.AbstractAction
-import javax.swing.ActionMap
-import javax.swing.JComponent
-import javax.swing.KeyStroke
+import javax.swing.*
 
 fun main(args: Array<String>){
 
@@ -26,13 +20,17 @@ fun main(args: Array<String>){
     MyForm.frame.add(MyForm.panel)
     MyForm.panel.add((MyForm.panel as TextPanel).caret)
     MyForm.panel.addMouseListener(MouseListener())
-    var qwe = MyForm.frame
+    //MyForm.frame.jMenuBar(jMenuBar)
     //MyForm.panel.graphics.font = myFont
 
 
     val myAct : AbstractAction = TextAction()
     val RightAction : AbstractAction = RightAction()
     val LeftAction : AbstractAction = LeftAction()
+    val ShiftLeft : AbstractAction = ShiftLeft()
+    val ShiftRight : AbstractAction = ShiftRight()
+    val CopyAction : AbstractAction = CopyAction()
+    val PasteAction : AbstractAction = PasteAction()
     //MyForm.panel.add(MyComponent())
 
 
@@ -64,6 +62,17 @@ fun main(args: Array<String>){
     val ks8 : KeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0)
     inpMap.put(ks8, "changeColor")
 
+    val ks9 : KeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_LEFT,KeyEvent.SHIFT_DOWN_MASK)
+    inpMap.put(ks9, "shiftLeft")
+
+    val ks10 : KeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT,KeyEvent.SHIFT_DOWN_MASK)
+    inpMap.put(ks10, "shiftRight")
+
+    val ks11 : KeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_C,KeyEvent.CTRL_DOWN_MASK)
+    inpMap.put(ks11, "copyBuffer")
+    val ks12 : KeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_V,KeyEvent.CTRL_DOWN_MASK)
+    inpMap.put(ks12, "pasteText")
+
     //val ks : KeyStroke = KeyStroke.getKeyStroke("ctrl B")
     //val inpMap = MyForm.panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
     //inpMap.put(ks, "changeColor")
@@ -76,6 +85,14 @@ fun main(args: Array<String>){
 
     actMap.put("pressLeft", LeftAction)
 
-    MyForm.frame.repaint()
+    actMap.put("shiftLeft", ShiftLeft)
 
+    actMap.put("shiftRight", ShiftRight)
+
+    actMap.put("copyBuffer", CopyAction)
+
+    actMap.put("pasteText", PasteAction)
+
+    MyForm.frame.repaint()
+    MyForm.panel.revalidate()
 }

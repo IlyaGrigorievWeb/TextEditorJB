@@ -1,15 +1,20 @@
 package TextEditorJB.Actions
 
+import MyForm
 import TextEditorJB.Components.Caret
 import TextEditorJB.Components.TextPanel
+import java.awt.Dimension
+import java.awt.Font
+import java.awt.SystemColor.text
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
+
 
 class TextAction : AbstractAction() {
     override fun actionPerformed(e: ActionEvent?) {
         var actEvent = e as ActionEvent
-        var a = actEvent.source as TextPanel
-        //MyComponent.strText += actEvent.actionCommand
+        var panel = actEvent.source as TextPanel
+        //MyComponent.textRow += actEvent.actionCommand
 
 
         //actEvent.actionCommand.toCharArray()[0].toByte()
@@ -18,68 +23,48 @@ class TextAction : AbstractAction() {
 //        when(actEvent.actionCommand.toCharArray()[0].toByte()){
 //            /*delete*/127.toByte() -> println("delete") //нужна каретка
 //            ///*space*/32.toByte() -> println(" ")
-//            /*backspace*/8.toByte() -> MyPanel.strText = MyPanel.strText.removeRange(MyPanel.strText.lastIndex,MyPanel.strText.lastIndex+1)
-//            /*characters*/else -> MyPanel.strText += actEvent.actionCommand
+//            /*backspace*/8.toByte() -> MyPanel.textRow = MyPanel.textRow.removeRange(MyPanel.textRow.lastIndex,MyPanel.textRow.lastIndex+1)
+//            /*characters*/else -> MyPanel.textRow += actEvent.actionCommand
 //        }
-        var aqsw = TextPanel.strText
+
         if (actEvent.actionCommand == "\b") { //backspace
-            if (a.caret.positionInRow >= 0) {
-                TextPanel.strText = TextPanel.strText.removeRange(a.caret.positionInRow - 1, a.caret.positionInRow)
-                LeftAction().actionPerformed(e)
+            if (panel.caret.positionInRow >= 0) {
+
+                panel.caret.moveLeft()
+                TextPanel.textRow = TextPanel.textRow.removeRange(panel.caret.positionInRow, panel.caret.positionInRow+1)
             }
         }
         else if(actEvent.actionCommand.toCharArray()[0].toByte() == 127.toByte()){ //delete
 
-            if (a.caret.positionInRow <= TextPanel.strText.length-1)
-                TextPanel.strText = TextPanel.strText.removeRange(a.caret.positionInRow,a.caret.positionInRow+1)
-//
-//            var position = 0;
-//            var step =0;
-//            for (char in TextPanel.strText)
-//            {
-//                step = Caret.characterWidthMap[char.toString()]!!
-//                position+=step
-//
-//                if (position >= a.caret.positionX)
-//                {a.caret.rightWidth = step}
-//
-//
-//            }
+            if (panel.caret.positionInRow <= TextPanel.textRow.length-1)
+                TextPanel.textRow = TextPanel.textRow.removeRange(panel.caret.positionInRow,panel.caret.positionInRow+1)
         }
         else if(false){
 
-            TextPanel.strText += System.lineSeparator() //блок для enter и переноса строки
+            TextPanel.textRow += System.lineSeparator() //блок для enter и переноса строки
         }
         else{ //письменные символы
             var char = actEvent.actionCommand
-            val charWidth = Caret.characterWidthMap[char]!!
 
+            var sb = StringBuilder(TextPanel.textRow)
+            sb.insert(panel.caret.positionInRow,char)
+            TextPanel.textRow = sb.toString()
 
-            //TextPanel.strText += char;
+            panel.caret.positionInRow++
 
+            //a.caret.leftWidth = charWidth
+            var font = Font("Calibri",0,20)
+            val metrics = panel.getFontMetrics(font)
+            val width = metrics.stringWidth(char)
 
-            var sb = StringBuilder(TextPanel.strText)
-            sb.insert(a.caret.positionInRow,char)
-            TextPanel.strText = sb.toString()
-
-            a.caret.positionX += charWidth
-            a.caret.positionInRow++
-
-            a.caret.leftWidth = charWidth
+            println(metrics.stringWidth(TextPanel.textRow))
+            panel.caret.positionX += width
+            println((MyForm.panel as TextPanel).caret.positionX)
         }
 
-
-
-        //a.graphics.clearRect(0,0,1000,1000)
-        //a.repaint()
-        //a.paintComponents(a.graphics)
-
-        //a.graphics.drawString(MyComponent.strText,10,10)
-        //println(a.components.count())
-
-        a.paint(a.graphics)
+        panel.paint(panel.graphics)
         //a.repaint()
 
-        //println(MyComponent.strText)
+        //println(MyComponent.textRow)
     }
 }
