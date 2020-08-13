@@ -11,6 +11,7 @@ class LeftAction : AbstractAction() {
     override fun actionPerformed(e: ActionEvent?) {
         var actEvent = e as ActionEvent
         var panel = actEvent.source as TextPanel
+        var a = panel.fullText
         panel.caret.moveLeft()
         panel.paint(panel.graphics)
 

@@ -19,18 +19,18 @@ class PasteAction : AbstractAction() {
         var dataFlavor : DataFlavor = DataFlavor.stringFlavor
         if (clipboard.isDataFlavorAvailable(dataFlavor)){
             var caretIndex = panel.caret.positionInRow
-            var stringBuilder = StringBuilder(TextPanel.textRow)
+            var stringBuilder = StringBuilder(panel.fullText[panel.activeRow])
             var pastedText : String = clipboard.getData(dataFlavor).toString()
 
             println(caretIndex)
 
-            TextPanel.textRow = stringBuilder.insert(caretIndex,pastedText).toString()
+            panel.fullText[panel.activeRow] = stringBuilder.insert(caretIndex,pastedText).toString()
             panel.caret.positionInRow = caretIndex + pastedText.length
 
             println(pastedText.length)
             println(pastedText)
             println(panel.caret.positionInRow)
-            println(TextPanel.textRow)
+            println(panel.fullText[panel.activeRow])
 
             panel.paint(panel.graphics)
         }

@@ -31,6 +31,7 @@ fun main(args: Array<String>){
     val ShiftRight : AbstractAction = ShiftRight()
     val CopyAction : AbstractAction = CopyAction()
     val PasteAction : AbstractAction = PasteAction()
+    val EnterAction : AbstractAction = EnterAction()
     //MyForm.panel.add(MyComponent())
 
 
@@ -72,6 +73,8 @@ fun main(args: Array<String>){
     inpMap.put(ks11, "copyBuffer")
     val ks12 : KeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_V,KeyEvent.CTRL_DOWN_MASK)
     inpMap.put(ks12, "pasteText")
+    val ks13 : KeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0)
+    inpMap.put(ks13, "enter")
 
     //val ks : KeyStroke = KeyStroke.getKeyStroke("ctrl B")
     //val inpMap = MyForm.panel.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
@@ -93,6 +96,15 @@ fun main(args: Array<String>){
 
     actMap.put("pasteText", PasteAction)
 
+    actMap.put("enter", EnterAction)
+
     MyForm.frame.repaint()
     MyForm.panel.revalidate()
+
+
+
+//    var ar : Array<Int> = arrayOf(10,30)
+//    ar = ar.plusElement(40)
+//    for (i in ar)
+//        print(i)
 }

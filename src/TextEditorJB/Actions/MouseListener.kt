@@ -8,7 +8,7 @@ class MouseListener : MouseAdapter() {
     override fun mouseClicked(e: MouseEvent?) {
         super.mouseClicked(e)
         var panel = MyForm.panel as TextPanel
-        panel.caret.positionX = panel.caret.setXpositionByMouse(TextPanel.textRow,e!!.x)
+        panel.caret.positionX = panel.caret.setXpositionByMouse(panel.fullText[panel.activeRow],e!!.x)
         panel.repaint()
     }
 }

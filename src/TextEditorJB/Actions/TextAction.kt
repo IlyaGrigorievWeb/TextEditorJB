@@ -8,6 +8,7 @@ import java.awt.Font
 import java.awt.SystemColor.text
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
+import kotlin.random.Random
 
 
 class TextAction : AbstractAction() {
@@ -31,24 +32,24 @@ class TextAction : AbstractAction() {
             if (panel.caret.positionInRow >= 0) {
 
                 panel.caret.moveLeft()
-                TextPanel.textRow = TextPanel.textRow.removeRange(panel.caret.positionInRow, panel.caret.positionInRow+1)
+                panel.fullText[panel.activeRow] = panel.fullText[panel.activeRow].removeRange(panel.caret.positionInRow, panel.caret.positionInRow+1)
             }
         }
         else if(actEvent.actionCommand.toCharArray()[0].toByte() == 127.toByte()){ //delete
 
-            if (panel.caret.positionInRow <= TextPanel.textRow.length-1)
-                TextPanel.textRow = TextPanel.textRow.removeRange(panel.caret.positionInRow,panel.caret.positionInRow+1)
+            if (panel.caret.positionInRow <= panel.fullText[panel.activeRow].length-1)
+                panel.fullText[panel.activeRow] = panel.fullText[panel.activeRow].removeRange(panel.caret.positionInRow,panel.caret.positionInRow+1)
         }
         else if(false){
 
-            TextPanel.textRow += System.lineSeparator() //блок для enter и переноса строки
+            panel.fullText[panel.activeRow] += System.lineSeparator() //блок для enter и переноса строки
         }
         else{ //письменные символы
             var char = actEvent.actionCommand
 
-            var sb = StringBuilder(TextPanel.textRow)
+            var sb = StringBuilder(panel.fullText[panel.activeRow])
             sb.insert(panel.caret.positionInRow,char)
-            TextPanel.textRow = sb.toString()
+            panel.fullText[panel.activeRow] = sb.toString()
 
             panel.caret.positionInRow++
 
@@ -57,9 +58,10 @@ class TextAction : AbstractAction() {
             val metrics = panel.getFontMetrics(font)
             val width = metrics.stringWidth(char)
 
-            println(metrics.stringWidth(TextPanel.textRow))
+            println(metrics.stringWidth(panel.fullText[panel.activeRow]))
             panel.caret.positionX += width
             println((MyForm.panel as TextPanel).caret.positionX)
+
         }
 
         panel.paint(panel.graphics)

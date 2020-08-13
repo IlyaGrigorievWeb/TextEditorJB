@@ -1,5 +1,6 @@
 package TextEditorJB.FileService
 
+import TextEditorJB.Actions.EnterAction
 import TextEditorJB.Components.TextPanel
 import java.awt.Toolkit
 import java.awt.datatransfer.Clipboard
@@ -39,6 +40,9 @@ fun getConfiguredMenu() : JMenuBar
 class OpenAction : AbstractAction() {
 
     override fun actionPerformed(e: ActionEvent?) {
+        var actEvent = e as ActionEvent
+        var panel = actEvent.source as TextPanel
+
         var fileChooser = JFileChooser()
         fileChooser.fileSelectionMode = JFileChooser.FILES_ONLY
 
@@ -52,7 +56,12 @@ class OpenAction : AbstractAction() {
             var fileReader = FileReader(file)
             var buffer = BufferedReader(fileReader)
 
-            TextPanel.textRow = buffer.readLine()
+            //panel.fullText[panel.activeRow] = buffer.readLine()
+            while(buffer.ready())
+            {
+                panel.fullText[panel.activeRow] = buffer.readLine()
+                EnterAction().actionPerformed(e)
+            }
             MyForm.panel.repaint()
         }
 

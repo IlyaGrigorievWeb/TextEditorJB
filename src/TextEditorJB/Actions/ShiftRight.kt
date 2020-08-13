@@ -20,7 +20,7 @@ class ShiftRight : AbstractAction() {
             panel.selectingEnd = caretIndex + 1
         }
 
-        TextPanel.buffer += TextPanel.textRow[caretIndex-1]
+        TextPanel.buffer += panel.fullText[panel.activeRow][caretIndex-1]
         RightAction().actionPerformed(e)
 
         println(TextPanel.buffer)

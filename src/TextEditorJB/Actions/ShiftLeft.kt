@@ -23,7 +23,7 @@ class ShiftLeft : AbstractAction() {
 
 
 
-        TextPanel.buffer = StringBuilder(TextPanel.buffer).insert(0,TextPanel.textRow[caretIndex-1]).toString();
+        TextPanel.buffer = StringBuilder(TextPanel.buffer).insert(0,panel.fullText[panel.activeRow][caretIndex-1]).toString();
         LeftAction().actionPerformed(e)
 
         println(TextPanel.buffer)
