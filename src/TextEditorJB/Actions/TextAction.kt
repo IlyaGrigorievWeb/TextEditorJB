@@ -58,9 +58,9 @@ class TextAction : AbstractAction() {
             val metrics = panel.getFontMetrics(font)
             val width = metrics.stringWidth(char)
 
-            println(metrics.stringWidth(panel.fullText[panel.activeRow]))
+            //println(metrics.stringWidth(panel.fullText[panel.activeRow]))
             panel.caret.positionX += width
-            println((MyForm.panel as TextPanel).caret.positionX)
+            //println((MyForm.panel as TextPanel).caret.positionX)
 
         }
 

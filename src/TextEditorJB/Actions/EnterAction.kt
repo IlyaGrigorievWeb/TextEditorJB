@@ -17,16 +17,14 @@ class EnterAction: AbstractAction() {
 
         }
         else{
-            //TextPanel.fullText = TextPanel.fullText.plusElement(TextPanel.textRow)
-            //var fullText = Array<String>(panel.fullText.count()+1)
-
-
             panel.activeRow++
 
             panel.fullText = panel.fullText.copyOf(panel.fullText.size+1) as Array<String>
             panel.fullText[panel.activeRow] = ""
             panel.rowY += panel.lineSpacing
-            panel.caret.reset()
+            panel.caret.newLine()
+
+            panel.repaint()
 
         }
     }

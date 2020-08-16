@@ -40,15 +40,15 @@ fun main(args: Array<String>){
 
     val a = "QWERTYUIOPASDFGHJKLZXCVBNM"
 
-    for (i in a){
-        val ks : KeyStroke = KeyStroke.getKeyStroke("pressed "+i)
-        inpMap.put(ks, "changeColor")
-    }
+   // for (i in a){
+     //   val ks : KeyStroke = KeyStroke.getKeyStroke("pressed "+i)
+     //  inpMap.put(ks, "changeColor")
+    //}
 
     val ks3 : KeyStroke = KeyStroke.getKeyStroke("BACK_SPACE")
     inpMap.put(ks3, "changeColor")
 
-    val ks4 : KeyStroke = KeyStroke.getKeyStroke("SPACE")
+    val ks4 : KeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_TAB,0)
     inpMap.put(ks4, "changeColor")
 
     val ks5 : KeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE,0)

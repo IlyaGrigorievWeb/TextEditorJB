@@ -20,7 +20,7 @@ class PasteAction : AbstractAction() {
         if (clipboard.isDataFlavorAvailable(dataFlavor)){
             var caretIndex = panel.caret.positionInRow
             var stringBuilder = StringBuilder(panel.fullText[panel.activeRow])
-            var pastedText : String = clipboard.getData(dataFlavor).toString()
+            var pastedText : String = clipboard.getData(dataFlavor).toString() //TODO: /n переделать на перенос строки И ЧЕРЕЗ РЕГУЛЯРКИ СМОТРЕТЬ /N (перенос строки) и /t (табы)
 
             println(caretIndex)
 

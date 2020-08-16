@@ -8,15 +8,27 @@ import javax.swing.JComponent
 class Caret( textPanel: TextPanel) : JComponent() {
 
     var textPanel = textPanel
-    var positionX = 16
+    var borderX = 16
+    var positionX = borderX
     var positionY = 35
     val charCaret = "|"
     var positionInRow = 0;
 
-    fun reset() {
-        positionY = textPanel.rowY
-        positionInRow = 0;
-        positionX = 16
+    fun moveHome() {
+        var whitespaces = ""
+        var count = 0
+        for (char in textPanel.fullText[textPanel.activeRow]){
+            if (char.isWhitespace()) {
+                whitespaces += char
+                count++
+            }
+        }
+        //Regex(pattern = """[\s]*""")
+        val metrics = textPanel.getFontMetrics(textPanel.textFont)
+        val width = metrics.stringWidth(whitespaces)
+
+        textPanel.caret.positionInRow = count
+        textPanel.caret.positionX = width + borderX
     }
 
     fun setXpositionByMouse(string: String, mousePositionX: Int): Int { //TODO: Не точно падает мышка, думаю дело в курсоре
@@ -77,20 +89,53 @@ class Caret( textPanel: TextPanel) : JComponent() {
     fun moveRight() { //TODO: Люфт влево-право +-1
         if (textPanel.caret.positionInRow < textPanel.fullText[textPanel.activeRow].length) {
 
-            val char = textPanel.fullText[textPanel.activeRow][textPanel.caret.positionInRow - 1].toString()
+            val char = textPanel.fullText[textPanel.activeRow][textPanel.caret.positionInRow].toString()
             val metrics = textPanel.getFontMetrics(textPanel.textFont)
             val width = metrics.stringWidth(char)
 
             textPanel.caret.positionX += width
             textPanel.caret.positionInRow++
-
-            textPanel.paint(textPanel.graphics)
         }
     }
+    fun moveUp() {
+       // if (textPanel.activeRow > 0) {
+            if (textPanel.caret.positionInRow > textPanel.fullText[textPanel.activeRow].lastIndex + 1)
+                textPanel.caret.positionInRow = textPanel.fullText[textPanel.activeRow].lastIndex + 1
 
-    fun newLine()
+            val metrics = textPanel.getFontMetrics(textPanel.textFont)
+            val width = metrics.stringWidth( textPanel.fullText[textPanel.activeRow].substring(0,textPanel.caret.positionInRow ))
+
+            textPanel.caret.positionX = width + borderX
+            textPanel.caret.positionY -= textPanel.lineSpacing
+        //}
+    }
+    fun moveDown() {
+        //if (textPanel.fullText.lastIndex > textPanel.activeRow) {
+            if (textPanel.caret.positionInRow > textPanel.fullText[textPanel.activeRow].lastIndex + 1)
+                textPanel.caret.positionInRow = textPanel.fullText[textPanel.activeRow].lastIndex + 1
+
+            val metrics = textPanel.getFontMetrics(textPanel.textFont)
+            val width = metrics.stringWidth( textPanel.fullText[textPanel.activeRow].substring(0,textPanel.caret.positionInRow ))
+
+            textPanel.caret.positionX = width + borderX
+            textPanel.caret.positionY += textPanel.lineSpacing
+        //}
+    }
+    fun moveEnd() {
+        //if (textPanel.fullText.lastIndex > textPanel.activeRow) {
+        textPanel.caret.positionInRow = textPanel.fullText[textPanel.activeRow].lastIndex + 1
+
+        val metrics = textPanel.getFontMetrics(textPanel.textFont)
+        val width = metrics.stringWidth(textPanel.fullText[textPanel.activeRow])
+
+        textPanel.caret.positionX = width + borderX
+        //}
+    }
+    fun newLine() //TODO: Переносить строку справа от каретки
     {
-
+        positionY = textPanel.rowY
+        positionInRow = 0;
+        positionX = 16
     }
 
     companion object {

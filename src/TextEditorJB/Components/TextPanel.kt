@@ -1,10 +1,7 @@
 package TextEditorJB.Components
 
 import TextEditorJB.TextColoringService.TextColoringService
-import java.awt.Color
-import java.awt.Font
-import java.awt.Graphics
-import java.awt.Graphics2D
+import java.awt.*
 import java.awt.geom.Rectangle2D
 import javax.swing.JPanel
 
@@ -54,6 +51,7 @@ class TextPanel : JPanel() {
     }
 
     override fun paintComponent(g: Graphics?)  {
+        var g2 = g as Graphics2D;
         super.paintComponent(g)
         //var myFont:Font = Font(Font.SERIF,Font.BOLD,20)
         //var myGraph = g as Graphics2D                          МАССИВ СТРОК ПО СТРОКЕ нА КАЖДУЮ РЕАЛЬНУЮ СТРОКУ, НАЧИНАТЬ ЕЕ С НОВОЙ КООРДИНАТЫ В drawString, СМЕЩЕНИЕ НУЖНО ТОЛЬКО В ОТРИСОВКИ
@@ -69,19 +67,23 @@ class TextPanel : JPanel() {
             buffer = ""
         }
 
-
+//        g2d.setRenderingHint( RenderingHints.KEY_TEXT_ANTIALIASING,
+//                RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT);
         (g as Graphics).font = textFont
+        //(g as Graphics).TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+        //(g as Graphics2D).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT)
 
         // вывод строки g.drawString(textRow,20,rowY)
         var coordY = 35
         var service = TextColoringService()
         for (string in fullText){
+            g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
             g.drawString(string,20,coordY)
+            service.paintKeyWords(string,g,20,coordY)
             //service.paintKeyWords(string,this,20,coordY)
             coordY+=lineSpacing
         }
 
-        //service.paintKeyWords(fullText[activeRow],g,20,coordY)
         //coordY+=lineSpacing
 
         caret.paint(g)

@@ -1,18 +1,15 @@
 package TextEditorJB.FileService
 
 import TextEditorJB.Actions.EnterAction
-import TextEditorJB.Components.TextPanel
 import java.awt.Toolkit
 import java.awt.datatransfer.Clipboard
 import java.awt.datatransfer.DataFlavor
 import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
-import java.io.BufferedReader
-import java.io.BufferedWriter
-import java.io.FileReader
-import java.io.FileWriter
+import java.io.*
 import java.lang.StringBuilder
 import javax.swing.*
+import TextEditorJB.Components.TextPanel as TextPanel
 
 fun getConfiguredMenu() : JMenuBar
 {
@@ -40,8 +37,8 @@ fun getConfiguredMenu() : JMenuBar
 class OpenAction : AbstractAction() {
 
     override fun actionPerformed(e: ActionEvent?) {
-        var actEvent = e as ActionEvent
-        var panel = actEvent.source as TextPanel
+        //var actEvent = e as ActionEvent
+        var textPanel = MyForm.panel as TextPanel
 
         var fileChooser = JFileChooser()
         fileChooser.fileSelectionMode = JFileChooser.FILES_ONLY
@@ -57,11 +54,17 @@ class OpenAction : AbstractAction() {
             var buffer = BufferedReader(fileReader)
 
             //panel.fullText[panel.activeRow] = buffer.readLine()
+            var i = 0
+            //textPanel.fullText = Array()
+            var listString : MutableList<String> = mutableListOf()
             while(buffer.ready())
             {
-                panel.fullText[panel.activeRow] = buffer.readLine()
-                EnterAction().actionPerformed(e)
+                listString.add(buffer.readLine())
+                //textPanel.fullText[i] = buffer.readLine()
+                //EnterAction().actionPerformed(e)
+                i++
             }
+            textPanel.fullText = listString.toTypedArray()
             MyForm.panel.repaint()
         }
 
@@ -74,20 +77,25 @@ class SaveAction : AbstractAction() {
     override fun actionPerformed(e: ActionEvent?) {
         var fileChooser = JFileChooser()
         fileChooser.fileSelectionMode = JFileChooser.FILES_ONLY
-
+        var textPanel = MyForm.panel as TextPanel
+        var file : File
 
         if (MyForm.openingFile == null) {
 
             fileChooser.showSaveDialog(MyForm.panel)
-
+            file = fileChooser.selectedFile
         }
         else{
-
-            val file = MyForm.openingFile
-
+            file = MyForm.openingFile!!
+        }
+        var fileWriter = FileWriter(file)
+        var buffer = BufferedWriter(fileWriter)
+        for(string in textPanel.fullText)
+        {
+            buffer.write(string)
+            buffer.newLine()
         }
 
-
-
+        buffer.close()
     }
 }

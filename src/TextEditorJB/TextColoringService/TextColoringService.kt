@@ -11,20 +11,27 @@ class TextColoringService
         val metrics = graphics.getFontMetrics(graphics.font)
         var str = ""
 
-            var words = string.split(" ")
-            for (word in words){
-                if (keyWordsColors.containsKey(word)){
-                    graphics.color = keyWordsColors[word]
-                    graphics.drawString("$word ",x+metrics.stringWidth(str),y)
-                    graphics.color = Color.BLACK
-                }
-                else{
-                    graphics.drawString("$word ",x+metrics.stringWidth(str),y)
-                }
-                str += "$word "
+        var words = string.split(" ")
+        for (word in words){
+            if (keyWordsColors.containsKey(word)){
+                graphics.color = keyWordsColors[word]
+                graphics.drawString("$word ",x+metrics.stringWidth(str),y)
+                graphics.color = Color.BLACK
+            }
+            //else if(word.indexOf("//") != -1)
+            else if(word == "//")
+            {
+                graphics.color = Color.PINK
+                graphics.drawString("$word ",x+metrics.stringWidth(str),y)
+            }
+            else{
+                graphics.drawString("$word ",x+metrics.stringWidth(str),y)
+            }
+            str += "$word "
         }
+        graphics.color = Color.BLACK
     }
-    val keyWordsColors : Map<String, Color> = mapOf(
+    val keyWordsColors : MutableMap<String, Color> = mutableMapOf(
             "byte" to Color.BLUE, "short" to Color.BLUE, "int" to Color.BLUE , "long" to Color.BLUE,
             "char" to Color.BLUE, "float" to Color.BLUE, "double" to Color.BLUE , "boolean" to Color.BLUE,
             "if" to Color.GREEN, "else" to Color.GREEN, "switch" to Color.GREEN , "case" to Color.BLUE,
@@ -39,4 +46,8 @@ class TextColoringService
             "instanceof" to Color.BLUE, "enum" to Color.BLUE, "assert" to Color.BLUE , "transient" to Color.BLUE,
             "strictfp" to Color.BLUE
             )
+
+    fun setIdentifier (string : String){
+        keyWordsColors.put(string,Color.ORANGE)
+    }
 }

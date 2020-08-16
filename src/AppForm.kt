@@ -1,3 +1,4 @@
+import TextEditorJB.Actions.KeyboardListener
 import TextEditorJB.Components.TextPanel
 import TextEditorJB.FileService.getConfiguredMenu
 import java.io.File
@@ -9,10 +10,8 @@ class MyForm {
     companion object{
 
         var openingFile : File? = null
-
-        var frame : JFrame = getFrame() as JFrame
-
         var panel : JPanel = getPanel() as JPanel
+        var frame : JFrame = getFrame() as JFrame
 
 
 
@@ -22,6 +21,8 @@ class MyForm {
             frame.setBounds(750,250,500,500)
             frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
             frame.jMenuBar = getConfiguredMenu()
+            frame.addKeyListener(KeyboardListener(panel as TextPanel))
+            frame.focusTraversalKeysEnabled = false
             return frame
         }
         private fun getPanel() : Any{
