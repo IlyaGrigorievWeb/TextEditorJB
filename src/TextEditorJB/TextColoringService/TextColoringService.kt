@@ -6,7 +6,7 @@ import java.awt.Graphics
 
 class TextColoringService
 {
-    fun paintKeyWords (string : String, graphics : Graphics, x :Int,y: Int){
+    fun paintKeyWords (string : String, graphics : Graphics, x :Int,y: Int){ //сколько скобок от начала столько скобок от конца
         //var graphics = panel.graphics
         val metrics = graphics.getFontMetrics(graphics.font)
         var str = ""

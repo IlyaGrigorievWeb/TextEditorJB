@@ -14,7 +14,7 @@ class CopyAction : AbstractAction() {
         var panel = actEvent.source as TextPanel
 
         var clipboard : Clipboard = Toolkit.getDefaultToolkit().systemClipboard
-        var stringSelection : StringSelection = StringSelection(TextPanel.buffer)
+        var stringSelection : StringSelection = StringSelection(panel.buffer)
         clipboard.setContents(stringSelection,null)
     }
 }

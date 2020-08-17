@@ -31,17 +31,84 @@ class Caret( textPanel: TextPanel) : JComponent() {
         textPanel.caret.positionX = width + borderX
     }
 
-    fun setXpositionByMouse(string: String, mousePositionX: Int): Int { //TODO: Не точно падает мышка, думаю дело в курсоре
-        textPanel.drawingSelection = false;
-        var positionX = 16
+    fun setPositionByMouseCoord(mousePositionX: Int,mousePositionY: Int) { //TODO: Косяк с последней строкой
         val metrics = textPanel.getFontMetrics(textPanel.textFont)
-        for (ch in string) {
-            if (positionX > mousePositionX) {
-                return positionX
+
+        var row = 0;
+//        var endY = -1
+//        var position = 35
+//        while (endY == -1)
+//        {
+//            if (mousePositionY in position-metrics.height..position)
+//            {
+//                positionY = position
+//                textPanel.activeRow = row
+//                endY = positionY
+//            }
+//            position += textPanel.lineSpacing
+//            row++
+//        }
+        for (position in 35..textPanel.fullText.size*textPanel.lineSpacing step textPanel.lineSpacing){
+            if (mousePositionY in position-metrics.height..position-3)
+            {
+                positionY = 35+row*textPanel.lineSpacing
+                textPanel.activeRow = row
             }
-            positionX += metrics.stringWidth(ch.toString())
+            row++
         }
-        return positionX
+//        for (position in 35..textPanel.fullText.size*textPanel.lineSpacing step textPanel.lineSpacing){
+//            if (mousePositionY in position..position+(textPanel.lineSpacing/2))
+//            {
+//                positionY = 35+row*textPanel.lineSpacing
+//                textPanel.activeRow = row
+//            }
+//            else if(mousePositionY in position..position+textPanel.lineSpacing)
+//            {
+//                row++
+//                positionY = 35+row*textPanel.lineSpacing
+//                textPanel.activeRow = row
+//
+//            }
+//            row++
+//        }
+        if (mousePositionY < 35 - textPanel.lineSpacing)
+        {
+
+        }
+        //else if(mousePositionY > endY)
+        {
+
+        }
+
+        var str = ""
+        var posX = borderX;
+        var pos = 0;
+        var width = 0
+        var charWidth = 0
+        for (char in textPanel.fullText[textPanel.activeRow]) {
+            str += char
+            width = metrics.stringWidth(str)
+            charWidth = metrics.stringWidth(char.toString())
+            if (mousePositionX in posX..posX + charWidth / 2 + 2) {
+                positionX = posX
+                positionInRow = pos
+            } else if (mousePositionX in posX + charWidth / 2 + 2..posX + charWidth) {
+                positionX = width + borderX
+                positionInRow = pos + 1
+            }
+            posX = width + borderX
+            pos++
+        }
+        if (mousePositionX < borderX)
+        {
+            positionX = borderX
+            positionInRow = 0
+        }
+        else if(mousePositionX > width + borderX)
+        {
+            positionX = width + borderX
+            positionInRow = pos
+        }
     }
 
     override fun paintComponent(g: Graphics?) {

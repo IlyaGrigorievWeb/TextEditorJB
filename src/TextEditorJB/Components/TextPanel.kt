@@ -18,6 +18,7 @@ class TextPanel : JPanel() {
     var selectingStart = 0
     var selectingEnd = 0
     var insertFlag = false
+    var buffer = ""
 
     private fun getCaret() : Any{
         val caret = Caret(this)
@@ -25,7 +26,10 @@ class TextPanel : JPanel() {
         return caret
     }
 
-
+    fun resetBuffer(){
+        drawingSelection = false;
+        buffer = ""
+    }
     fun drawSelection(g: Graphics?){
         var g2 = g as Graphics2D;
         var x = 20.0
@@ -91,6 +95,6 @@ class TextPanel : JPanel() {
 
     companion object{
         //var textRow : String = "<html><font color=\"blue\">text text</font></html>"
-        var buffer = ""
+
     }
 }

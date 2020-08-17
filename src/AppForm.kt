@@ -1,6 +1,8 @@
+import TextEditorJB.Actions.CustomMouseListener
 import TextEditorJB.Actions.KeyboardListener
 import TextEditorJB.Components.TextPanel
 import TextEditorJB.FileService.getConfiguredMenu
+import java.awt.Cursor
 import java.io.File
 import javax.swing.JFrame
 import javax.swing.JPanel
@@ -28,6 +30,8 @@ class MyForm {
         private fun getPanel() : Any{
             var panel = TextPanel()
             panel.isVisible = true;
+            panel.cursor = Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR)
+            //frame.addMouseListener(CustomMouseListener())
             //panel.setBounds(0,0,300,300)
             return panel
         }

@@ -8,7 +8,7 @@ import javax.swing.AbstractAction
 
 class LeftAction : AbstractAction() {
 
-    override fun actionPerformed(e: ActionEvent?) {
+    override fun actionPerformed(e: ActionEvent?) { //TODO: Мерять не один символ а всю строку что не люфтил
         var actEvent = e as ActionEvent
         var panel = actEvent.source as TextPanel
         panel.caret.moveLeft()

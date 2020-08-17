@@ -16,7 +16,8 @@ class KeyboardListener(panel : TextPanel) : KeyListener{
     }
 
     override fun keyPressed(e: KeyEvent?) {
-
+        if (!e!!.isShiftDown)
+            panel.resetBuffer()
         if (e!!.keyChar != '\uFFFF' && e!!.keyCode != 127 && e!!.keyCode != 10) {
 
                 var sb = StringBuilder(panel.fullText[panel.activeRow]) //TODO: Надо игнорировать enter
