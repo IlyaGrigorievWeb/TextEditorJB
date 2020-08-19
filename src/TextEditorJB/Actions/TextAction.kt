@@ -12,6 +12,7 @@ import kotlin.random.Random
 
 
 class TextAction : AbstractAction() {
+
     override fun actionPerformed(e: ActionEvent?) {
         var actEvent = e as ActionEvent
         var panel = actEvent.source as TextPanel
@@ -29,11 +30,11 @@ class TextAction : AbstractAction() {
 //        }
 
         if (actEvent.actionCommand == "\b") { //backspace
-            if (panel.caret.positionInRow >= 0) {
-
-                panel.caret.moveLeft()
-                panel.fullText[panel.activeRow] = panel.fullText[panel.activeRow].removeRange(panel.caret.positionInRow, panel.caret.positionInRow+1)
-            }
+//            if (panel.caret.positionInRow >= 0) {
+//
+//                panel.caret.moveLeft()
+//                panel.fullText[panel.activeRow] = panel.fullText[panel.activeRow].removeRange(panel.caret.positionInRow, panel.caret.positionInRow+1)
+//            }
         }
         else if(actEvent.actionCommand.toCharArray()[0].toByte() == 127.toByte()){ //delete
 

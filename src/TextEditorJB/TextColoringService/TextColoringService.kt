@@ -12,7 +12,11 @@ class TextColoringService
         var str = ""
 
         var words = string.split(" ")
-        for (word in words){
+        for ((index,word) in words.withIndex()){
+            if (types.containsKey(word))
+            {
+                setIdentifier(words[index+1])
+            }
             if (keyWordsColors.containsKey(word)){
                 graphics.color = keyWordsColors[word]
                 graphics.drawString("$word ",x+metrics.stringWidth(str),y)
@@ -46,8 +50,17 @@ class TextColoringService
             "instanceof" to Color.BLUE, "enum" to Color.BLUE, "assert" to Color.BLUE , "transient" to Color.BLUE,
             "strictfp" to Color.BLUE
             )
+    val types : MutableMap<String, Color> = mutableMapOf(
+            "byte" to Color.BLUE, "short" to Color.BLUE, "int" to Color.BLUE , "long" to Color.BLUE,
+            "char" to Color.BLUE, "float" to Color.BLUE, "double" to Color.BLUE , "boolean" to Color.BLUE,
+            "var" to Color.GREEN, "val" to Color.GREEN
+    )
 
     fun setIdentifier (string : String){
         keyWordsColors.put(string,Color.ORANGE)
+    }
+
+    fun paintBrackets (row : Int , position : Int){
+
     }
 }

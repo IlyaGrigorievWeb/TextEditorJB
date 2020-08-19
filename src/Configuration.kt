@@ -19,6 +19,7 @@ fun main(args: Array<String>){
     var myFont: Font = Font("Calibri", Font.BOLD,20)
     MyForm.frame.add(MyForm.panel)
     MyForm.panel.add((MyForm.panel as TextPanel).caret)
+    MyForm.panel.add((MyForm.panel as TextPanel).textSelection)
     MyForm.panel.addMouseListener(CustomMouseListener())
     //MyForm.frame.jMenuBar(jMenuBar)
     //MyForm.panel.graphics.font = myFont

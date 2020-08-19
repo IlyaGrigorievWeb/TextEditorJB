@@ -8,12 +8,11 @@ import javax.swing.JComponent
 class Caret( textPanel: TextPanel) : JComponent() {
 
     var textPanel = textPanel
-    var borderX = 16
-    var positionX = borderX
+    var positionX = textPanel.borderX
     var positionY = 35
     val charCaret = "|"
     var positionInRow = 0;
-
+//xyz
     fun moveHome() {
         var whitespaces = ""
         var count = 0
@@ -28,92 +27,67 @@ class Caret( textPanel: TextPanel) : JComponent() {
         val width = metrics.stringWidth(whitespaces)
 
         textPanel.caret.positionInRow = count
-        textPanel.caret.positionX = width + borderX
+        textPanel.caret.positionX = width + textPanel.borderX
     }
 
-    fun setPositionByMouseCoord(mousePositionX: Int,mousePositionY: Int) { //TODO: Косяк с последней строкой
+    fun setPositionByMouseCoord(mousePositionX: Int,mousePositionY: Int) { //TODO: Долго работает, скорее всего из за того что при клике перерисовывается всё
         val metrics = textPanel.getFontMetrics(textPanel.textFont)
-
         var row = 0;
-//        var endY = -1
-//        var position = 35
-//        while (endY == -1)
-//        {
-//            if (mousePositionY in position-metrics.height..position)
-//            {
-//                positionY = position
-//                textPanel.activeRow = row
-//                endY = positionY
-//            }
-//            position += textPanel.lineSpacing
-//            row++
-//        }
-        for (position in 35..textPanel.fullText.size*textPanel.lineSpacing step textPanel.lineSpacing){
-            if (mousePositionY in position-metrics.height..position-3)
-            {
-                positionY = 35+row*textPanel.lineSpacing
-                textPanel.activeRow = row
-            }
-            row++
-        }
-//        for (position in 35..textPanel.fullText.size*textPanel.lineSpacing step textPanel.lineSpacing){
-//            if (mousePositionY in position..position+(textPanel.lineSpacing/2))
-//            {
-//                positionY = 35+row*textPanel.lineSpacing
-//                textPanel.activeRow = row
-//            }
-//            else if(mousePositionY in position..position+textPanel.lineSpacing)
-//            {
-//                row++
-//                positionY = 35+row*textPanel.lineSpacing
-//                textPanel.activeRow = row
-//
-//            }
-//            row++
-//        }
         if (mousePositionY < 35 - textPanel.lineSpacing)
         {
-
+            textPanel.activeRow  = 0;
+            positionY = 35
         }
-        //else if(mousePositionY > endY)
+        else if(mousePositionY > 35+textPanel.fullText.size*textPanel.lineSpacing)
         {
-
+            textPanel.activeRow  = textPanel.fullText.lastIndex;
+            positionY = (35-textPanel.lineSpacing) + textPanel.fullText.size * textPanel.lineSpacing
         }
-
-        var str = ""
-        var posX = borderX;
-        var pos = 0;
-        var width = 0
-        var charWidth = 0
-        for (char in textPanel.fullText[textPanel.activeRow]) {
-            str += char
-            width = metrics.stringWidth(str)
-            charWidth = metrics.stringWidth(char.toString())
-            if (mousePositionX in posX..posX + charWidth / 2 + 2) {
-                positionX = posX
-                positionInRow = pos
-            } else if (mousePositionX in posX + charWidth / 2 + 2..posX + charWidth) {
-                positionX = width + borderX
-                positionInRow = pos + 1
+        else {
+            var a = textPanel.fullText.size * textPanel.lineSpacing
+            for (position in 35..(35-textPanel.lineSpacing) + textPanel.fullText.size * textPanel.lineSpacing step textPanel.lineSpacing) {
+                if (mousePositionY in position - metrics.height + 3..position) {
+                    positionY = 35 + row * textPanel.lineSpacing
+                    textPanel.activeRow = row
+                }
+                row++
             }
-            posX = width + borderX
-            pos++
         }
-        if (mousePositionX < borderX)
+        if (mousePositionX < textPanel.borderX)
         {
-            positionX = borderX
+            positionX = textPanel.borderX
             positionInRow = 0
         }
-        else if(mousePositionX > width + borderX)
+        else if(mousePositionX > metrics.stringWidth(textPanel.fullText[textPanel.activeRow]) + textPanel.borderX)
         {
-            positionX = width + borderX
-            positionInRow = pos
+            positionX = metrics.stringWidth(textPanel.fullText[textPanel.activeRow]) + textPanel.borderX
+            positionInRow = textPanel.fullText[textPanel.activeRow].lastIndex
+        }
+        else{
+            var str = ""
+            var posX = textPanel.borderX;
+            var pos = 0;
+            var width = 0
+            var charWidth = 0
+            for (char in textPanel.fullText[textPanel.activeRow]) {
+                str += char
+                width = metrics.stringWidth(str)
+                charWidth = metrics.stringWidth(char.toString())
+                if (mousePositionX in posX..posX + charWidth / 2 + 2) {
+                    positionX = posX
+                    positionInRow = pos
+                } else if (mousePositionX in posX + charWidth / 2 + 2..posX + charWidth) {
+                    positionX = width + textPanel.borderX
+                    positionInRow = pos + 1
+                }
+                posX = width + textPanel.borderX
+                pos++
+            }
         }
     }
 
     override fun paintComponent(g: Graphics?) {
         //super.paintComponent(g)
-
 
         var g2 = g as Graphics2D;
 
@@ -172,7 +146,7 @@ class Caret( textPanel: TextPanel) : JComponent() {
             val metrics = textPanel.getFontMetrics(textPanel.textFont)
             val width = metrics.stringWidth( textPanel.fullText[textPanel.activeRow].substring(0,textPanel.caret.positionInRow ))
 
-            textPanel.caret.positionX = width + borderX
+            textPanel.caret.positionX = width + textPanel.borderX
             textPanel.caret.positionY -= textPanel.lineSpacing
         //}
     }
@@ -184,7 +158,7 @@ class Caret( textPanel: TextPanel) : JComponent() {
             val metrics = textPanel.getFontMetrics(textPanel.textFont)
             val width = metrics.stringWidth( textPanel.fullText[textPanel.activeRow].substring(0,textPanel.caret.positionInRow ))
 
-            textPanel.caret.positionX = width + borderX
+            textPanel.caret.positionX = width + textPanel.borderX
             textPanel.caret.positionY += textPanel.lineSpacing
         //}
     }
@@ -195,7 +169,7 @@ class Caret( textPanel: TextPanel) : JComponent() {
         val metrics = textPanel.getFontMetrics(textPanel.textFont)
         val width = metrics.stringWidth(textPanel.fullText[textPanel.activeRow])
 
-        textPanel.caret.positionX = width + borderX
+        textPanel.caret.positionX = width + textPanel.borderX
         //}
     }
     fun newLine() //TODO: Переносить строку справа от каретки
@@ -205,7 +179,7 @@ class Caret( textPanel: TextPanel) : JComponent() {
         positionX = 16
     }
 
-    companion object {
+//    companion object {
 //        val lineInterval = 3
 //        val characterWidthMap: Map<String, Int> = mapOf(
 //            "q" to 4, "w" to 10, "e" to 7 /*хорошо*/, "r" to 6 ,
@@ -216,5 +190,5 @@ class Caret( textPanel: TextPanel) : JComponent() {
 //            "x" to 4, "c" to 4, "v" to 6, "b" to 6,
 //            "n" to 6, "m" to 12, " " to 3
 //        )
-    }
+//    }
 }

@@ -9,20 +9,8 @@ class ShiftRight : AbstractAction() {
         var actEvent = e as ActionEvent
         var panel = actEvent.source as TextPanel
 
-        var caretIndex = panel.caret.positionInRow
+        panel.textSelection.selectRight()
 
-        if (panel.drawingSelection){
-            panel.selectingStart++
-        }
-        else{
-            panel.drawingSelection = true;
-            panel.selectingStart  = caretIndex
-            panel.selectingEnd = caretIndex + 1
-        }
-
-        panel.buffer += panel.fullText[panel.activeRow][caretIndex-1]
-        RightAction().actionPerformed(e)
-
-        println(panel.buffer)
+        panel.repaint()
     }
 }

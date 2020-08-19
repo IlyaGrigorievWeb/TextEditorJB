@@ -1,6 +1,7 @@
 package TextEditorJB.Actions
 
 import TextEditorJB.Components.TextPanel
+import TextEditorJB.Components.TextSelection
 import java.awt.event.ActionEvent
 import javax.swing.AbstractAction
 
@@ -9,23 +10,9 @@ class ShiftLeft : AbstractAction() {
         var actEvent = e as ActionEvent
         var panel = actEvent.source as TextPanel
 
-        var caretIndex = panel.caret.positionInRow
+        panel.textSelection.selectLeft()
+        panel.textSelection.paint(panel.graphics)
 
-        if (panel.drawingSelection){
-            panel.selectingStart--
-        }
-        else{
-            panel.drawingSelection = true;
-            panel.selectingStart  = caretIndex - 1
-            panel.selectingEnd = caretIndex
-        }
-
-
-
-
-        panel.buffer = StringBuilder(panel.buffer).insert(0,panel.fullText[panel.activeRow][caretIndex-1]).toString();
-        LeftAction().actionPerformed(e)
-
-        println(panel.buffer)
+        panel.repaint()
     }
 }
