@@ -1,8 +1,10 @@
 package TextEditorJB.Components
 
+import java.awt.Color
 import java.awt.Font
 import java.awt.Graphics
 import java.awt.Graphics2D
+import java.awt.geom.Rectangle2D
 import javax.swing.JComponent
 
 class Caret( textPanel: TextPanel) : JComponent() {
@@ -12,6 +14,7 @@ class Caret( textPanel: TextPanel) : JComponent() {
     var positionY = 35
     val charCaret = "|"
     var positionInRow = 0;
+    var isInsert = false
 //xyz
     fun moveHome() {
         var whitespaces = ""
@@ -86,17 +89,31 @@ class Caret( textPanel: TextPanel) : JComponent() {
         }
     }
 
-    override fun paintComponent(g: Graphics?) {
+    override fun paintComponent(g: Graphics?) { //:TODO будет два варианта отрисовки, либо чар , либо прямоугольник размером с символ и перекрашенным сиволом внутри
         //super.paintComponent(g)
 
         var g2 = g as Graphics2D;
 
         var myFont: Font = Font("Calibri", 0, 20)
         (g as Graphics).font = myFont
+        if (isInsert){
+            val metrics = textPanel.getFontMetrics(textPanel.textFont)
+            val x = positionX + 5
+            val y = 35 - metrics.height + metrics.descent
+            val h = metrics.height
+            val w = metrics.stringWidth(textPanel.fullText[textPanel.activeRow][positionInRow].toString())
 
-        g2.drawString(charCaret, positionX, positionY)
-
-
+            val rectangle =  Rectangle2D.Double(x.toDouble(),y.toDouble(),w.toDouble(),h.toDouble())
+            g2.color = Color.MAGENTA
+            g2.fill(rectangle)
+            g2.color = Color.WHITE
+            g2.drawString(textPanel.fullText[textPanel.activeRow][positionInRow].toString(), positionX + 5, positionY)
+            g2.color = Color.BLACK
+        }
+        else{
+            g2.drawString(charCaret, positionX, positionY)
+        }
+        //TODO Когда пишет заносить скобку когда рисует каретку проверять нет ли рядом скобки и если есть поентиить обе
 //        var q = "qwerhqhwfoqwiefjoqwiefefjqoiwejfowjefoqjweijfqjojewfjqowjerojjqwer"
 //        var str = arrayListOf<String>()
 //        for(i in 1..99) {
@@ -125,6 +142,18 @@ class Caret( textPanel: TextPanel) : JComponent() {
             textPanel.caret.positionX -= width
             textPanel.caret.positionInRow--
         }
+        else
+        {
+            if (textPanel.activeRow > 0){
+                textPanel.activeRow--
+                textPanel.caret.positionInRow = textPanel.fullText[textPanel.activeRow].length
+
+                val metrics = textPanel.getFontMetrics(textPanel.textFont)
+
+                textPanel.caret.positionX = textPanel.borderX + metrics.stringWidth(textPanel.fullText[textPanel.activeRow])
+                textPanel.caret.positionY = textPanel.caret.positionY - textPanel.lineSpacing
+            }
+        }
     }
 
     fun moveRight() { //TODO: Люфт влево-право +-1
@@ -136,6 +165,15 @@ class Caret( textPanel: TextPanel) : JComponent() {
 
             textPanel.caret.positionX += width
             textPanel.caret.positionInRow++
+        }
+        else{
+            if (textPanel.activeRow < textPanel.fullText.size-1){
+                textPanel.activeRow++
+                textPanel.caret.positionInRow = 0
+
+                textPanel.caret.positionX = textPanel.borderX
+                textPanel.caret.positionY = textPanel.caret.positionY + textPanel.lineSpacing
+            }
         }
     }
     fun moveUp() {

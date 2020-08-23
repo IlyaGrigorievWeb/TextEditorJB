@@ -18,7 +18,7 @@ class TextPanel : JPanel() {
     var textFont = Font("Calibri",0,20)
     var caret = getCaret() as Caret
     var textSelection = getS() as TextSelection//TextSelection(this)
-    var insertFlag = false
+    var service = TextColoringService()
 
 
     private fun getCaret() : Any{
@@ -33,7 +33,7 @@ class TextPanel : JPanel() {
     }
 
     override fun paintComponent(g: Graphics?)  {
-        var g2 = g as Graphics2D;
+        var g2 = g as Graphics2D
         super.paintComponent(g)
         //var myFont:Font = Font(Font.SERIF,Font.BOLD,20)
         //var myGraph = g as Graphics2D                          МАССИВ СТРОК ПО СТРОКЕ нА КАЖДУЮ РЕАЛЬНУЮ СТРОКУ, НАЧИНАТЬ ЕЕ С НОВОЙ КООРДИНАТЫ В drawString, СМЕЩЕНИЕ НУЖНО ТОЛЬКО В ОТРИСОВКИ
@@ -41,14 +41,24 @@ class TextPanel : JPanel() {
         //myGraph.drawString(textRow,30,30)                      ПОГУГЛИТЬ ПРО СТИЛИЗАЦИЮ ИЗ HTML В SWING
         //ПРЯМОУГОЛЬНИКИ КОТОРЫЕ ОТРИСОВЫВАЮТСЯ ПЕРВЫМИ ИЗ ШИРИНЫ И ВЫСОТЫ СИМВОЛОВ И ЭТО БУДЕТ ВЫДЕЛЕНИЕ
         textSelection.paint(g)
+        if(fullText[activeRow].length > 2) {
+            if (fullText[activeRow][caret.positionInRow-1] == '{' || fullText[activeRow][caret.positionInRow-1] == '}') {
+                service.stacks.addBracket(activeRow, caret.positionInRow - 1, fullText[activeRow][caret.positionInRow - 1])
 
+                if (service.stacks.getBracket(activeRow, caret.positionInRow - 1) != null) {
+                    println(service.stacks.getBracket(activeRow, caret.positionInRow - 1)!!.bracket)
+                    println(service.stacks.getBracket(activeRow, caret.positionInRow - 1)!!.row)
+                    println(service.stacks.getBracket(activeRow, caret.positionInRow - 1)!!.position)
+                }
+            }
+        }
         (g as Graphics).font = textFont
         //(g as Graphics).TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
         //(g as Graphics2D).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT)
 
         // вывод строки g.drawString(textRow,20,rowY)
         var coordY = 35
-        var service = TextColoringService()
+
         for (string in fullText){
             g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
             g.drawString(string,20,coordY)

@@ -7,12 +7,12 @@ import javax.swing.AbstractAction
 
 class ShiftLeft : AbstractAction() {
     override fun actionPerformed(e: ActionEvent?) {
-        var actEvent = e as ActionEvent
-        var panel = actEvent.source as TextPanel
-
-        panel.textSelection.selectLeft()
-        panel.textSelection.paint(panel.graphics)
-
-        panel.repaint()
+//        var actEvent = e as ActionEvent
+//        var panel = actEvent.source as TextPanel
+//
+//        panel.textSelection.selectLeft()
+//        panel.textSelection.paint(panel.graphics)
+//
+//        panel.repaint()
     }
 }

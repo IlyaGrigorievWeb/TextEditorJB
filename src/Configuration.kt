@@ -55,11 +55,11 @@ fun main(args: Array<String>){
     val ks5 : KeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_DELETE,0)
     inpMap.put(ks5, "changeColor")
 
-    val ks6 : KeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT,0)
-    inpMap.put(ks6, "pressRight")
-
-    val ks7 : KeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_LEFT,0)
-    inpMap.put(ks7, "pressLeft")
+//    val ks6 : KeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT,0)
+//    inpMap.put(ks6, "pressRight")
+//
+//    val ks7 : KeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_LEFT,0)
+//    inpMap.put(ks7, "pressLeft")
 
     val ks8 : KeyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0)
     inpMap.put(ks8, "changeColor")

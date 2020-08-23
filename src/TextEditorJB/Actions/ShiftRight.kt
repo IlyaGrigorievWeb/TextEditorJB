@@ -6,11 +6,11 @@ import javax.swing.AbstractAction
 
 class ShiftRight : AbstractAction() {
     override fun actionPerformed(e: ActionEvent?) {
-        var actEvent = e as ActionEvent
-        var panel = actEvent.source as TextPanel
-
-        panel.textSelection.selectRight()
-
-        panel.repaint()
+//        var actEvent = e as ActionEvent
+//        var panel = actEvent.source as TextPanel
+//
+//        panel.textSelection.selectRight()
+//
+//        panel.repaint()
     }
 }

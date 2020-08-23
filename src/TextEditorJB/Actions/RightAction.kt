@@ -7,10 +7,10 @@ import javax.swing.AbstractAction
 
 class RightAction : AbstractAction() {
     override fun actionPerformed(e: ActionEvent?) {  //TODO: Мерять не один символ а всю строку что не люфтил
-        var actEvent = e as ActionEvent
-        var panel = actEvent.source as TextPanel
-        panel.caret.moveRight()
-        panel.paint(panel.graphics)
+//        var actEvent = e as ActionEvent
+//        var panel = actEvent.source as TextPanel
+//        panel.caret.moveRight()
+//        panel.paint(panel.graphics)
 //            var position = 0;
 //            var step =0;
 //            for (char in TextPanel.textRow)
