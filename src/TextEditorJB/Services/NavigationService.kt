@@ -13,8 +13,6 @@ class NavigationService(textPanel: TextPanel) {
             panel.activeRow--
             panel.caret.moveUp()
         }
-
-        panel.paint(panel.graphics)
     }
     fun Down ()
     {
@@ -22,30 +20,22 @@ class NavigationService(textPanel: TextPanel) {
             panel.activeRow++
             panel.caret.moveDown()
         }
-
-        panel.paint(panel.graphics)
     }
     fun Left ()
     {
         panel.caret.moveLeft()
-        panel.paint(panel.graphics)
     }
     fun Right ()
     {
         panel.caret.moveRight()
-        panel.paint(panel.graphics)
     }
     fun Home ()
     {
         panel.caret.moveHome()
-
-        panel.paint(panel.graphics)
     }
     fun End ()
     {
         panel.caret.moveEnd()
-
-        panel.paint(panel.graphics)
     }
 
     fun PageUp ()
@@ -54,8 +44,6 @@ class NavigationService(textPanel: TextPanel) {
         var lines = height / panel.lineSpacing
         for (i in 1..lines)
             Up()
-
-        panel.paint(panel.graphics)
     }
 
     fun PageDown ()
@@ -64,7 +52,5 @@ class NavigationService(textPanel: TextPanel) {
         var lines = height / panel.lineSpacing
         for (i in 1..lines)
             Down()
-
-        panel.paint(panel.graphics)
     }
 }

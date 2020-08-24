@@ -1,13 +1,8 @@
 package TextEditorJB.FileService
 
-import TextEditorJB.Actions.EnterAction
-import java.awt.Toolkit
-import java.awt.datatransfer.Clipboard
-import java.awt.datatransfer.DataFlavor
 import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
 import java.io.*
-import java.lang.StringBuilder
 import javax.swing.*
 import TextEditorJB.Components.TextPanel as TextPanel
 

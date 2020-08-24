@@ -6,8 +6,6 @@ import javax.swing.*
 
 fun main(args: Array<String>){
 
-//    var awer = "qwqwe";
-//    awer = awer.removeRange(awer.lastIndex,awer.lastIndex+1)
 //    print(awer)
 //    var strfont = GraphicsEnvironment.getLocalGraphicsEnvironment().availableFontFamilyNames
 //    for (i in strfont)
@@ -20,19 +18,16 @@ fun main(args: Array<String>){
     MyForm.frame.add(MyForm.panel)
     MyForm.panel.add((MyForm.panel as TextPanel).caret)
     MyForm.panel.add((MyForm.panel as TextPanel).textSelection)
-    MyForm.panel.addMouseListener(CustomMouseListener())
+
+    var ml = MouseListener()
+    MyForm.panel.addMouseListener(ml)
+    MyForm.panel.addMouseMotionListener(ml)
     //MyForm.frame.jMenuBar(jMenuBar)
     //MyForm.panel.graphics.font = myFont
 
 
-    val myAct : AbstractAction = TextAction()
-    val RightAction : AbstractAction = RightAction()
-    val LeftAction : AbstractAction = LeftAction()
-    val ShiftLeft : AbstractAction = ShiftLeft()
-    val ShiftRight : AbstractAction = ShiftRight()
     val CopyAction : AbstractAction = CopyAction()
     val PasteAction : AbstractAction = PasteAction()
-    val EnterAction : AbstractAction = EnterAction()
     //MyForm.panel.add(MyComponent())
 
 
@@ -83,21 +78,11 @@ fun main(args: Array<String>){
 
     val actMap : ActionMap = MyForm.panel.actionMap
 
-    actMap.put("changeColor", myAct)
-
-    actMap.put("pressRight", RightAction)
-
-    actMap.put("pressLeft", LeftAction)
-
-    actMap.put("shiftLeft", ShiftLeft)
-
-    actMap.put("shiftRight", ShiftRight)
 
     actMap.put("copyBuffer", CopyAction)
 
     actMap.put("pasteText", PasteAction)
 
-    actMap.put("enter", EnterAction)
 
     MyForm.frame.repaint()
     MyForm.panel.revalidate()

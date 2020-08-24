@@ -10,23 +10,45 @@ class TextService (textPanel: TextPanel){
 
     fun char(char : String)
     {
-        var sb = StringBuilder(panel.fullText[panel.activeRow])
-        sb.insert(panel.caret.positionInRow, char) //key code делит - 127,бекспейс - 8
-        panel.fullText[panel.activeRow] = sb.toString()
+        if (panel.caret.isInsert)
+        {
+            var sb = StringBuilder(panel.fullText[panel.activeRow])
+            sb.deleteCharAt(panel.caret.positionInRow)
+            sb.insert(panel.caret.positionInRow, char)
+            panel.fullText[panel.activeRow] = sb.toString()
 
-        panel.caret.positionInRow++
+            panel.caret.positionInRow++
 
-        //a.caret.leftWidth = charWidth
-        var font = Font("Calibri", 0, 20)
-        val metrics = panel.getFontMetrics(font)
-        val width = metrics.stringWidth(char)
+            //a.caret.leftWidth = charWidth
+            var font = Font("Calibri", 0, 20)
+            val metrics = panel.getFontMetrics(font)
+            val width = metrics.stringWidth(char)
 
 
-        //println(metrics.stringWidth(panel.fullText[panel.activeRow]))
-        panel.caret.positionX += width
+            //println(metrics.stringWidth(panel.fullText[panel.activeRow]))
+            panel.caret.positionX += width
+        }
+        else {
+            var sb = StringBuilder(panel.fullText[panel.activeRow])
+            sb.insert(panel.caret.positionInRow, char)
+            panel.fullText[panel.activeRow] = sb.toString()
+
+            panel.caret.positionInRow++
+
+            //a.caret.leftWidth = charWidth
+            var font = Font("Calibri", 0, 20)
+            val metrics = panel.getFontMetrics(font)
+            val width = metrics.stringWidth(char)
+
+
+            //println(metrics.stringWidth(panel.fullText[panel.activeRow]))
+            panel.caret.positionX += width
+        }
+        if (char == "{" || char == "}")
+            panel.service.stacks.addBracket(panel.activeRow, panel.caret.positionInRow, char[0])
     }
 
-    fun enter()
+    fun enter() //TODO пофиксить каретку при переносе
     {
         if (panel.activeRow < panel.fullText.lastIndex){
 
@@ -38,6 +60,7 @@ class TextService (textPanel: TextPanel){
             firstPart[firstPart.lastIndex] = firstPart[firstPart.lastIndex].substring(0,panel.caret.positionInRow)
 
             panel.fullText = firstPart + remains + secondPart
+            //panel.caret.newLine()
         }
         else{
             panel.activeRow++
@@ -51,12 +74,24 @@ class TextService (textPanel: TextPanel){
     fun backspace()
     {
         panel.caret.moveLeft()
-        panel.fullText[panel.activeRow] = panel.fullText[panel.activeRow].removeRange(panel.caret.positionInRow, panel.caret.positionInRow+1)
+        if (panel.caret.positionInRow < panel.fullText[panel.activeRow].length)
+        {
+            panel.fullText[panel.activeRow] = panel.fullText[panel.activeRow].removeRange(panel.caret.positionInRow, panel.caret.positionInRow+1)
+        }
     }
     fun delete ()
     {
-        if (panel.caret.positionInRow <= panel.fullText[panel.activeRow].length-1)
+        if (panel.caret.positionInRow <= panel.fullText[panel.activeRow].lastIndex)
             panel.fullText[panel.activeRow] = panel.fullText[panel.activeRow].removeRange(panel.caret.positionInRow,panel.caret.positionInRow+1)
+        else {
+            var firstPart = panel.fullText.copyOfRange(0,panel.activeRow+1)
+
+            firstPart[panel.activeRow] += panel.fullText[panel.activeRow+1]
+
+            var secondPart = panel.fullText.copyOfRange(panel.activeRow+2,panel.fullText.lastIndex+1)
+
+            panel.fullText = firstPart + secondPart
+        }
     }
     fun insert()
     {

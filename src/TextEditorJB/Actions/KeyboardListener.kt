@@ -22,13 +22,19 @@ class KeyboardListener(panel : TextPanel) : KeyListener{
 
     override fun keyPressed(e: KeyEvent?) {
         if (e!!.isShiftDown){
-            when (e!!.keyCode)
-            {
-                37 -> textSelectionService.shiftLeft()
-                39 -> textSelectionService.shiftRight()
+            if (e!!.keyCode != 16){
+                when (e!!.keyCode)
+                {
+                    38 -> textSelectionService.shiftUp()
+                    40 -> textSelectionService.shiftDown()
+                    37 -> textSelectionService.shiftLeft()
+                    39 -> textSelectionService.shiftRight()
+                    else -> textService.char(e!!.keyChar.toString())
+                }
             }
         }
         else {
+            panel.textSelection.drawingSelection = false
             when (e!!.keyCode) {
                 38 -> navigationService.Up()
                 40 -> navigationService.Down()

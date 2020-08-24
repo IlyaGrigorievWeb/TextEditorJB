@@ -2,9 +2,13 @@ package TextEditorJB.TextColoringService
 
 import TextEditorJB.Components.TextPanel
 import java.awt.Color
+import java.awt.FontMetrics
 import java.awt.Graphics
+import java.awt.Graphics2D
+import java.awt.geom.Rectangle2D
 
-class TextColoringService {
+class TextColoringService(textPanel : TextPanel) {
+    val panel = textPanel
     var stacks = stacks()
     fun paintKeyWords(string: String, graphics: Graphics, x: Int, y: Int) { //сколько скобок от начала столько скобок от конца
         //var graphics = panel.graphics
@@ -55,35 +59,47 @@ class TextColoringService {
     )
 
     fun setIdentifier(string: String) {
-        keyWordsColors.put(string, Color.ORANGE)
+        if (!keyWordsColors.containsKey(string))
+            keyWordsColors.put(string, Color.ORANGE)
     }
 
-    fun paintBrackets(row: Int, position: Int, g: Graphics?) { // TODO Завести мапу для всех скобок и серчить по ним , стек из скобок
-        var fullText = (MyForm.panel as TextPanel).fullText
-        if (fullText[row][position] == '{' /*|| fullText[row][position-1] == '{'*/) {
-            var secondBracketRow = row
-            var secondBracketPosition = position
-            var counter = 1
-            while (counter != 0) {
-                if (fullText[secondBracketRow][secondBracketPosition] == '}') {
-                    counter--
-                    if (counter == 0)
-                        break
-                } else if (fullText[secondBracketRow][secondBracketPosition] == '{') {
-                    counter++
-                }
-                if (secondBracketPosition == fullText[secondBracketRow].lastIndex) {
-                    secondBracketRow++
-                    secondBracketPosition = 0
-                    if (secondBracketRow == fullText.lastIndex)
-                        counter = 0
-                } else
-                    secondBracketPosition++
-            }
+    fun paintBrackets(row: Int, position: Int,bracket : Char, g: Graphics) {
+        //TODO Взял код из выделения, можно зарефакторить и вынести в одно место высчитывание координат и бокса по позиции
+        var pairBracket = stacks.getPairBracket(row,position,bracket)
+        if (pairBracket != null){
+            val g2 = g as Graphics2D
+            var metrics = g2.getFontMetrics(g2.font)
+            var char = bracket
+
+            var x = panel.borderX + metrics.stringWidth(panel.fullText[row].substring(0,position))
+            var y = 35 + panel.lineSpacing * row - metrics.height + metrics.descent
+            var height = metrics.height
+            var width = metrics.charWidth(char)
+            var firstBracketRectangle = Rectangle2D.Double(x.toDouble(),y.toDouble(),width.toDouble(),height.toDouble())
+
+            x = panel.borderX + metrics.stringWidth(panel.fullText[pairBracket.row].substring(0,pairBracket.position))
+            y = 35 + panel.lineSpacing * pairBracket.row - metrics.height + metrics.descent + 2
+            height = metrics.height
+            width = metrics.charWidth(char)
+            var secondBracketRectangle = Rectangle2D.Double(x.toDouble(),y.toDouble(),width.toDouble(),height.toDouble())
+
+            g2.color = Color.GREEN
+            g2.fill(firstBracketRectangle)
+            g2.fill(secondBracketRectangle)
+            g2.color = Color.BLACK
         }
     }
+    private fun getXbyPosition(row : Int,position : Int,metrics : FontMetrics) : Int
+    {
+        return 0
+    }
+    private fun getYbyRow(row : Int,metrics : FontMetrics) : Int
+    {
+        return (MyForm.panel as TextPanel).lineSpacing * row
+    }
 
-    fun brackets(row: Int, position: Int, g: Graphics?) { // TODO Завести мапу для всех скобок и серчить по ним , стек из скобок
+
+    fun brackets(row: Int, position: Int,bracket : Char, g: Graphics?) { //запасной метод для перебора во время написания
         var fullText = (MyForm.panel as TextPanel).fullText
         if (fullText[row][position] == '{' /*|| fullText[row][position-1] == '{'*/) {
             var secondBracketRow = row
@@ -117,30 +133,68 @@ class TextColoringService {
         var pairs = mapOf(Pair('{','}'),Pair('(',')'))
     }
     class stacks {
-        var openBrackets = mutableListOf<bracketWithPosition>()
-        var closeBrackets = mutableListOf<bracketWithPosition>()
-
+        var openBrackets = mutableListOf<bracketWithPosition?>()
+        var closeBrackets = mutableListOf<bracketWithPosition?>()
+        // Описание работы хранилища скобок: есть пары скобок (открыв./закрыв.) , добавляем скобку, если другая скобка ожидает пару то даем ей пару, если нет ищем скобку выше которая ожидает пару, если таких нет ставим без пары
+        // { } { { } в таком кейсе сейчашний алгоритм косячит
         fun addBracket(row : Int, position: Int, bracket: Char){
             if (bracket == '{')
             {
-                openBrackets.add(bracketWithPosition(row,position,bracket))
+                var isPasted = false
+                for ((index,openBracket) in openBrackets.withIndex()) {
+                    if (openBrackets[index] == null)
+                    {
+                        openBrackets[index] = bracketWithPosition(row, position, bracket)
+                        isPasted = true
+                        break
+                    }
+                }
+                if (!isPasted) {
+                    openBrackets.add(0, bracketWithPosition(row, position, bracket))
+                    closeBrackets.add(0,null)
+                }
             }
             else if (bracket == '}'){
-                closeBrackets.add(bracketWithPosition(row,position,bracket))
+                var isPasted = false
+                for ((index,closeBracket) in closeBrackets.withIndex()) {
+                    if (closeBrackets[index] == null)
+                    {
+                        closeBrackets[index] = bracketWithPosition(row, position, bracket)
+                        isPasted = true
+                        break
+                    }
+                }
+                if (!isPasted) {
+                    closeBrackets.add(0, bracketWithPosition(row, position, bracket))
+                    openBrackets.add(0,null)
+                }
             }
         }
 
-        fun getBracket (row : Int,position : Int) : bracketWithPosition?{
+        fun getPairBracket (row : Int,position : Int,inputBracket : Char) : bracketWithPosition?{
             var inputBracketIndex = -1
-            for ((index,bracket) in closeBrackets.withIndex()){
-                if (bracket.row == row && bracket.position == position){
-                    inputBracketIndex = index
+            if (inputBracket == '{') {
+                for ((index, bracket) in openBrackets.withIndex()) {
+                    if (bracket != null && bracket.row == row && bracket.position == position) {
+                        inputBracketIndex = index
+                    }
+                }
+                if (inputBracketIndex == -1)
+                    return null
+                else {
+                    return closeBrackets[inputBracketIndex]
                 }
             }
+            else if (inputBracket == '}')
+                for ((index,bracket) in closeBrackets.withIndex()){
+                    if (bracket != null && bracket.row == row && bracket.position == position){
+                        inputBracketIndex = index
+                    }
+                }
             if(inputBracketIndex == -1)
                 return null
             else{
-                return closeBrackets[inputBracketIndex]
+                return openBrackets[inputBracketIndex]
             }
         }
     }

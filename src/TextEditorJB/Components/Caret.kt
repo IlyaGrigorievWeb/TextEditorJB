@@ -97,17 +97,23 @@ class Caret( textPanel: TextPanel) : JComponent() {
         var myFont: Font = Font("Calibri", 0, 20)
         (g as Graphics).font = myFont
         if (isInsert){
+            var symbol = ""
+            if (positionInRow < textPanel.fullText[textPanel.activeRow].length)
+                symbol = textPanel.fullText[textPanel.activeRow][positionInRow].toString()
+            else
+                symbol =" "
+
             val metrics = textPanel.getFontMetrics(textPanel.textFont)
             val x = positionX + 5
-            val y = 35 - metrics.height + metrics.descent
+            val y = positionY - metrics.height + metrics.descent
             val h = metrics.height
-            val w = metrics.stringWidth(textPanel.fullText[textPanel.activeRow][positionInRow].toString())
+            val w = metrics.stringWidth(symbol)
 
             val rectangle =  Rectangle2D.Double(x.toDouble(),y.toDouble(),w.toDouble(),h.toDouble())
             g2.color = Color.MAGENTA
             g2.fill(rectangle)
             g2.color = Color.WHITE
-            g2.drawString(textPanel.fullText[textPanel.activeRow][positionInRow].toString(), positionX + 5, positionY)
+            g2.drawString(symbol, positionX + 5, positionY)
             g2.color = Color.BLACK
         }
         else{

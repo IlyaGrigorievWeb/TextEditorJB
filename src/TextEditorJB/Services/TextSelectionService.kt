@@ -9,10 +9,17 @@ class TextSelectionService(textPanel: TextPanel) {
     fun shiftLeft ()
     {
         panel.textSelection.selectLeft()
-        panel.textSelection.paint(panel.graphics)
     }
     fun shiftRight ()
     {
         panel.textSelection.selectRight()
+    }
+    fun shiftUp ()
+    {
+        panel.textSelection.selectUp()
+    }
+    fun shiftDown ()
+    {
+        panel.textSelection.selectDown()
     }
 }

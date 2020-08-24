@@ -18,7 +18,7 @@ class TextPanel : JPanel() {
     var textFont = Font("Calibri",0,20)
     var caret = getCaret() as Caret
     var textSelection = getS() as TextSelection//TextSelection(this)
-    var service = TextColoringService()
+    var service = TextColoringService(this)
 
 
     private fun getCaret() : Any{
@@ -41,18 +41,21 @@ class TextPanel : JPanel() {
         //myGraph.drawString(textRow,30,30)                      ПОГУГЛИТЬ ПРО СТИЛИЗАЦИЮ ИЗ HTML В SWING
         //ПРЯМОУГОЛЬНИКИ КОТОРЫЕ ОТРИСОВЫВАЮТСЯ ПЕРВЫМИ ИЗ ШИРИНЫ И ВЫСОТЫ СИМВОЛОВ И ЭТО БУДЕТ ВЫДЕЛЕНИЕ
         textSelection.paint(g)
-        if(fullText[activeRow].length > 2) {
-            if (fullText[activeRow][caret.positionInRow-1] == '{' || fullText[activeRow][caret.positionInRow-1] == '}') {
-                service.stacks.addBracket(activeRow, caret.positionInRow - 1, fullText[activeRow][caret.positionInRow - 1])
+//        if(fullText[activeRow].length > 2 && caret.positionInRow > 0) {
+//            if (fullText[activeRow][caret.positionInRow-1] == '{' || fullText[activeRow][caret.positionInRow-1] == '}') {
+//
+//                if (service.stacks.getBracket(activeRow, caret.positionInRow - 1) != null) {
+//                    println(service.stacks.getBracket(activeRow, caret.positionInRow - 1)!!.bracket)
+//                    println(service.stacks.getBracket(activeRow, caret.positionInRow - 1)!!.row)
+//                    println(service.stacks.getBracket(activeRow, caret.positionInRow - 1)!!.position)
+//                }
+//            }
+//        }
 
-                if (service.stacks.getBracket(activeRow, caret.positionInRow - 1) != null) {
-                    println(service.stacks.getBracket(activeRow, caret.positionInRow - 1)!!.bracket)
-                    println(service.stacks.getBracket(activeRow, caret.positionInRow - 1)!!.row)
-                    println(service.stacks.getBracket(activeRow, caret.positionInRow - 1)!!.position)
-                }
-            }
-        }
+
         (g as Graphics).font = textFont
+        if (caret.positionInRow > 1)
+            service.paintBrackets(activeRow,caret.positionInRow,fullText[activeRow][caret.positionInRow-1],g)
         //(g as Graphics).TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
         //(g as Graphics2D).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT)
 

@@ -1,11 +1,10 @@
 package TextEditorJB.Components
 
-import TextEditorJB.Actions.LeftAction
+import TextEditorJB.Services.NavigationService
 import java.awt.Color
 import java.awt.Graphics
 import java.awt.Graphics2D
 import java.awt.geom.Rectangle2D
-import javax.swing.Action
 import javax.swing.JComponent
 
 class TextSelection ( textPanel: TextPanel) : JComponent() {
@@ -75,25 +74,11 @@ class TextSelection ( textPanel: TextPanel) : JComponent() {
 //            g2.paint = Color.BLACK
 //        }
 //    }
-    fun test3(){
-    selectingStartRow = 0
-    selectingEndRow = 3
-    selectingStartChar = 3
-    selectingEndChar = 8
-    drawingSelection = true
-    }
-    fun test2(){
-        selectingStartRow = 0
-        selectingEndRow = 3
-        selectingStartChar = 3
-        selectingEndChar = 8
-        drawingSelection = true
-    }
     override fun paintComponent(g: Graphics?) { //TODO: Работает только слева на право, сделать что бы работало в обе стороны
         if (drawingSelection)
         {
             var g2 = g as Graphics2D;
-            var rectangles = arrayOf(Rectangle2D.Double())
+            var rectangles = arrayOf<Rectangle2D>()
             val metrics = getFontMetrics(panel.textFont)
 
             when (selectingEndRow - selectingStartRow)
@@ -137,23 +122,22 @@ class TextSelection ( textPanel: TextPanel) : JComponent() {
                     rectangles = arrayOf(firstRectangle,secondRectangle,thirdRectangle)
                 }
             }
-//            for ((index, value) in fullText[activeRow].withIndex()) {
-//
-//                if (index < textSelection.selectingStart){
-//                    x += metrics.charWidth(value)
-//                }
-//                else if (index in textSelection.selectingStart..textSelection.selectingEnd)
-//                {
-//                    w += metrics.charWidth(value)
-//                }
-//            }
-             //var rec = Rectangle2D.Double( x,20.0,w,20.0)
 
             g2.paint = Color.YELLOW
             for (rec in rectangles)
                 g2.fill(rec)
             g2.paint = Color.BLACK
         }
+    }
+    private fun setBeginState()
+    {
+        selectingStartRow = panel.activeRow
+        selectingStartChar = panel.caret.positionInRow
+    }
+    private fun setEndState()
+    {
+        selectingEndRow = panel.activeRow
+        selectingEndChar = panel.caret.positionInRow
     }
     fun selectLeft() // если уже было выделение смещаем старт индекс влево если нет ставим енд индекс там где мы сейчас и двигаем старт индекс на 1 TODO:Переписать методы под сет по каретке, что бы не считаь позицию самому, брать значения до и после смекщенияч
     //лучше завязаться на конечной каретке
@@ -204,12 +188,54 @@ class TextSelection ( textPanel: TextPanel) : JComponent() {
 
         panel.repaint()
     }
+    fun selectUp() // если уже было выделение смещаем старт индекс влево если нет ставим енд индекс там где мы сейчас и двигаем старт индекс на 1 TODO:Переписать методы под сет по каретке, что бы не считаь позицию самому, брать значения до и после смекщенияч
+    //лучше завязаться на конечной каретке
+    {
+        if (drawingSelection){
+
+            NavigationService(panel).Up()
+            setEndState()
+        }
+        else {
+            drawingSelection = true
+            setBeginState()
+            NavigationService(panel).Up()
+            setEndState()
+        }
+
+        println(buffer)
+
+        panel.repaint()
+    }
+    fun selectDown()
+    {
+        if (drawingSelection){
+
+            NavigationService(panel).Down()
+            setEndState()
+        }
+        else {
+            drawingSelection = true
+            setBeginState()
+            NavigationService(panel).Down()
+            setEndState()
+        }
+
+        println(buffer)
+
+        panel.repaint()
+    }
 
     fun selectByClick(mouseX : Int, mouseY : Int)
     {
         if (drawingSelection)
         {
+            panel.caret.setPositionByMouseCoord(mouseX,mouseY)
 
+            selectingEndRow = panel.activeRow
+            selectingEndChar = panel.caret.positionInRow
+
+            updateBuffer()
         }
         else{
             drawingSelection = true
@@ -223,6 +249,35 @@ class TextSelection ( textPanel: TextPanel) : JComponent() {
             selectingEndChar = panel.caret.positionInRow
 
             updateBuffer()
+        }
+    }
+
+    fun selectMouseMotion(mouseX : Int, mouseY : Int,selected : Boolean){
+        if (!drawingSelection && selected)
+        {
+            drawingSelection = true
+
+            selectingStartRow = panel.activeRow
+            selectingStartChar = panel.caret.positionInRow
+
+            panel.caret.setPositionByMouseCoord(mouseX,mouseY)
+
+            selectingEndRow = panel.activeRow
+            selectingEndChar = panel.caret.positionInRow
+
+            updateBuffer()
+        }
+        else if (drawingSelection && !selected){
+            panel.caret.setPositionByMouseCoord(mouseX,mouseY)
+
+            selectingEndRow = panel.activeRow
+            selectingEndChar = panel.caret.positionInRow
+        }
+        else if (drawingSelection && selected){
+            panel.caret.setPositionByMouseCoord(mouseX,mouseY)
+
+            selectingEndRow = panel.activeRow
+            selectingEndChar = panel.caret.positionInRow
         }
     }
 

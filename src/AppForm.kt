@@ -1,4 +1,3 @@
-import TextEditorJB.Actions.CustomMouseListener
 import TextEditorJB.Actions.KeyboardListener
 import TextEditorJB.Components.TextPanel
 import TextEditorJB.FileService.getConfiguredMenu
