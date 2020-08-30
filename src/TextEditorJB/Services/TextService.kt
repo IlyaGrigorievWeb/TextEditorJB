@@ -12,10 +12,15 @@ class TextService (textPanel: TextPanel){
     {
         if (panel.caret.isInsert)
         {
-            var sb = StringBuilder(panel.fullText[panel.activeRow])
-            sb.deleteCharAt(panel.caret.positionInRow)
-            sb.insert(panel.caret.positionInRow, char)
-            panel.fullText[panel.activeRow] = sb.toString()
+            if (panel.caret.positionInRow <= panel.fullText[panel.activeRow].lastIndex) {
+                var sb = StringBuilder(panel.fullText[panel.activeRow])
+                sb.deleteCharAt(panel.caret.positionInRow)
+                sb.insert(panel.caret.positionInRow, char)
+                panel.fullText[panel.activeRow] = sb.toString()
+            }
+            else{
+                panel.fullText[panel.activeRow]+= char
+            }
 
             panel.caret.positionInRow++
 
@@ -50,7 +55,7 @@ class TextService (textPanel: TextPanel){
 
     fun enter() //TODO пофиксить каретку при переносе
     {
-        if (panel.activeRow < panel.fullText.lastIndex){
+        if (panel.activeRow <= panel.fullText.lastIndex){
 
             var firstPart = panel.fullText.copyOfRange(0,panel.activeRow+1)
             var secondPart = panel.fullText.copyOfRange(panel.activeRow+1,panel.fullText.lastIndex+1)
@@ -60,7 +65,9 @@ class TextService (textPanel: TextPanel){
             firstPart[firstPart.lastIndex] = firstPart[firstPart.lastIndex].substring(0,panel.caret.positionInRow)
 
             panel.fullText = firstPart + remains + secondPart
-            //panel.caret.newLine()
+
+            panel.activeRow++
+            panel.caret.newLine()
         }
         else{
             panel.activeRow++

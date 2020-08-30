@@ -218,7 +218,7 @@ class Caret( textPanel: TextPanel) : JComponent() {
     }
     fun newLine() //TODO: Переносить строку справа от каретки
     {
-        positionY = textPanel.rowY
+        positionY += textPanel.lineSpacing
         positionInRow = 0;
         positionX = 16
     }

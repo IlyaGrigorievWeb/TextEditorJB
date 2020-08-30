@@ -4,6 +4,9 @@ import TextEditorJB.Services.TextSelectionService
 import TextEditorJB.TextColoringService.TextColoringService
 import java.awt.*
 import java.awt.geom.Rectangle2D
+import java.io.BufferedReader
+import java.io.File
+import java.io.FileReader
 import javax.swing.JComponent
 import javax.swing.JPanel
 
@@ -76,6 +79,33 @@ class TextPanel : JPanel() {
 
     companion object{
         //var textRow : String = "<html><font color=\"blue\">text text</font></html>"
+        var text = geText()
+        var position = 0
+
+        fun geText () : Array<String>
+        {
+            var file = File("C:\\Users\\Ilya\\Music\\TextColoringService.kt")
+            var listString : MutableList<String> =  mutableListOf()
+            if (file.exists())
+            {
+                MyForm.openingFile = file
+                var fileReader = FileReader(file)
+                var buffer = BufferedReader(fileReader)
+
+                //panel.fullText[panel.activeRow] = buffer.readLine()
+                var i = 0
+                //textPanel.fullText = Array()
+                while(buffer.ready())
+                {
+                    listString.add(buffer.readLine())
+                    //textPanel.fullText[i] = buffer.readLine()
+                    //EnterAction().actionPerformed(e)
+                    i++
+                }
+            }
+
+            return listString.toTypedArray<String>()
+        }
 
     }
 }

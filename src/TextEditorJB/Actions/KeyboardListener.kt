@@ -2,6 +2,7 @@ package TextEditorJB.Actions
 
 import TextEditorJB.Components.TextPanel
 import TextEditorJB.Services.NavigationService
+import TextEditorJB.Services.ShortcutService
 import TextEditorJB.Services.TextSelectionService
 import TextEditorJB.Services.TextService
 import java.awt.Font
@@ -9,12 +10,13 @@ import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 
-class KeyboardListener(panel : TextPanel) : KeyListener{
+class KeyboardListener(panel : TextPanel,navigationService: NavigationService , textSelectionService: TextSelectionService) : KeyListener{
 
     var panel = panel
-    val navigationService = NavigationService(panel)
+    val navigationService = navigationService
     val textService = TextService(panel)
-    val textSelectionService = TextSelectionService(panel)
+    val textSelectionService = textSelectionService
+    val shortcutService = ShortcutService(textSelectionService)
 
     override fun keyTyped(e: KeyEvent?) {
         var a = 0
@@ -31,6 +33,16 @@ class KeyboardListener(panel : TextPanel) : KeyListener{
                     39 -> textSelectionService.shiftRight()
                     else -> textService.char(e!!.keyChar.toString())
                 }
+            }
+        }
+        else if(e!!.isControlDown)
+        {
+            when (e!!.keyCode)
+            {
+                67 -> shortcutService.copy()
+                86 -> shortcutService.paste()
+                65 -> print('a')
+                88 -> print('x')
             }
         }
         else {

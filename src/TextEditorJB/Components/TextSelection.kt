@@ -129,40 +129,58 @@ class TextSelection ( textPanel: TextPanel) : JComponent() {
             g2.paint = Color.BLACK
         }
     }
-    private fun setBeginState()
+    fun setBeginState()
     {
         selectingStartRow = panel.activeRow
         selectingStartChar = panel.caret.positionInRow
     }
-    private fun setEndState()
+    fun setEndState()
     {
         selectingEndRow = panel.activeRow
         selectingEndChar = panel.caret.positionInRow
     }
-    fun selectLeft() // если уже было выделение смещаем старт индекс влево если нет ставим енд индекс там где мы сейчас и двигаем старт индекс на 1 TODO:Переписать методы под сет по каретке, что бы не считаь позицию самому, брать значения до и после смекщенияч
+    fun setBeginState(row : Int, position : Int)
+    {
+        selectingStartRow = row
+        selectingStartChar = position
+    }
+    fun setEndState(row : Int, position : Int)
+    {
+        selectingEndRow = row
+        selectingEndChar = position
+    }
+    fun selectLeft(func : () -> Unit) // если уже было выделение смещаем старт индекс влево если нет ставим енд индекс там где мы сейчас и двигаем старт индекс на 1 TODO:Переписать методы под сет по каретке, что бы не считаь позицию самому, брать значения до и после смекщенияч
     //лучше завязаться на конечной каретке
     {
 
-        panel.caret.moveLeft()
-        val caretIndex = panel.caret.positionInRow
+//        panel.caret.moveLeft()
+//        val caretIndex = panel.caret.positionInRow
+//
+//        if (drawingSelection){
+//            if (caretIndex == selectingEndChar)
+//                drawingSelection = false
+//            else{
+//                if(panel.caret.positionInRow == selectingStartRow) //TODO Решение бага со сторонами - проверять если каретка равная позиции в строке то это направление выделения
+//                {
+//                    selectingStartChar = caretIndex - 1
+//                }
+//                else
+//                    selectingStartChar = caretIndex
+//            }
+//        }
+//        else{
+//            drawingSelection = true
+//            selectingStartChar  = caretIndex
+//            selectingEndChar = caretIndex + 1
+//        }
+//
+//        if (drawingSelection)
+//            buffer = StringBuilder(buffer).insert(0,panel.fullText[panel.activeRow][caretIndex]).toString();
+//        println(buffer)
+//
+//        panel.repaint()
 
-        if (drawingSelection){
-            if (caretIndex == selectingEndChar)
-                drawingSelection = false
-            else
-                selectingStartChar = caretIndex
-        }
-        else{
-            drawingSelection = true
-            selectingStartChar  = caretIndex
-            selectingEndChar = caretIndex + 1
-        }
 
-        if (drawingSelection)
-            buffer = StringBuilder(buffer).insert(0,panel.fullText[panel.activeRow][caretIndex]).toString();
-        println(buffer)
-
-        panel.repaint()
     }
     fun selectRight()
     {
@@ -228,28 +246,28 @@ class TextSelection ( textPanel: TextPanel) : JComponent() {
 
     fun selectByClick(mouseX : Int, mouseY : Int)
     {
-        if (drawingSelection)
-        {
-            panel.caret.setPositionByMouseCoord(mouseX,mouseY)
-
-            selectingEndRow = panel.activeRow
-            selectingEndChar = panel.caret.positionInRow
-
-            updateBuffer()
-        }
-        else{
-            drawingSelection = true
-
-            selectingStartRow = panel.activeRow
-            selectingStartChar = panel.caret.positionInRow
-
-            panel.caret.setPositionByMouseCoord(mouseX,mouseY)
-
-            selectingEndRow = panel.activeRow
-            selectingEndChar = panel.caret.positionInRow
-
-            updateBuffer()
-        }
+//        if (drawingSelection)
+//        {
+//            panel.caret.setPositionByMouseCoord(mouseX,mouseY)
+//
+//            selectingEndRow = panel.activeRow
+//            selectingEndChar = panel.caret.positionInRow
+//
+//            updateBuffer()
+//        }
+//        else{
+//            drawingSelection = true
+//
+//            selectingStartRow = panel.activeRow
+//            selectingStartChar = panel.caret.positionInRow
+//
+//            panel.caret.setPositionByMouseCoord(mouseX,mouseY)
+//
+//            selectingEndRow = panel.activeRow
+//            selectingEndChar = panel.caret.positionInRow
+//
+//            updateBuffer()
+//        }
     }
 
     fun selectMouseMotion(mouseX : Int, mouseY : Int,selected : Boolean){
@@ -283,25 +301,25 @@ class TextSelection ( textPanel: TextPanel) : JComponent() {
 
     fun updateBuffer(){ //TODO поправить баг с отрисовкой и буфером
 
-        var resultString = ""
-        var selectedTextArray = panel.fullText.copyOfRange(selectingStartRow,selectingEndRow+1)
-
-
-        for ((index,string) in selectedTextArray.withIndex())
-        {
-            if (index == 0)
-            {
-                resultString += selectedTextArray[index].substring(selectingStartChar,selectedTextArray[index].lastIndex)
-            }
-            else if(index == selectedTextArray.lastIndex){
-                resultString += selectedTextArray[index].substring(0,selectingStartChar)
-            }
-            else{
-                resultString += selectedTextArray[index]
-            }
-            resultString += "\n"
-        }
-        buffer = resultString
-        print(buffer)
+//        var resultString = ""
+//        var selectedTextArray = panel.fullText.copyOfRange(selectingStartRow,selectingEndRow+1)
+//
+//
+//        for ((index,string) in selectedTextArray.withIndex())
+//        {
+//            if (index == 0)
+//            {
+//                resultString += selectedTextArray[index].substring(selectingStartChar,selectedTextArray[index].lastIndex)
+//            }
+//            else if(index == selectedTextArray.lastIndex){
+//                resultString += selectedTextArray[index].substring(0,selectingStartChar)
+//            }
+//            else{
+//                resultString += selectedTextArray[index]
+//            }
+//            resultString += "\n"
+//        }
+//        buffer = resultString
+//        print(buffer)
     }
 }

@@ -1,6 +1,8 @@
 import TextEditorJB.Actions.KeyboardListener
 import TextEditorJB.Components.TextPanel
 import TextEditorJB.FileService.getConfiguredMenu
+import TextEditorJB.Services.NavigationService
+import TextEditorJB.Services.TextSelectionService
 import java.awt.Cursor
 import java.io.File
 import javax.swing.JFrame
@@ -22,7 +24,7 @@ class MyForm {
             frame.setBounds(750,250,500,500)
             frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
             frame.jMenuBar = getConfiguredMenu()
-            frame.addKeyListener(KeyboardListener(panel as TextPanel))
+
             frame.focusTraversalKeysEnabled = false
             return frame
         }
