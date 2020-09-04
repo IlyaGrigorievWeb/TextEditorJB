@@ -31,39 +31,24 @@ class ShortcutService (textSelectionService : TextSelectionService/*,textService
 
 
             var firstPart = panel.fullText.copyOfRange(0,panel.activeRow)
-            var secondPart = panel.fullText.copyOfRange(panel.activeRow+1,panel.fullText.lastIndex)
+            var secondPart = panel.fullText.copyOfRange(panel.activeRow,panel.fullText.lastIndex)
             var firstPartRow = panel.fullText[panel.activeRow].substring(0,panel.caret.positionInRow)
             var secondPartRow = panel.fullText[panel.activeRow].substring(panel.caret.positionInRow,panel.fullText[panel.activeRow].lastIndex)
 
             var resultPart = pastedText.toTypedArray()
-
-                for ((index,string) in pastedText.withIndex())
-                {
-                    if(index == 0)
-                    {
-                        if (index==pastedText.lastIndex)
-                        {
-                            resultPart[index] = firstPartRow + string
-                        }
-                        else {
-                            resultPart[index] = firstPartRow + string + secondPartRow
-                        }
-                    }
-                    else if(index == pastedText.lastIndex){
-                        resultPart[index] = string + secondPart
-                    }
-                    else{
-
-                    }
-            //}
+            resultPart[0] = firstPartRow + resultPart[0]
+            val index = resultPart[resultPart.lastIndex].lastIndex
+            resultPart[resultPart.lastIndex] = resultPart[resultPart.lastIndex] + secondPartRow
 
             panel.fullText = firstPart + resultPart + secondPart
+
+//            panel.activeRow += resultPart.lastIndex
+//            panel.caret.positionInRow = index + 1
         }
 
 
 
 //            panel.fullText[panel.activeRow] = stringBuilder.insert(caretIndex,pastedText).toString()
 //            panel.caret.positionInRow = caretIndex + pastedText.length
-        }
     }
 }

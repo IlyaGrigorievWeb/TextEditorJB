@@ -2,6 +2,7 @@ package TextEditorJB.Components
 
 import TextEditorJB.Services.TextSelectionService
 import TextEditorJB.TextColoringService.TextColoringService
+import org.w3c.dom.Text
 import java.awt.*
 import java.awt.geom.Rectangle2D
 import java.io.BufferedReader
@@ -22,6 +23,11 @@ class TextPanel : JPanel() {
     var caret = getCaret() as Caret
     var textSelection = getS() as TextSelection//TextSelection(this)
     var service = TextColoringService(this)
+
+    val rowsInWorkspace : Int
+        get() {
+            return this.size.height / lineSpacing
+        }
 
 
     private fun getCaret() : Any{
@@ -77,35 +83,7 @@ class TextPanel : JPanel() {
         caret.paint(g)
     }
 
-    companion object{
-        //var textRow : String = "<html><font color=\"blue\">text text</font></html>"
-        var text = geText()
-        var position = 0
-
-        fun geText () : Array<String>
-        {
-            var file = File("C:\\Users\\Ilya\\Music\\TextColoringService.kt")
-            var listString : MutableList<String> =  mutableListOf()
-            if (file.exists())
-            {
-                MyForm.openingFile = file
-                var fileReader = FileReader(file)
-                var buffer = BufferedReader(fileReader)
-
-                //panel.fullText[panel.activeRow] = buffer.readLine()
-                var i = 0
-                //textPanel.fullText = Array()
-                while(buffer.ready())
-                {
-                    listString.add(buffer.readLine())
-                    //textPanel.fullText[i] = buffer.readLine()
-                    //EnterAction().actionPerformed(e)
-                    i++
-                }
-            }
-
-            return listString.toTypedArray<String>()
-        }
+    companion object{ // TODO Баг с выделением , надо поиграться и в обратку через строку не выделяет
 
     }
 }

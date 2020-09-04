@@ -1,25 +1,26 @@
-package TextEditorJB.Actions
+package TextEditorJB.Listeners
 
 import TextEditorJB.Components.TextPanel
-import TextEditorJB.Services.NavigationService
-import TextEditorJB.Services.ShortcutService
-import TextEditorJB.Services.TextSelectionService
-import TextEditorJB.Services.TextService
+import TextEditorJB.Services.*
 import java.awt.Font
 import java.awt.event.ActionEvent
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 
-class KeyboardListener(panel : TextPanel,navigationService: NavigationService , textSelectionService: TextSelectionService) : KeyListener{
+class KeyboardListener( panel : TextPanel,
+                        navigationService: NavigationService ,
+                        textSelectionService: TextSelectionService,
+                        fileService: FileService,
+                        textService: TextService) : KeyListener{
 
     var panel = panel
     val navigationService = navigationService
-    val textService = TextService(panel)
+    val textService = textService
     val textSelectionService = textSelectionService
     val shortcutService = ShortcutService(textSelectionService)
+    val fileService = fileService
 
     override fun keyTyped(e: KeyEvent?) {
-        var a = 0
     }
 
     override fun keyPressed(e: KeyEvent?) {
@@ -46,7 +47,7 @@ class KeyboardListener(panel : TextPanel,navigationService: NavigationService , 
             }
         }
         else {
-            panel.textSelection.drawingSelection = false
+            //panel.textSelection.drawingSelection = false
             when (e!!.keyCode) {
                 38 -> navigationService.Up()
                 40 -> navigationService.Down()
@@ -70,7 +71,6 @@ class KeyboardListener(panel : TextPanel,navigationService: NavigationService , 
     }
 
     override fun keyReleased(e: KeyEvent?) {
-        var a = 0
     }
 
 }

@@ -4,9 +4,10 @@ import TextEditorJB.Components.TextPanel
 import java.awt.Font
 
 //Сервис работы с текстом
-class TextService (textPanel: TextPanel){
+class TextService (textPanel: TextPanel, workspaceService : WorkspaceService){
 
     val panel = textPanel
+    val workspaceService = workspaceService
 
     fun char(char : String)
     {
@@ -51,6 +52,9 @@ class TextService (textPanel: TextPanel){
         }
         if (char == "{" || char == "}")
             panel.service.stacks.addBracket(panel.activeRow, panel.caret.positionInRow, char[0])
+
+
+        workspaceService.setText(panel.activeRow,panel.fullText[panel.activeRow])
     }
 
     fun enter() //TODO пофиксить каретку при переносе
@@ -77,6 +81,8 @@ class TextService (textPanel: TextPanel){
             panel.rowY += panel.lineSpacing
             panel.caret.newLine()
         }
+
+        workspaceService.setNewLineText()
     }
     fun backspace()
     {
@@ -88,17 +94,37 @@ class TextService (textPanel: TextPanel){
     }
     fun delete ()
     {
-        if (panel.caret.positionInRow <= panel.fullText[panel.activeRow].lastIndex)
-            panel.fullText[panel.activeRow] = panel.fullText[panel.activeRow].removeRange(panel.caret.positionInRow,panel.caret.positionInRow+1)
-        else {
-            var firstPart = panel.fullText.copyOfRange(0,panel.activeRow+1)
+        if (!panel.textSelection.drawingSelection) {
+            if (panel.caret.positionInRow <= panel.fullText[panel.activeRow].lastIndex)
+                panel.fullText[panel.activeRow] = panel.fullText[panel.activeRow].removeRange(panel.caret.positionInRow, panel.caret.positionInRow + 1)
+            else {
+                var firstPart = panel.fullText.copyOfRange(0, panel.activeRow + 1)
 
-            firstPart[panel.activeRow] += panel.fullText[panel.activeRow+1]
+                firstPart[panel.activeRow] += panel.fullText[panel.activeRow + 1]
 
-            var secondPart = panel.fullText.copyOfRange(panel.activeRow+2,panel.fullText.lastIndex+1)
+                var secondPart = panel.fullText.copyOfRange(panel.activeRow + 2, panel.fullText.lastIndex + 1)
 
-            panel.fullText = firstPart + secondPart
+                panel.fullText = firstPart + secondPart
+            }
         }
+        else
+        {
+            if (panel.textSelection.selectingStartRow == panel.textSelection.selectingEndRow)
+            {
+                panel.fullText[panel.textSelection.selectingStartRow]=  panel.fullText[panel.textSelection.selectingStartRow].removeRange(panel.textSelection.selectingStartChar,panel.textSelection.selectingEndChar)
+            }
+            else
+            {
+                val firstPart = panel.fullText.copyOfRange(0,panel.textSelection.selectingStartRow)
+                val thirdPart = panel.fullText.copyOfRange(panel.textSelection.selectingEndRow,panel.fullText.lastIndex)
+                val secondPart = panel.fullText[panel.textSelection.selectingStartRow].substring(0,panel.textSelection.selectingStartChar) +
+                        panel.fullText[panel.textSelection.selectingEndRow].substring(panel.textSelection.selectingEndChar,panel.fullText[panel.textSelection.selectingEndRow].lastIndex)
+                panel.fullText = firstPart + secondPart + thirdPart
+                panel.activeRow = panel.textSelection.selectingStartRow
+                panel.caret.positionInRow = panel.textSelection.selectingStartChar
+            }
+        }
+        panel.textSelection.drawingSelection = false
     }
     fun insert()
     {

@@ -92,6 +92,7 @@ class TextSelectionService(textPanel: TextPanel,navigationService : NavigationSe
 
     fun shiftClick (mouseX : Int, mouseY : Int)
     {
+
         val previousRow  = panel.activeRow
         val previousPosition  = panel.caret.positionInRow
 
@@ -99,26 +100,42 @@ class TextSelectionService(textPanel: TextPanel,navigationService : NavigationSe
 
         if (textSelection.drawingSelection)
         {
-            if (panel.activeRow < textSelection.selectingStartRow  || (panel.activeRow == textSelection.selectingStartRow && panel.caret.positionInRow < textSelection.selectingStartChar)) //Позади прошлого выделения
-            {
-                textSelection.setEndState(textSelection.selectingStartRow,textSelection.selectingStartChar)
-                textSelection.setBeginState(panel.activeRow,panel.caret.positionInRow)
+            if (textSelection.selectingStartRow == previousRow && textSelection.selectingStartChar == previousPosition)
+            { // 123 // Выделение сзади
+                if (panel.activeRow > textSelection.selectingEndRow  || (panel.activeRow == textSelection.selectingEndRow && panel.caret.positionInRow > textSelection.selectingEndChar))
+                { // 3 // Выделение становится впереди
+                    textSelection.setBeginState(textSelection.selectingEndRow,textSelection.selectingEndChar)
+                    textSelection.setEndState(panel.activeRow,panel.caret.positionInRow)
+                }
+                else
+                { // 1 2 //Выделение остается сзади и выделяется либо назад либо вперед
+                    textSelection.setBeginState(panel.activeRow,panel.caret.positionInRow)
+                }
+
             }
             else
-            {
-                textSelection.setEndState(panel.activeRow,panel.caret.positionInRow)
+            { //456 // Выделение впереди
+                if (panel.activeRow < textSelection.selectingStartRow  || (panel.activeRow == textSelection.selectingStartRow && panel.caret.positionInRow < textSelection.selectingStartChar))
+                { // 6 // Выделение становится сзади
+                    textSelection.setEndState(textSelection.selectingStartRow,textSelection.selectingStartChar)
+                    textSelection.setBeginState(panel.activeRow,panel.caret.positionInRow)
+                }
+                else
+                { // 4 5 //Выделение остается впереди и выделяется либо назад либо вперед
+                    textSelection.setEndState(panel.activeRow,panel.caret.positionInRow)
+                }
             }
 
         }
         else{
             textSelection.drawingSelection = true
 
-            if (panel.activeRow > previousRow  || (panel.activeRow == previousRow && panel.caret.positionInRow > previousPosition)) //Впереди
+            if (panel.activeRow > previousRow  || (panel.activeRow == previousRow && panel.caret.positionInRow > previousPosition)) // Выделяем вперед
             {
                 textSelection.setBeginState(previousRow,previousPosition)
                 textSelection.setEndState(panel.activeRow,panel.caret.positionInRow)
             }
-            else /* Сзади*/ {
+            else  { // Выделяем назад
                 textSelection.setBeginState(panel.activeRow,panel.caret.positionInRow)
                 textSelection.setEndState(previousRow,previousPosition)
             }

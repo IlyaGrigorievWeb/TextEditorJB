@@ -1,12 +1,14 @@
-package TextEditorJB.Actions
+package TextEditorJB.Listeners
 
 import TextEditorJB.Components.TextPanel
+import TextEditorJB.Services.FileService
 import TextEditorJB.Services.MouseService
 import java.awt.event.*
 import java.awt.event.MouseListener
 
 class MouseListener(mouseService : MouseService) : MouseAdapter() { //сделать 2 метода, получение строки в который пршиел клик и получение позиции символа в который пригел клик //сначала падение, потом выделение //TODO Разделить маус листенеры что бы они не перемешивались
-    var pressed = true // TODO Оставить фул текст как есть а уже отрисовку фул текста делать по размеру скролла
+
+    var pressed = false // TODO Оставить фул текст как есть а уже отрисовку фул текста делать по размеру скролла
     val panel = MyForm.panel as TextPanel
     val mouseService = mouseService
 
@@ -19,6 +21,17 @@ class MouseListener(mouseService : MouseService) : MouseAdapter() { //сдела
     }
 
     override fun mouseDragged(e: MouseEvent?) {
+        if (!panel.textSelection.drawingSelection && !pressed)
+        {
+            pressed = true
+            //panel.textSelection.drawingSelection = true
+            panel.caret.setPositionByMouseCoord(e!!.x, e!!.y)
+            mouseService.selectShiftClick(e!!.x,e!!.y)
+        }
+        else if (pressed){
+            //panel.caret.setPositionByMouseCoord(e!!.x, e!!.y)
+            mouseService.selectShiftClick(e!!.x,e!!.y)
+        }
 //        super.mouseDragged(e)
 //        if (!panel.textSelection.drawingSelection)
 //        {
@@ -35,7 +48,7 @@ class MouseListener(mouseService : MouseService) : MouseAdapter() { //сдела
 //        {
 //            panel.textSelection.selectMouseMotion(e!!.x,e!!.y,pressed)
 //        }
-//        panel.repaint()
+        panel.repaint()
 
     }
 
@@ -59,8 +72,7 @@ class MouseListener(mouseService : MouseService) : MouseAdapter() { //сдела
 
     override fun mouseReleased(e: MouseEvent?) {
         super.mouseReleased(e)
-
-//        pressed = false
+        pressed = false
         //panel.textSelection.selectMouseMotion(e!!.x,e!!.y,pressed)
         //println("Отпустил ")
     }
@@ -80,25 +92,7 @@ class MouseListener(mouseService : MouseService) : MouseAdapter() { //сдела
 
     override fun mouseWheelMoved(e: MouseWheelEvent?) {
         super.mouseWheelMoved(e)
-        if (e!!.wheelRotation == 1) //вниз
-        {
-            if (TextPanel.position > 0)
-            {
-                var rowsCount = 50
-                TextPanel.position--
-                panel.fullText = TextPanel.text.copyOfRange(TextPanel.position,TextPanel.position + rowsCount)
-                panel.repaint()
-            }
-        }
-        else if(e.wheelRotation == -1) //вверх
-        {
-            if (TextPanel.position + 50 <= TextPanel.text.lastIndex) {
-                var rowsCount = 50
-                TextPanel.position++
-                panel.fullText = TextPanel.text.copyOfRange(TextPanel.position, TextPanel.position + rowsCount)
-                panel.repaint()
-            }
-        }
+        mouseService.mouseScroll(e!!.wheelRotation)
     }
 }
 //class MouseListenerWheel : MouseWheelListener {

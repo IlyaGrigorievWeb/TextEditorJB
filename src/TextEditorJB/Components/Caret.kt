@@ -90,8 +90,6 @@ class Caret( textPanel: TextPanel) : JComponent() {
     }
 
     override fun paintComponent(g: Graphics?) { //:TODO будет два варианта отрисовки, либо чар , либо прямоугольник размером с символ и перекрашенным сиволом внутри
-        //super.paintComponent(g)
-
         var g2 = g as Graphics2D;
 
         var myFont: Font = Font("Calibri", 0, 20)
@@ -120,22 +118,7 @@ class Caret( textPanel: TextPanel) : JComponent() {
             g2.drawString(charCaret, positionX, positionY)
         }
         //TODO Когда пишет заносить скобку когда рисует каретку проверять нет ли рядом скобки и если есть поентиить обе
-//        var q = "qwerhqhwfoqwiefjoqwiefefjqoiwejfowjefoqjweijfqjojewfjqowjerojjqwer"
-//        var str = arrayListOf<String>()
-//        for(i in 1..99) {
-//            val randomValues = List(100) { Random.nextInt(0, q.lastIndex) }
-//            var st = ""
-//            for(k in 1..99) {
-//                st += q[randomValues[k]]
-//            }
-//            str.add(st)
-//        }
-//        var a = 30
-//        this.graphics.font = Font("Calibri",0,20)
-//        for(i in str) {
-//            this.graphics.drawString(i,20,a)
-//            a+=10
-//        }
+
     }
 
     fun moveLeft() { //TODO: Люфт влево-право +-1
