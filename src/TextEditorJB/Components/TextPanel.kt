@@ -1,28 +1,27 @@
 package TextEditorJB.Components
 
-import TextEditorJB.Services.TextSelectionService
-import TextEditorJB.TextColoringService.TextColoringService
-import org.w3c.dom.Text
+import TextEditorJB.Entities.SourceText
+import TextEditorJB.Services.NavigationService
+import TextEditorJB.Services.WorkspaceService
+import TextEditorJB.TextColorer.TextColorerService
 import java.awt.*
-import java.awt.geom.Rectangle2D
-import java.io.BufferedReader
-import java.io.File
-import java.io.FileReader
-import javax.swing.JComponent
 import javax.swing.JPanel
 
 
-class TextPanel : JPanel() {
+class TextPanel (sourceText: SourceText) : JPanel() {
 
-    var fullText : Array<String> =  arrayOf("")
-    var activeRow = 0
+    var workspaceText =  arrayOf("")
+
     var rowY = 35
     var lineSpacing = 20
     var borderX = 16
     var textFont = Font("Calibri",0,20)
-    var caret = getCaret() as Caret
-    var textSelection = getS() as TextSelection//TextSelection(this)
-    var service = TextColoringService(this)
+    var caret = Caret(this,sourceText)
+    val navigationService = NavigationService(this,sourceText)
+    var textSelection = TextSelection(this,sourceText, navigationService)
+    var coloringService = TextColorerService(this)
+    val sourceText = sourceText
+    val workspaceService = WorkspaceService(this, sourceText)
 
     val rowsInWorkspace : Int
         get() {
@@ -30,16 +29,16 @@ class TextPanel : JPanel() {
         }
 
 
-    private fun getCaret() : Any{
-        val caret = Caret(this)
-        caret.isVisible = true
-        return caret
-    }
-    private fun getS() : Any{
-        val caret = TextSelection(this)
-        caret.isVisible = true
-        return caret
-    }
+//    private fun getCaret() : Any{
+//        val caret = Caret(this)
+//        caret.isVisible = true
+//        return caret
+//    }
+//    private fun getS() : Any{
+//        val caret = TextSelection(this)
+//        caret.isVisible = true
+//        return caret
+//    }
 
     override fun paintComponent(g: Graphics?)  {
         var g2 = g as Graphics2D
@@ -63,18 +62,26 @@ class TextPanel : JPanel() {
 
 
         (g as Graphics).font = textFont
-        if (caret.positionInRow > 1)
-            service.paintBrackets(activeRow,caret.positionInRow,fullText[activeRow][caret.positionInRow-1],g)
+        if (sourceText.text[sourceText.activeRow].isNotEmpty()) {
+            if (sourceText.positionInRow in 1..sourceText.text[sourceText.activeRow].lastIndex) {
+                coloringService.paintBrackets(sourceText.activeRow, sourceText.positionInRow + 1, workspaceText[sourceText.activeRow][sourceText.positionInRow], g)
+                coloringService.paintBrackets(sourceText.activeRow, sourceText.positionInRow, workspaceText[sourceText.activeRow][sourceText.positionInRow - 1], g)
+            }
+            else if (sourceText.positionInRow == 0)
+                coloringService.paintBrackets(sourceText.activeRow, sourceText.positionInRow + 1, workspaceText[sourceText.activeRow][sourceText.positionInRow], g)
+            else if (sourceText.positionInRow == sourceText.text[sourceText.activeRow].length)
+                coloringService.paintBrackets(sourceText.activeRow, sourceText.positionInRow, workspaceText[sourceText.activeRow][sourceText.positionInRow - 1], g)
+        }
         //(g as Graphics).TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
         //(g as Graphics2D).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT)
 
         // вывод строки g.drawString(textRow,20,rowY)
         var coordY = 35
 
-        for (string in fullText){
+        for (string in workspaceText){
             g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
             g.drawString(string,20,coordY)
-            service.paintKeyWords(string,g,20,coordY)
+            coloringService.paintKeyWords(string,g,20,coordY)
             //service.paintKeyWords(string,this,20,coordY)
             coordY+=lineSpacing
         }

@@ -2,10 +2,11 @@ package TextEditorJB.Services
 
 import TextEditorJB.Components.TextPanel
 
-class MouseService (textSelectionService: TextSelectionService, workspaceService : WorkspaceService,textPanel: TextPanel) {
+class MouseService (textSelectionService: TextSelectionService, workspaceService : WorkspaceService,textPanel: TextPanel, fileService: FileService) {
 
     val workspaceService = workspaceService
     val textSelectionService = textSelectionService
+    val fileService = fileService
     val panel = textPanel
 
     fun selectShiftClick(mouseX : Int, mouseY : Int){
@@ -19,8 +20,7 @@ class MouseService (textSelectionService: TextSelectionService, workspaceService
         {
             //if (TextPanel.position + 30 <= TextPanel.text.lastIndex) {
             workspaceService.position++
-            workspaceService.setWorkspace()
-            panel.repaint()
+            fileService.setSourceText(panel.rowsInWorkspace / 2)
             //}
 //            if (TextPanel.position > 0)
 //            {
@@ -34,8 +34,6 @@ class MouseService (textSelectionService: TextSelectionService, workspaceService
         {
 //            if (TextPanel.position > 0) {
             workspaceService.position--
-            workspaceService.setWorkspace()
-            panel.repaint()
             //}
 //            if (TextPanel.position + 50 <= TextPanel.text.lastIndex) {
 //                var rowsCount = 50
@@ -44,5 +42,7 @@ class MouseService (textSelectionService: TextSelectionService, workspaceService
 //                panel.repaint()
 //            }
         }
+        workspaceService.setWorkspace()
+        panel.repaint()
     }
 }

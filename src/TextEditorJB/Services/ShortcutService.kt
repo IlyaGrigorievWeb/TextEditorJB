@@ -1,16 +1,17 @@
 package TextEditorJB.Services
 
 import TextEditorJB.Components.TextPanel
+import TextEditorJB.Entities.SourceText
 import java.awt.Toolkit
 import java.awt.datatransfer.Clipboard
 import java.awt.datatransfer.DataFlavor
 import java.awt.datatransfer.StringSelection
-import java.awt.event.ActionEvent
-import java.lang.StringBuilder
 
-class ShortcutService (textSelectionService : TextSelectionService/*,textService: TextService*/) {
+class ShortcutService (textPanel : TextPanel,textSelectionService : TextSelectionService,sourceText : SourceText) {
+
+    val sourceText = sourceText
     val textSelectionService = textSelectionService
-//    val textService = textService
+    val panel = textPanel
 
     fun copy(){
         var clipboard : Clipboard = Toolkit.getDefaultToolkit().systemClipboard
@@ -19,32 +20,44 @@ class ShortcutService (textSelectionService : TextSelectionService/*,textService
     }
 
     fun paste(){
-        var panel = MyForm.panel as TextPanel
 
         var clipboard : Clipboard = Toolkit.getDefaultToolkit().systemClipboard
         var dataFlavor : DataFlavor = DataFlavor.stringFlavor
-        if (clipboard.isDataFlavorAvailable(dataFlavor)){
-//            var caretIndex = panel.caret.positionInRow
-//            var stringBuilder = StringBuilder(panel.fullText[panel.activeRow])
-            //var activeString = panel.fullText[panel.activeRow]
-            var pastedText = clipboard.getData(dataFlavor).toString().split("\n") //TODO: /n переделать на перенос строки И ЧЕРЕЗ РЕГУЛЯРКИ СМОТРЕТЬ /N (перенос строки) и /t (табы)
+        if (clipboard.isDataFlavorAvailable(dataFlavor)) {
+            val firstPart = sourceText.text.copyOfRange(0, sourceText.activeRow)
+            val thirdPart = sourceText.text.copyOfRange(sourceText.activeRow, sourceText.text.lastIndex)
+            val activeRow = sourceText.text[sourceText.activeRow]
 
+            var workString = activeRow.substring(0,sourceText.positionInRow) + clipboard.getData(dataFlavor).toString() + activeRow.substring(sourceText.positionInRow,activeRow.lastIndex)
 
-            var firstPart = panel.fullText.copyOfRange(0,panel.activeRow)
-            var secondPart = panel.fullText.copyOfRange(panel.activeRow,panel.fullText.lastIndex)
-            var firstPartRow = panel.fullText[panel.activeRow].substring(0,panel.caret.positionInRow)
-            var secondPartRow = panel.fullText[panel.activeRow].substring(panel.caret.positionInRow,panel.fullText[panel.activeRow].lastIndex)
+            val secondPart = workString.split("\n")
 
-            var resultPart = pastedText.toTypedArray()
-            resultPart[0] = firstPartRow + resultPart[0]
-            val index = resultPart[resultPart.lastIndex].lastIndex
-            resultPart[resultPart.lastIndex] = resultPart[resultPart.lastIndex] + secondPartRow
-
-            panel.fullText = firstPart + resultPart + secondPart
+            sourceText.text = firstPart + secondPart + thirdPart
+        }
+//        var clipboard : Clipboard = Toolkit.getDefaultToolkit().systemClipboard
+//        var dataFlavor : DataFlavor = DataFlavor.stringFlavor
+//        if (clipboard.isDataFlavorAvailable(dataFlavor)){
+////            var caretIndex = panel.caret.positionInRow
+////            var stringBuilder = StringBuilder(panel.fullText[panel.activeRow])
+//            //var activeString = panel.fullText[panel.activeRow]
+//            var pastedText = clipboard.getData(dataFlavor).toString().split("\n") //TODO: /n переделать на перенос строки И ЧЕРЕЗ РЕГУЛЯРКИ СМОТРЕТЬ /N (перенос строки) и /t (табы)
+//
+//
+//            var firstPart = panel.workspaceText.copyOfRange(0,sourceText.activeRow)
+//            var secondPart = panel.workspaceText.copyOfRange(sourceText.activeRow,panel.workspaceText.lastIndex)
+//            var firstPartRow = panel.workspaceText[sourceText.activeRow].substring(0,sourceText.positionInRow)
+//            var secondPartRow = panel.workspaceText[sourceText.activeRow].substring(sourceText.positionInRow,panel.workspaceText[sourceText.activeRow].lastIndex)
+//
+//            var resultPart = pastedText.toTypedArray()
+//            resultPart[0] = firstPartRow + resultPart[0]
+//            val index = resultPart[resultPart.lastIndex].lastIndex
+//            resultPart[resultPart.lastIndex] = resultPart[resultPart.lastIndex] + secondPartRow
+//
+//            panel.workspaceText = firstPart + resultPart + secondPart
 
 //            panel.activeRow += resultPart.lastIndex
 //            panel.caret.positionInRow = index + 1
-        }
+        //}
 
 
 

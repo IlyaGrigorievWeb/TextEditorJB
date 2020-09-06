@@ -6,10 +6,10 @@ import TextEditorJB.Services.MouseService
 import java.awt.event.*
 import java.awt.event.MouseListener
 
-class MouseListener(mouseService : MouseService) : MouseAdapter() { //сделать 2 метода, получение строки в который пршиел клик и получение позиции символа в который пригел клик //сначала падение, потом выделение //TODO Разделить маус листенеры что бы они не перемешивались
+class MouseListener(mouseService : MouseService, textPanel: TextPanel) : MouseAdapter() { //сделать 2 метода, получение строки в который пршиел клик и получение позиции символа в который пригел клик //сначала падение, потом выделение //TODO Разделить маус листенеры что бы они не перемешивались
 
     var pressed = false // TODO Оставить фул текст как есть а уже отрисовку фул текста делать по размеру скролла
-    val panel = MyForm.panel as TextPanel
+    val panel = textPanel
     val mouseService = mouseService
 
     override fun mouseMoved(e: MouseEvent?) {
@@ -78,7 +78,6 @@ class MouseListener(mouseService : MouseService) : MouseAdapter() { //сдела
     }
     override fun mouseClicked(e: MouseEvent?) { //клик
 
-            var panel = MyForm.panel as TextPanel
             if (e!!.isShiftDown){
                 mouseService.selectShiftClick(e!!.x,e!!.y)
             }

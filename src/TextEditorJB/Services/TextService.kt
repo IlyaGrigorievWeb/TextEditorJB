@@ -1,29 +1,31 @@
 package TextEditorJB.Services
 
 import TextEditorJB.Components.TextPanel
+import TextEditorJB.Entities.SourceText
 import java.awt.Font
 
 //Сервис работы с текстом
-class TextService (textPanel: TextPanel, workspaceService : WorkspaceService){
+class TextService (textPanel: TextPanel, sourceText : SourceText, navigationService: NavigationService){
 
     val panel = textPanel
-    val workspaceService = workspaceService
+    val sourceText = sourceText
+    val navigationService = navigationService
 
     fun char(char : String)
     {
         if (panel.caret.isInsert)
         {
-            if (panel.caret.positionInRow <= panel.fullText[panel.activeRow].lastIndex) {
-                var sb = StringBuilder(panel.fullText[panel.activeRow])
-                sb.deleteCharAt(panel.caret.positionInRow)
-                sb.insert(panel.caret.positionInRow, char)
-                panel.fullText[panel.activeRow] = sb.toString()
+            if (sourceText.positionInRow <= sourceText.text[sourceText.activeRow].lastIndex) {
+                var sb = StringBuilder(sourceText.text[sourceText.activeRow])
+                sb.deleteCharAt(sourceText.positionInRow)
+                sb.insert(sourceText.positionInRow, char)
+                sourceText.text[sourceText.activeRow] = sb.toString()
             }
             else{
-                panel.fullText[panel.activeRow]+= char
+                sourceText.text[sourceText.activeRow]+= char
             }
 
-            panel.caret.positionInRow++
+            sourceText.positionInRow++
 
             //a.caret.leftWidth = charWidth
             var font = Font("Calibri", 0, 20)
@@ -35,11 +37,11 @@ class TextService (textPanel: TextPanel, workspaceService : WorkspaceService){
             panel.caret.positionX += width
         }
         else {
-            var sb = StringBuilder(panel.fullText[panel.activeRow])
-            sb.insert(panel.caret.positionInRow, char)
-            panel.fullText[panel.activeRow] = sb.toString()
+            var sb = StringBuilder(sourceText.text[sourceText.activeRow])
+            sb.insert(sourceText.positionInRow, char)
+            sourceText.text[sourceText.activeRow] = sb.toString()
 
-            panel.caret.positionInRow++
+            sourceText.positionInRow++
 
             //a.caret.leftWidth = charWidth
             var font = Font("Calibri", 0, 20)
@@ -51,77 +53,78 @@ class TextService (textPanel: TextPanel, workspaceService : WorkspaceService){
             panel.caret.positionX += width
         }
         if (char == "{" || char == "}")
-            panel.service.stacks.addBracket(panel.activeRow, panel.caret.positionInRow, char[0])
+            panel.coloringService.bracketsService.addBracket(sourceText.activeRow, sourceText.positionInRow, char[0])
 
-
-        workspaceService.setText(panel.activeRow,panel.fullText[panel.activeRow])
+//        workspaceService.setWorkspace()
+        //workspaceService.setText(panel.sourceTextService.activeRow,panel.workspaceText[panel.sourceTextService.activeRow])
     }
 
     fun enter() //TODO пофиксить каретку при переносе
     {
-        if (panel.activeRow <= panel.fullText.lastIndex){
+        if (sourceText.activeRow <= sourceText.text.lastIndex){
 
-            var firstPart = panel.fullText.copyOfRange(0,panel.activeRow+1)
-            var secondPart = panel.fullText.copyOfRange(panel.activeRow+1,panel.fullText.lastIndex+1)
+            var firstPart = sourceText.text.copyOfRange(0,sourceText.activeRow+1)
+            var secondPart = sourceText.text.copyOfRange(sourceText.activeRow+1,sourceText.text.lastIndex+1)
 
-            var remains = firstPart[firstPart.lastIndex].substring(panel.caret.positionInRow,firstPart[firstPart.lastIndex].lastIndex+1)
+            var remains = firstPart[firstPart.lastIndex].substring(sourceText.positionInRow,firstPart[firstPart.lastIndex].lastIndex+1)
 
-            firstPart[firstPart.lastIndex] = firstPart[firstPart.lastIndex].substring(0,panel.caret.positionInRow)
+            firstPart[firstPart.lastIndex] = firstPart[firstPart.lastIndex].substring(0,sourceText.positionInRow)
 
-            panel.fullText = firstPart + remains + secondPart
+            sourceText.text = firstPart + remains + secondPart
 
-            panel.activeRow++
-            panel.caret.newLine()
+            sourceText.activeRow++
         }
         else{
-            panel.activeRow++
+            sourceText.activeRow++
 
-            panel.fullText = panel.fullText.copyOf(panel.fullText.size+1) as Array<String>
-            panel.fullText[panel.activeRow] = ""
+            sourceText.text = sourceText.text.copyOf(sourceText.text.size+1) as Array<String>
+            sourceText.text[sourceText.activeRow] = ""
             panel.rowY += panel.lineSpacing
-            panel.caret.newLine()
         }
-
-        workspaceService.setNewLineText()
+        sourceText.positionInRow = 0
+        //workspaceService.setNewLineText()
     }
     fun backspace()
     {
-        panel.caret.moveLeft()
-        if (panel.caret.positionInRow < panel.fullText[panel.activeRow].length)
+        if (!(sourceText.positionInRow == 0 && sourceText.activeRow == 0))
         {
-            panel.fullText[panel.activeRow] = panel.fullText[panel.activeRow].removeRange(panel.caret.positionInRow, panel.caret.positionInRow+1)
+            navigationService.Left()
+            delete()
         }
     }
     fun delete ()
     {
         if (!panel.textSelection.drawingSelection) {
-            if (panel.caret.positionInRow <= panel.fullText[panel.activeRow].lastIndex)
-                panel.fullText[panel.activeRow] = panel.fullText[panel.activeRow].removeRange(panel.caret.positionInRow, panel.caret.positionInRow + 1)
-            else {
-                var firstPart = panel.fullText.copyOfRange(0, panel.activeRow + 1)
+            if(!(sourceText.positionInRow == sourceText.text[sourceText.activeRow].length && sourceText.activeRow == sourceText.text.lastIndex))
+            {
+                if (sourceText.positionInRow <= sourceText.text[sourceText.activeRow].lastIndex)
+                    sourceText.text[sourceText.activeRow] = sourceText.text[sourceText.activeRow].removeRange(sourceText.positionInRow, sourceText.positionInRow + 1)
+                else {
+                    var firstPart = sourceText.text.copyOfRange(0, sourceText.activeRow + 1)
 
-                firstPart[panel.activeRow] += panel.fullText[panel.activeRow + 1]
+                    firstPart[sourceText.activeRow] += sourceText.text[sourceText.activeRow + 1]
 
-                var secondPart = panel.fullText.copyOfRange(panel.activeRow + 2, panel.fullText.lastIndex + 1)
+                    var secondPart = sourceText.text.copyOfRange(sourceText.activeRow + 2, sourceText.text.lastIndex + 1)
 
-                panel.fullText = firstPart + secondPart
+                    sourceText.text = firstPart + secondPart
+                }
             }
         }
         else
         {
             if (panel.textSelection.selectingStartRow == panel.textSelection.selectingEndRow)
             {
-                panel.fullText[panel.textSelection.selectingStartRow]=  panel.fullText[panel.textSelection.selectingStartRow].removeRange(panel.textSelection.selectingStartChar,panel.textSelection.selectingEndChar)
+                sourceText.text[panel.textSelection.selectingStartRow] = sourceText.text[panel.textSelection.selectingStartRow].removeRange(panel.textSelection.selectingStartChar,panel.textSelection.selectingEndChar)
             }
             else
             {
-                val firstPart = panel.fullText.copyOfRange(0,panel.textSelection.selectingStartRow)
-                val thirdPart = panel.fullText.copyOfRange(panel.textSelection.selectingEndRow,panel.fullText.lastIndex)
-                val secondPart = panel.fullText[panel.textSelection.selectingStartRow].substring(0,panel.textSelection.selectingStartChar) +
-                        panel.fullText[panel.textSelection.selectingEndRow].substring(panel.textSelection.selectingEndChar,panel.fullText[panel.textSelection.selectingEndRow].lastIndex)
-                panel.fullText = firstPart + secondPart + thirdPart
-                panel.activeRow = panel.textSelection.selectingStartRow
-                panel.caret.positionInRow = panel.textSelection.selectingStartChar
+                val firstPart = sourceText.text.copyOfRange(0,panel.textSelection.selectingStartRow)
+                val thirdPart = sourceText.text.copyOfRange(panel.textSelection.selectingEndRow,sourceText.text.lastIndex)
+                val secondPart = sourceText.text[panel.textSelection.selectingStartRow].substring(0,panel.textSelection.selectingStartChar) +
+                        sourceText.text[panel.textSelection.selectingEndRow].substring(panel.textSelection.selectingEndChar,sourceText.text[panel.textSelection.selectingEndRow].lastIndex)
+                sourceText.text = firstPart + secondPart + thirdPart
+                sourceText.activeRow = panel.textSelection.selectingStartRow
+                sourceText.positionInRow = panel.textSelection.selectingStartChar
             }
         }
         panel.textSelection.drawingSelection = false
@@ -129,6 +132,11 @@ class TextService (textPanel: TextPanel, workspaceService : WorkspaceService){
     fun insert()
     {
         panel.caret.isInsert = !panel.caret.isInsert
+    }
+    fun tab()
+    {
+        sourceText.text[sourceText.activeRow]+= "    "
+        sourceText.positionInRow += 4
     }
 
 }

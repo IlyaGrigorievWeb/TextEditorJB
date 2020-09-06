@@ -1,5 +1,6 @@
 package TextEditorJB.Components
 
+import TextEditorJB.Entities.SourceText
 import TextEditorJB.Services.NavigationService
 import java.awt.Color
 import java.awt.Graphics
@@ -7,14 +8,16 @@ import java.awt.Graphics2D
 import java.awt.geom.Rectangle2D
 import javax.swing.JComponent
 
-class TextSelection ( textPanel: TextPanel) : JComponent() {
+class TextSelection ( textPanel: TextPanel,sourceText: SourceText,navigationService: NavigationService) : JComponent() {
 
-    var panel = textPanel
+    val sourceText = sourceText
+    val panel = textPanel
     var selectingStartRow = 0
     var selectingEndRow = 0
     var selectingStartChar = 0
     var selectingEndChar = 0
     var buffer = ""
+    var navigationService =   navigationService
     var drawingSelection = false
     set(value){
         if (!value) {
@@ -84,14 +87,14 @@ class TextSelection ( textPanel: TextPanel) : JComponent() {
             when (selectingEndRow - selectingStartRow)
             {
                 0 -> {
-                var x = panel.borderX + 4 + metrics.stringWidth(panel.fullText[selectingStartRow].substring(0,selectingStartChar))
+                var x = panel.borderX + 4 + metrics.stringWidth(sourceText.text[selectingStartRow].substring(0,selectingStartChar))
                 var y = 35 + panel.lineSpacing * selectingStartRow - metrics.height + 10//т.к. 35 это низ уже 1 строки
                 var height = metrics.height - 2
-                var width = metrics.stringWidth(panel.fullText[selectingStartRow].substring(selectingStartChar,selectingEndChar))
+                var width = metrics.stringWidth(sourceText.text[selectingStartRow].substring(selectingStartChar,selectingEndChar))
                 rectangles = arrayOf(Rectangle2D.Double(x.toDouble(),y.toDouble(),width.toDouble(),height.toDouble()))
                 }
                 1 -> {
-                    var x = panel.borderX + 4 + metrics.stringWidth(panel.fullText[selectingStartRow].substring(0,selectingStartChar))
+                    var x = panel.borderX + 4 + metrics.stringWidth(sourceText.text[selectingStartRow].substring(0,selectingStartChar))
                     var y = 35 + panel.lineSpacing * selectingStartRow - metrics.height + 10//т.к. 35 это низ уже 1 строки
                     var height = metrics.height - 2
                     var width = panel.size.width
@@ -99,12 +102,12 @@ class TextSelection ( textPanel: TextPanel) : JComponent() {
                     x = 0
                     y = 35 + panel.lineSpacing * selectingEndRow - metrics.height + 10//т.к. 35 это низ уже 1 строки
                     height = metrics.height - 2
-                    width = metrics.stringWidth(panel.fullText[selectingEndRow].substring(0,selectingEndChar))+20
+                    width = metrics.stringWidth(sourceText.text[selectingEndRow].substring(0,selectingEndChar))+20
                     val secondRectangle =  Rectangle2D.Double(x.toDouble(),y.toDouble(),width.toDouble(),height.toDouble())
                     rectangles = arrayOf(firstRectangle,secondRectangle)
                 }
                 else -> {
-                    var x = panel.borderX + 4 + metrics.stringWidth(panel.fullText[selectingStartRow].substring(0,selectingStartChar))
+                    var x = panel.borderX + 4 + metrics.stringWidth(sourceText.text[selectingStartRow].substring(0,selectingStartChar))
                     var y = 35 + panel.lineSpacing * selectingStartRow - metrics.height + 10//т.к. 35 это низ уже 1 строки
                     var height = metrics.height - 2
                     var width = panel.size.width
@@ -117,7 +120,7 @@ class TextSelection ( textPanel: TextPanel) : JComponent() {
                     x = 0
                     y = 35 + panel.lineSpacing * selectingEndRow - metrics.height + 10//т.к. 35 это низ уже 1 строки
                     height = metrics.height - 2
-                    width = metrics.stringWidth(panel.fullText[selectingEndRow].substring(0,selectingEndChar))+20
+                    width = metrics.stringWidth(sourceText.text[selectingEndRow].substring(0,selectingEndChar))+20
                     val thirdRectangle =  Rectangle2D.Double(x.toDouble(),y.toDouble(),width.toDouble(),height.toDouble())
                     rectangles = arrayOf(firstRectangle,secondRectangle,thirdRectangle)
                 }
@@ -131,13 +134,13 @@ class TextSelection ( textPanel: TextPanel) : JComponent() {
     }
     fun setBeginState()
     {
-        selectingStartRow = panel.activeRow
-        selectingStartChar = panel.caret.positionInRow
+        selectingStartRow = sourceText.activeRow
+        selectingStartChar = sourceText.positionInRow
     }
     fun setEndState()
     {
-        selectingEndRow = panel.activeRow
-        selectingEndChar = panel.caret.positionInRow
+        selectingEndRow = sourceText.activeRow
+        selectingEndChar = sourceText.positionInRow
     }
     fun setBeginState(row : Int, position : Int)
     {
@@ -184,8 +187,8 @@ class TextSelection ( textPanel: TextPanel) : JComponent() {
     }
     fun selectRight()
     {
-        panel.caret.moveRight()
-        val caretIndex = panel.caret.positionInRow
+        navigationService.Right()
+        val caretIndex = sourceText.positionInRow
 
         if (drawingSelection){
             if (caretIndex == selectingStartChar || selectingEndChar == selectingStartChar)
@@ -200,48 +203,48 @@ class TextSelection ( textPanel: TextPanel) : JComponent() {
         }
 
         if (drawingSelection)
-            buffer = StringBuilder(buffer).insert(0,panel.fullText[panel.activeRow][caretIndex]).toString();
+            buffer = StringBuilder(buffer).insert(0,sourceText.text[sourceText.activeRow][caretIndex]).toString();
         println(buffer)
 
 
-        panel.repaint()
+        //panel.repaint()
     }
     fun selectUp() // если уже было выделение смещаем старт индекс влево если нет ставим енд индекс там где мы сейчас и двигаем старт индекс на 1 TODO:Переписать методы под сет по каретке, что бы не считаь позицию самому, брать значения до и после смекщенияч
     //лучше завязаться на конечной каретке
     {
         if (drawingSelection){
 
-            NavigationService(panel).Up()
+            navigationService.Up()
             setEndState()
         }
         else {
             drawingSelection = true
             setBeginState()
-            NavigationService(panel).Up()
+            navigationService.Up()
             setEndState()
         }
 
         println(buffer)
 
-        panel.repaint()
+        //panel.repaint()
     }
     fun selectDown()
     {
         if (drawingSelection){
 
-            NavigationService(panel).Down()
+            navigationService.Down()
             setEndState()
         }
         else {
             drawingSelection = true
             setBeginState()
-            NavigationService(panel).Down()
+            navigationService.Down()
             setEndState()
         }
 
         println(buffer)
 
-        panel.repaint()
+        //panel.repaint()
     }
 
     fun selectByClick(mouseX : Int, mouseY : Int)
@@ -275,27 +278,27 @@ class TextSelection ( textPanel: TextPanel) : JComponent() {
         {
             drawingSelection = true
 
-            selectingStartRow = panel.activeRow
-            selectingStartChar = panel.caret.positionInRow
+            selectingStartRow = sourceText.activeRow
+            selectingStartChar = sourceText.positionInRow
 
             panel.caret.setPositionByMouseCoord(mouseX,mouseY)
 
-            selectingEndRow = panel.activeRow
-            selectingEndChar = panel.caret.positionInRow
+            selectingEndRow = sourceText.activeRow
+            selectingEndChar = sourceText.positionInRow
 
             updateBuffer()
         }
         else if (drawingSelection && !selected){
             panel.caret.setPositionByMouseCoord(mouseX,mouseY)
 
-            selectingEndRow = panel.activeRow
-            selectingEndChar = panel.caret.positionInRow
+            selectingEndRow = sourceText.activeRow
+            selectingEndChar = sourceText.positionInRow
         }
         else if (drawingSelection && selected){
             panel.caret.setPositionByMouseCoord(mouseX,mouseY)
 
-            selectingEndRow = panel.activeRow
-            selectingEndChar = panel.caret.positionInRow
+            selectingEndRow = sourceText.activeRow
+            selectingEndChar = sourceText.positionInRow
         }
     }
 

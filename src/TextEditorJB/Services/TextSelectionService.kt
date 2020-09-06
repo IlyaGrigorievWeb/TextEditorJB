@@ -1,11 +1,12 @@
 package TextEditorJB.Services
 
 import TextEditorJB.Components.TextPanel
-import java.awt.event.ActionEvent
+import TextEditorJB.Entities.SourceText
 
-class TextSelectionService(textPanel: TextPanel,navigationService : NavigationService) {
+class TextSelectionService(textPanel: TextPanel,navigationService : NavigationService,sourceText: SourceText) {
 
     var panel = textPanel
+    val sourceText = sourceText
     val textSelection = panel.textSelection
     var navigation = navigationService
 
@@ -19,7 +20,7 @@ class TextSelectionService(textPanel: TextPanel,navigationService : NavigationSe
             textSelection.setBeginState()
         }
         else{
-            if (panel.activeRow == textSelection.selectingStartRow && panel.caret.positionInRow == textSelection.selectingStartChar){
+            if (sourceText.activeRow == textSelection.selectingStartRow && sourceText.positionInRow == textSelection.selectingStartChar){
                 navigation.Left()
                 textSelection.setBeginState()
             }
@@ -39,7 +40,7 @@ class TextSelectionService(textPanel: TextPanel,navigationService : NavigationSe
             textSelection.setEndState()
         }
         else{
-            if (panel.activeRow == textSelection.selectingEndRow && panel.caret.positionInRow == textSelection.selectingEndChar){
+            if (sourceText.activeRow == textSelection.selectingEndRow && sourceText.positionInRow == textSelection.selectingEndChar){
                 navigation.Right()
                 textSelection.setEndState()
             }
@@ -59,7 +60,7 @@ class TextSelectionService(textPanel: TextPanel,navigationService : NavigationSe
             textSelection.setBeginState()
         }
         else{
-            if (panel.activeRow == textSelection.selectingStartRow && panel.caret.positionInRow == textSelection.selectingStartChar){
+            if (sourceText.activeRow == textSelection.selectingStartRow && sourceText.positionInRow == textSelection.selectingStartChar){
                 navigation.Up()
                 textSelection.setBeginState()
             }
@@ -79,7 +80,7 @@ class TextSelectionService(textPanel: TextPanel,navigationService : NavigationSe
             textSelection.setEndState()
         }
         else{
-            if (panel.activeRow == textSelection.selectingEndRow && panel.caret.positionInRow == textSelection.selectingEndChar){
+            if (sourceText.activeRow == textSelection.selectingEndRow && sourceText.positionInRow == textSelection.selectingEndChar){
                 navigation.Down()
                 textSelection.setEndState()
             }
@@ -93,8 +94,8 @@ class TextSelectionService(textPanel: TextPanel,navigationService : NavigationSe
     fun shiftClick (mouseX : Int, mouseY : Int)
     {
 
-        val previousRow  = panel.activeRow
-        val previousPosition  = panel.caret.positionInRow
+        val previousRow  = sourceText.activeRow
+        val previousPosition  = sourceText.positionInRow
 
         panel.caret.setPositionByMouseCoord(mouseX,mouseY)
 
@@ -102,27 +103,27 @@ class TextSelectionService(textPanel: TextPanel,navigationService : NavigationSe
         {
             if (textSelection.selectingStartRow == previousRow && textSelection.selectingStartChar == previousPosition)
             { // 123 // Выделение сзади
-                if (panel.activeRow > textSelection.selectingEndRow  || (panel.activeRow == textSelection.selectingEndRow && panel.caret.positionInRow > textSelection.selectingEndChar))
+                if (sourceText.activeRow > textSelection.selectingEndRow  || (sourceText.activeRow == textSelection.selectingEndRow && sourceText.positionInRow > textSelection.selectingEndChar))
                 { // 3 // Выделение становится впереди
                     textSelection.setBeginState(textSelection.selectingEndRow,textSelection.selectingEndChar)
-                    textSelection.setEndState(panel.activeRow,panel.caret.positionInRow)
+                    textSelection.setEndState(sourceText.activeRow,sourceText.positionInRow)
                 }
                 else
                 { // 1 2 //Выделение остается сзади и выделяется либо назад либо вперед
-                    textSelection.setBeginState(panel.activeRow,panel.caret.positionInRow)
+                    textSelection.setBeginState(sourceText.activeRow,sourceText.positionInRow)
                 }
 
             }
             else
             { //456 // Выделение впереди
-                if (panel.activeRow < textSelection.selectingStartRow  || (panel.activeRow == textSelection.selectingStartRow && panel.caret.positionInRow < textSelection.selectingStartChar))
+                if (sourceText.activeRow < textSelection.selectingStartRow  || (sourceText.activeRow == textSelection.selectingStartRow && sourceText.positionInRow < textSelection.selectingStartChar))
                 { // 6 // Выделение становится сзади
                     textSelection.setEndState(textSelection.selectingStartRow,textSelection.selectingStartChar)
-                    textSelection.setBeginState(panel.activeRow,panel.caret.positionInRow)
+                    textSelection.setBeginState(sourceText.activeRow,sourceText.positionInRow)
                 }
                 else
                 { // 4 5 //Выделение остается впереди и выделяется либо назад либо вперед
-                    textSelection.setEndState(panel.activeRow,panel.caret.positionInRow)
+                    textSelection.setEndState(sourceText.activeRow,sourceText.positionInRow)
                 }
             }
 
@@ -130,13 +131,13 @@ class TextSelectionService(textPanel: TextPanel,navigationService : NavigationSe
         else{
             textSelection.drawingSelection = true
 
-            if (panel.activeRow > previousRow  || (panel.activeRow == previousRow && panel.caret.positionInRow > previousPosition)) // Выделяем вперед
+            if (sourceText.activeRow > previousRow  || (sourceText.activeRow == previousRow && sourceText.positionInRow > previousPosition)) // Выделяем вперед
             {
                 textSelection.setBeginState(previousRow,previousPosition)
-                textSelection.setEndState(panel.activeRow,panel.caret.positionInRow)
+                textSelection.setEndState(sourceText.activeRow,sourceText.positionInRow)
             }
             else  { // Выделяем назад
-                textSelection.setBeginState(panel.activeRow,panel.caret.positionInRow)
+                textSelection.setBeginState(sourceText.activeRow,sourceText.positionInRow)
                 textSelection.setEndState(previousRow,previousPosition)
             }
         }
@@ -145,7 +146,7 @@ class TextSelectionService(textPanel: TextPanel,navigationService : NavigationSe
     fun getSelected () : String
     {
         var resultString = ""
-        var selectedTextArray = panel.fullText.copyOfRange(textSelection.selectingStartRow,textSelection.selectingEndRow+1)
+        var selectedTextArray = sourceText.text.copyOfRange(textSelection.selectingStartRow,textSelection.selectingEndRow+1)
 
 
         for ((index,string) in selectedTextArray.withIndex()) {

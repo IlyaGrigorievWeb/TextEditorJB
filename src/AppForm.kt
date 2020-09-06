@@ -1,18 +1,16 @@
 import TextEditorJB.Components.TextPanel
 import java.awt.Cursor
+import java.awt.Panel
 import java.io.File
 import javax.swing.JFrame
 import javax.swing.JPanel
 
-class MyForm {
+class AppForm {
 
     companion object{
 
         var openingFile : File? = null
-        var panel : JPanel = getPanel() as JPanel
-        var frame : JFrame = getFrame() as JFrame
-
-
+        var frame : JFrame = getFrame() as JFrame //TODO Повесить событие изменения размера окна
 
         private fun getFrame() : Any{
             val frame = JFrame()
@@ -22,14 +20,6 @@ class MyForm {
 
             frame.focusTraversalKeysEnabled = false
             return frame
-        }
-        private fun getPanel() : Any{
-            var panel = TextPanel()
-            panel.isVisible = true;
-            panel.cursor = Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR)
-            //frame.addMouseListener(CustomMouseListener())
-            //panel.setBounds(0,0,300,300)
-            return panel
         }
     }
 }
