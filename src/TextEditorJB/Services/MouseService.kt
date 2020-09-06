@@ -19,8 +19,7 @@ class MouseService (textSelectionService: TextSelectionService, workspaceService
         if (rotation == 1) //вниз
         {
             //if (TextPanel.position + 30 <= TextPanel.text.lastIndex) {
-            workspaceService.position++
-            fileService.setSourceText(panel.rowsInWorkspace / 2)
+            panel.navigationService.scrollDown()
             //}
 //            if (TextPanel.position > 0)
 //            {
@@ -33,7 +32,7 @@ class MouseService (textSelectionService: TextSelectionService, workspaceService
         else if(rotation == -1) //вверх
         {
 //            if (TextPanel.position > 0) {
-            workspaceService.position--
+            panel.navigationService.scrollUp()
             //}
 //            if (TextPanel.position + 50 <= TextPanel.text.lastIndex) {
 //                var rowsCount = 50
@@ -42,7 +41,6 @@ class MouseService (textSelectionService: TextSelectionService, workspaceService
 //                panel.repaint()
 //            }
         }
-        workspaceService.setWorkspace()
         panel.repaint()
     }
 }

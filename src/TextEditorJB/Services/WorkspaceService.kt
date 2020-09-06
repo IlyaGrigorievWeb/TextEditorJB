@@ -28,15 +28,17 @@ class WorkspaceService (textPanel: TextPanel,sourceText: SourceText) {
 
     fun setWorkspace (){
 
-        if (position + panel.rowsInWorkspace > sourceText.text.lastIndex)
+        if (position + panel.rowsInWorkspace > sourceText.text.lastIndex )
         {
-            panel.workspaceText = sourceText.text.copyOfRange(position, sourceText.text.lastIndex+1)
+            panel.workspaceText = sourceText.text.copyOfRange(position , sourceText.text.lastIndex+1)
+            //panel.workspaceText += arrayOf("","","")
             panel.repaint()
         }
         else
         {
-            panel.repaint()
+
             panel.workspaceText = sourceText.text.copyOfRange(position,position + panel.rowsInWorkspace)
+            panel.repaint()
         }
     }
 

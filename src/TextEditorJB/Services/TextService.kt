@@ -82,6 +82,7 @@ class TextService (textPanel: TextPanel, sourceText : SourceText, navigationServ
             panel.rowY += panel.lineSpacing
         }
         sourceText.positionInRow = 0
+        navigationService.scrollDown()
         //workspaceService.setNewLineText()
     }
     fun backspace()

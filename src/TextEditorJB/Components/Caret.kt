@@ -73,7 +73,7 @@ class Caret( textPanel: TextPanel,sourceText: SourceText) : JComponent() { //TOD
     override fun paintComponent(g: Graphics?) { //:TODO будет два варианта отрисовки, либо чар , либо прямоугольник размером с символ и перекрашенным сиволом внутри
         var g2 = g as Graphics2D;
 
-        if (sourceText.activeRow in panel.workspaceService.position..panel.workspaceService.position + panel.rowsInWorkspace)
+        if (sourceText.activeRow in panel.workspaceService.position until (panel.workspaceService.position + panel.rowsInWorkspace))
         {
             var myFont: Font = Font("Calibri", 0, 20)
             (g as Graphics).font = myFont

@@ -20,18 +20,18 @@ fun main(args: Array<String>){
             //panel.setBounds(0,0,300,300)
 
     val textSelectionService = TextSelectionService(panel,panel.navigationService,sourceText)
-    val fileService = FileService(panel,panel.workspaceService,sourceText)
+    //val fileService = FileService(panel,panel.workspaceService,sourceText)
     val textService = TextService(panel,sourceText, panel.navigationService)
     val shortcutService = ShortcutService(panel,textSelectionService,sourceText)
 
-    AppForm.frame.jMenuBar  = getConfiguredMenu(fileService)
+    AppForm.frame.jMenuBar  = getConfiguredMenu(panel.fileService)
     AppForm.frame.add(panel)
     panel.add(panel.caret)
     panel.add(panel.textSelection)
 
-    AppForm.frame.addKeyListener(KeyboardListener(panel, panel.navigationService, textSelectionService, fileService,textService,shortcutService, panel.workspaceService))
+    AppForm.frame.addKeyListener(KeyboardListener(panel, panel.navigationService, textSelectionService, panel.fileService,textService,shortcutService, panel.workspaceService))
 
-    val mouseService = MouseService(textSelectionService,panel.workspaceService,panel,fileService)
+    val mouseService = MouseService(textSelectionService,panel.workspaceService,panel,panel.fileService)
     var ml = MouseListener(mouseService,panel)
 
     panel.addMouseListener(ml)

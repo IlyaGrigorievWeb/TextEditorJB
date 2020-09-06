@@ -2,6 +2,7 @@ package TextEditorJB.Tests
 
 import TextEditorJB.Components.TextPanel
 import TextEditorJB.Entities.SourceText
+import TextEditorJB.Services.FileService
 import TextEditorJB.Services.NavigationService
 import TextEditorJB.Services.TextSelectionService
 import org.junit.After
@@ -15,7 +16,8 @@ class TextSelectionServiceTest {
 
     val sourceText = SourceText()
     val panel = TextPanel(sourceText)
-    val navigationService = NavigationService(panel,sourceText)
+    val fileService = FileService(panel,panel.workspaceService,sourceText)
+    val navigationService = NavigationService(panel,sourceText,fileService)
     val textSelectionService = TextSelectionService(panel,navigationService,sourceText)
 
     @Before
