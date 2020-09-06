@@ -40,25 +40,4 @@ class WorkspaceService (textPanel: TextPanel,sourceText: SourceText) {
         }
     }
 
-
-//    fun setText (workspaceRow : Int,string : String){
-//        sourceText.text[position + workspaceRow] = string
-//    }
-//    fun setNewLineText (){
-//        sourceText.text = sourceText.text.plus("")
-//    }
-//    fun setWindowInText (workspaceRow : Int,string : String){
-//        for ((index,workspaceString) in panel.workspaceText.withIndex())
-//        {
-//            if (position+index == sourceText.text.lastIndex+1)
-//            {
-//                sourceText.text = sourceText.text.plus(workspaceString)
-//            }
-//            else
-//            {
-//                sourceText.text[position+workspaceRow] = workspaceString
-//            }
-//        }
-//    }
-
 }

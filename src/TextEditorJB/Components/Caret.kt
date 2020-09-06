@@ -13,7 +13,7 @@ class Caret( textPanel: TextPanel,sourceText: SourceText) : JComponent() { //TOD
     val sourceText = sourceText
     var panel = textPanel
     var positionX = textPanel.borderX
-    var positionY = 35
+    var positionY = textPanel.borderY
     val charCaret = "|"
     //var positionInRow = 0;
     var isInsert = false
@@ -21,27 +21,26 @@ class Caret( textPanel: TextPanel,sourceText: SourceText) : JComponent() { //TOD
     fun setPositionByMouseCoord(mousePositionX: Int,mousePositionY: Int) { //TODO: Долго работает, скорее всего из за того что при клике перерисовывается всё
         val metrics = panel.getFontMetrics(panel.textFont)
         var row = 0;
-        if (mousePositionY < 35 - panel.lineSpacing)
+        if (mousePositionY < panel.borderY - panel.lineSpacing)
         {
-            sourceText.activeRow  = 0;
+            sourceText.activeRow  = 0 + panel.workspaceService.position;
         }
-        else if(mousePositionY > 35 + sourceText.text.size * panel.lineSpacing)
-        {
-            sourceText.activeRow  = sourceText.text.lastIndex;
-        }
+//        else if(mousePositionY > panel.borderY + sourceText.text.size * panel.lineSpacing)
+//        {
+//            sourceText.activeRow  = sourceText.text.lastIndex  + panel.workspaceService.position;
+//        }
         else {
-            var a = sourceText.text.size * panel.lineSpacing
-            for (position in 35..(35 - panel.lineSpacing) + sourceText.text.size * panel.lineSpacing step panel.lineSpacing) {
+            for (position in panel.borderY..(panel.borderY - panel.lineSpacing) + sourceText.text.size * panel.lineSpacing step panel.lineSpacing) {
                 if (mousePositionY in position - metrics.height + 3..position) {
-                    positionY = 35 + row * panel.lineSpacing
-                    sourceText.activeRow = row
+                    //positionY = panel.borderY + row * panel.lineSpacing
+                    sourceText.activeRow = row  + panel.workspaceService.position
                 }
                 row++
             }
         }
         if (mousePositionX < panel.borderX)
         {
-            positionX = panel.borderX
+            //positionX = panel.borderX
             sourceText.positionInRow = 0
         }
         else if(mousePositionX > metrics.stringWidth(sourceText.text[sourceText.activeRow]) + panel.borderX)
@@ -104,10 +103,12 @@ class Caret( textPanel: TextPanel,sourceText: SourceText) : JComponent() { //TOD
                 val charPosition = sourceText.positionInRow
 
                 val metrics = panel.getFontMetrics(panel.textFont)
-                val y = 35  + row * panel.lineSpacing
+                val y = panel.borderY  + row * panel.lineSpacing
                 val x = metrics.stringWidth(sourceText.text[sourceText.activeRow].substring(0,sourceText.positionInRow)) + panel.borderX
 
+                g2.color = Color.decode("#9400d3")
                 g2.drawString(charCaret,x,y)
+                g2.color = Color.BLACK
             }
         }
 

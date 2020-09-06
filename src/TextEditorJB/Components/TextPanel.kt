@@ -12,9 +12,10 @@ class TextPanel (sourceText: SourceText) : JPanel() {
 
     var workspaceText =  arrayOf("")
 
-    var rowY = 35
+    val borderY = 17 //35
+    var rowY = borderY
     var lineSpacing = 20
-    var borderX = 16
+    val borderX = 16
     var textFont = Font("Calibri",0,20)
     var caret = Caret(this,sourceText)
     val navigationService = NavigationService(this,sourceText)
@@ -64,22 +65,23 @@ class TextPanel (sourceText: SourceText) : JPanel() {
         (g as Graphics).font = textFont
         if (sourceText.text[sourceText.activeRow].isNotEmpty()) {
             if (sourceText.positionInRow in 1..sourceText.text[sourceText.activeRow].lastIndex) {
-                coloringService.paintBrackets(sourceText.activeRow, sourceText.positionInRow + 1, workspaceText[sourceText.activeRow][sourceText.positionInRow], g)
-                coloringService.paintBrackets(sourceText.activeRow, sourceText.positionInRow, workspaceText[sourceText.activeRow][sourceText.positionInRow - 1], g)
+                coloringService.paintBrackets(sourceText.activeRow, sourceText.positionInRow + 1, sourceText.text[sourceText.activeRow][sourceText.positionInRow], g)
+                coloringService.paintBrackets(sourceText.activeRow, sourceText.positionInRow, sourceText.text[sourceText.activeRow][sourceText.positionInRow - 1], g)
             }
             else if (sourceText.positionInRow == 0)
-                coloringService.paintBrackets(sourceText.activeRow, sourceText.positionInRow + 1, workspaceText[sourceText.activeRow][sourceText.positionInRow], g)
+                coloringService.paintBrackets(sourceText.activeRow, sourceText.positionInRow + 1, sourceText.text[sourceText.activeRow][sourceText.positionInRow], g)
             else if (sourceText.positionInRow == sourceText.text[sourceText.activeRow].length)
-                coloringService.paintBrackets(sourceText.activeRow, sourceText.positionInRow, workspaceText[sourceText.activeRow][sourceText.positionInRow - 1], g)
+                coloringService.paintBrackets(sourceText.activeRow, sourceText.positionInRow, sourceText.text[sourceText.activeRow][sourceText.positionInRow - 1], g)
         }
         //(g as Graphics).TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
         //(g as Graphics2D).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT)
 
         // вывод строки g.drawString(textRow,20,rowY)
-        var coordY = 35
+        var coordY = borderY
 
         for (string in workspaceText){
             g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON)
+            g.color = Color.BLACK
             g.drawString(string,20,coordY)
             coloringService.paintKeyWords(string,g,20,coordY)
             //service.paintKeyWords(string,this,20,coordY)

@@ -9,34 +9,45 @@ class FileService (textPanel: TextPanel,workspaceService: WorkspaceService,sourc
 
     val workspaceService = workspaceService
     val sourceText = sourceText
+
     val panel = textPanel
     var readerPosition = 0
 
+    var fileReader : FileReader? = null
+    var buffer : BufferedReader? = null
 
-    fun setSourceText(rowsCount : Int){
+
+    fun setSourceText(rowsCount : Int) {
 
         val file = AppForm.openingFile
-        if (file!= null && file!!.exists())
-        {
-            var fileReader = FileReader(file)
-            var buffer = BufferedReader(fileReader)
+        if (file != null && file!!.exists()) {
 
-            if (readerPosition!=0)
-                buffer.skip((readerPosition-1).toLong())
+//            if (readerPosition!=0)
+//                buffer.skip((readerPosition-1).toLong())
 
             var i = 0
-            var listString : MutableList<String> = mutableListOf()
-            while(buffer.ready() && i < rowsCount)
-            {
-                listString.add(buffer.readLine())
+            var listString: MutableList<String> = mutableListOf()
+            while (buffer!!.ready() && i < rowsCount) {
+                val line = buffer!!.readLine()
+                listString.add(line)
                 i++
+                for ((index, char) in line.withIndex()) {
+                    if (char == '{' || char == '}')
+                        panel.coloringService.bracketsService.addBracket(readerPosition + i - 1, index + 1, char)
+                }
             }
+            val arrayStrings = listString.toTypedArray()
+            if (readerPosition == 0)
+                sourceText.text = arrayStrings
+            else
+                sourceText.text += arrayStrings
             readerPosition += i
-            sourceText.text += listString.toTypedArray()
         }
     }
 
     fun open(){
+
+
         sourceText.positionInRow = 0
         sourceText.activeRow = 0
         sourceText.text = arrayOf("")
@@ -49,6 +60,12 @@ class FileService (textPanel: TextPanel,workspaceService: WorkspaceService,sourc
 
         fileChooser.showOpenDialog(panel)
         var file = fileChooser.selectedFile
+        readerPosition = 0
+
+
+        fileReader = FileReader(file)
+        buffer = BufferedReader(fileReader)
+
 
         if (file.exists()) {
             AppForm.openingFile = file
@@ -74,30 +91,13 @@ class FileService (textPanel: TextPanel,workspaceService: WorkspaceService,sourc
             file = AppForm.openingFile!!
         }
         var fileWriter = FileWriter(file)
-        var buffer = BufferedWriter(fileWriter)
+        var bufferWriter = BufferedWriter(fileWriter)
         for(string in sourceText.text)
         {
-            buffer.write(string)
-            buffer.newLine()
+            bufferWriter.write(string)
+            bufferWriter.newLine()
         }
 
-        buffer.close()
+        bufferWriter.close()
     }
-
-//    fun getFileText(rowsCount : Int) : Array<String>
-//    {
-//        val file = AppForm.openingFile
-//        if (file!!.exists())
-//        {
-//            var fileReader = FileReader(file)
-//            var buffer = BufferedReader(fileReader)
-//
-//            return Get
-//            //buffer.skip((readerPosition-1) as Long)
-////            if (buffer.ready())
-////               sourceText.text[readerPosition] = buffer.readLine()
-//
-//        }
-//    }
-
 }

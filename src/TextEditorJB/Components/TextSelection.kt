@@ -88,39 +88,44 @@ class TextSelection ( textPanel: TextPanel,sourceText: SourceText,navigationServ
             {
                 0 -> {
                 var x = panel.borderX + 4 + metrics.stringWidth(sourceText.text[selectingStartRow].substring(0,selectingStartChar))
-                var y = 35 + panel.lineSpacing * selectingStartRow - metrics.height + 10//т.к. 35 это низ уже 1 строки
+                var y = panel.borderY + panel.lineSpacing * (selectingStartRow - panel.workspaceService.position) - metrics.height + 10//т.к. 35 это низ уже 1 строки
                 var height = metrics.height - 2
                 var width = metrics.stringWidth(sourceText.text[selectingStartRow].substring(selectingStartChar,selectingEndChar))
                 rectangles = arrayOf(Rectangle2D.Double(x.toDouble(),y.toDouble(),width.toDouble(),height.toDouble()))
                 }
                 1 -> {
                     var x = panel.borderX + 4 + metrics.stringWidth(sourceText.text[selectingStartRow].substring(0,selectingStartChar))
-                    var y = 35 + panel.lineSpacing * selectingStartRow - metrics.height + 10//т.к. 35 это низ уже 1 строки
+                    var y = panel.borderY + panel.lineSpacing * (selectingStartRow - panel.workspaceService.position) - metrics.height + 10//т.к. 35 это низ уже 1 строки
                     var height = metrics.height - 2
                     var width = panel.size.width
                     val firstRectangle =  Rectangle2D.Double(x.toDouble(),y.toDouble(),width.toDouble(),height.toDouble())
-                    x = 0
-                    y = 35 + panel.lineSpacing * selectingEndRow - metrics.height + 10//т.к. 35 это низ уже 1 строки
+                    x = 0 + panel.borderX + 4
+                    y = panel.borderY + panel.lineSpacing * (selectingEndRow - panel.workspaceService.position) - metrics.height + 10//т.к. 35 это низ уже 1 строки
                     height = metrics.height - 2
-                    width = metrics.stringWidth(sourceText.text[selectingEndRow].substring(0,selectingEndChar))+20
+                    width = metrics.stringWidth(sourceText.text[selectingEndRow].substring(0,selectingEndChar))
                     val secondRectangle =  Rectangle2D.Double(x.toDouble(),y.toDouble(),width.toDouble(),height.toDouble())
                     rectangles = arrayOf(firstRectangle,secondRectangle)
                 }
                 else -> {
                     var x = panel.borderX + 4 + metrics.stringWidth(sourceText.text[selectingStartRow].substring(0,selectingStartChar))
-                    var y = 35 + panel.lineSpacing * selectingStartRow - metrics.height + 10//т.к. 35 это низ уже 1 строки
+                    var y = panel.borderY + panel.lineSpacing * (selectingStartRow - panel.workspaceService.position) - metrics.height + 10//т.к. 35 это низ уже 1 строки
                     var height = metrics.height - 2
                     var width = panel.size.width
                     val firstRectangle =  Rectangle2D.Double(x.toDouble(),y.toDouble(),width.toDouble(),height.toDouble())
-                    x = 0
-                    y = 35 + panel.lineSpacing * (selectingStartRow+1) - metrics.height + 10
+//                    x = 0 + panel.borderX + 4
+//                    y = 35 + panel.lineSpacing * (selectingStartRow+1 - panel.workspaceService.position) - metrics.height + 10
+//                    height = panel.lineSpacing * (selectingEndRow - selectingStartRow -1)
+//                    width = panel.size.width
+//                    val secondRectangle =  Rectangle2D.Double(x.toDouble(),y.toDouble(),width.toDouble(),height.toDouble())
+                    x = 0 + panel.borderX + 4
+                    y = panel.borderY + panel.lineSpacing * (selectingStartRow+1 - panel.workspaceService.position) - metrics.height + 10
                     height = panel.lineSpacing * (selectingEndRow - selectingStartRow -1)
                     width = panel.size.width
                     val secondRectangle =  Rectangle2D.Double(x.toDouble(),y.toDouble(),width.toDouble(),height.toDouble())
-                    x = 0
-                    y = 35 + panel.lineSpacing * selectingEndRow - metrics.height + 10//т.к. 35 это низ уже 1 строки
+                    x = 0 + panel.borderX + 4
+                    y = panel.borderY + panel.lineSpacing * (selectingEndRow - panel.workspaceService.position) - metrics.height + 10//т.к. 35 это низ уже 1 строки
                     height = metrics.height - 2
-                    width = metrics.stringWidth(sourceText.text[selectingEndRow].substring(0,selectingEndChar))+20
+                    width = metrics.stringWidth(sourceText.text[selectingEndRow].substring(0,selectingEndChar))
                     val thirdRectangle =  Rectangle2D.Double(x.toDouble(),y.toDouble(),width.toDouble(),height.toDouble())
                     rectangles = arrayOf(firstRectangle,secondRectangle,thirdRectangle)
                 }
@@ -128,7 +133,8 @@ class TextSelection ( textPanel: TextPanel,sourceText: SourceText,navigationServ
 
             g2.paint = Color.YELLOW
             for (rec in rectangles)
-                g2.fill(rec)
+                if (rec.y > 0.toDouble())
+                    g2.fill(rec)
             g2.paint = Color.BLACK
         }
     }
@@ -286,7 +292,7 @@ class TextSelection ( textPanel: TextPanel,sourceText: SourceText,navigationServ
             selectingEndRow = sourceText.activeRow
             selectingEndChar = sourceText.positionInRow
 
-            updateBuffer()
+            //updateBuffer()
         }
         else if (drawingSelection && !selected){
             panel.caret.setPositionByMouseCoord(mouseX,mouseY)
@@ -302,7 +308,7 @@ class TextSelection ( textPanel: TextPanel,sourceText: SourceText,navigationServ
         }
     }
 
-    fun updateBuffer(){ //TODO поправить баг с отрисовкой и буфером
+    //fun updateBuffer(){
 
 //        var resultString = ""
 //        var selectedTextArray = panel.fullText.copyOfRange(selectingStartRow,selectingEndRow+1)
@@ -324,5 +330,4 @@ class TextSelection ( textPanel: TextPanel,sourceText: SourceText,navigationServ
 //        }
 //        buffer = resultString
 //        print(buffer)
-    }
 }

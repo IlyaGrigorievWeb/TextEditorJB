@@ -72,13 +72,13 @@ class TextColorerService (textPanel : TextPanel) {
             var char = bracket
 
             var x = panel.borderX + metrics.stringWidth(panel.workspaceText[row].substring(0,position))
-            var y = 35 + panel.lineSpacing * row - metrics.height + metrics.descent
+            var y = panel.borderY + panel.lineSpacing * row - metrics.height + metrics.descent
             var height = metrics.height
             var width = metrics.charWidth(char)
             var firstBracketRectangle = Rectangle2D.Double(x.toDouble(),y.toDouble(),width.toDouble(),height.toDouble())
 
             x = panel.borderX + metrics.stringWidth(panel.workspaceText[pairBracket.row].substring(0,pairBracket.position))
-            y = 35 + panel.lineSpacing * pairBracket.row - metrics.height + metrics.descent + 2
+            y = panel.borderY + panel.lineSpacing * pairBracket.row - metrics.height + metrics.descent + 2
             height = metrics.height
             width = metrics.charWidth(char)
             var secondBracketRectangle = Rectangle2D.Double(x.toDouble(),y.toDouble(),width.toDouble(),height.toDouble())

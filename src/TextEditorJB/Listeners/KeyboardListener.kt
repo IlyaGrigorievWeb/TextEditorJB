@@ -66,6 +66,7 @@ class KeyboardListener( panel : TextPanel,
 
                     else -> textService.char(e!!.keyChar.toString())
                 }
+                panel.textSelection.drawingSelection = false
             }
             workspaceService.setWorkspace()
             panel.repaint()

@@ -28,7 +28,7 @@ class ShortcutService (textPanel : TextPanel,textSelectionService : TextSelectio
             val thirdPart = sourceText.text.copyOfRange(sourceText.activeRow, sourceText.text.lastIndex)
             val activeRow = sourceText.text[sourceText.activeRow]
 
-            var workString = activeRow.substring(0,sourceText.positionInRow) + clipboard.getData(dataFlavor).toString() + activeRow.substring(sourceText.positionInRow,activeRow.lastIndex)
+            var workString = activeRow.substring(0,sourceText.positionInRow) + clipboard.getData(dataFlavor).toString() + activeRow.substring(sourceText.positionInRow,activeRow.length)
 
             val secondPart = workString.split("\n")
 

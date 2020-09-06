@@ -148,16 +148,22 @@ class TextSelectionService(textPanel: TextPanel,navigationService : NavigationSe
         var resultString = ""
         var selectedTextArray = sourceText.text.copyOfRange(textSelection.selectingStartRow,textSelection.selectingEndRow+1)
 
-
-        for ((index,string) in selectedTextArray.withIndex()) {
-            if (index == 0) {
-                resultString += selectedTextArray[index].substring(textSelection.selectingStartChar, selectedTextArray[index].lastIndex)
-            } else if (index == selectedTextArray.lastIndex) {
-                resultString += selectedTextArray[index].substring(0, textSelection.selectingStartChar)
-            } else {
-                resultString += selectedTextArray[index]
+        if (textSelection.selectingStartRow == textSelection.selectingEndRow)
+        {
+            resultString = sourceText.text[sourceText.activeRow].substring(textSelection.selectingStartChar,textSelection.selectingEndChar)
+        }
+        else{
+            for ((index,string) in selectedTextArray.withIndex()) {
+                if (index == 0) {
+                    resultString += selectedTextArray[index].substring(textSelection.selectingStartChar, selectedTextArray[index].lastIndex+1)
+                    resultString += "\n"
+                } else if (index == selectedTextArray.lastIndex) {
+                    resultString += selectedTextArray[index].substring(0, textSelection.selectingStartChar)
+                } else {
+                    resultString += selectedTextArray[index]
+                    resultString += "\n"
+                }
             }
-            resultString += "\n"
         }
 
         return resultString

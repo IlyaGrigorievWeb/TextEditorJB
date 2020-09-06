@@ -86,9 +86,13 @@ class TextService (textPanel: TextPanel, sourceText : SourceText, navigationServ
     }
     fun backspace()
     {
-        if (!(sourceText.positionInRow == 0 && sourceText.activeRow == 0))
-        {
-            navigationService.Left()
+        if (!panel.textSelection.drawingSelection) {
+            if (!(sourceText.positionInRow == 0 && sourceText.activeRow == 0)) {
+                navigationService.Left()
+                delete()
+            }
+        }
+        else{
             delete()
         }
     }
@@ -121,7 +125,7 @@ class TextService (textPanel: TextPanel, sourceText : SourceText, navigationServ
                 val firstPart = sourceText.text.copyOfRange(0,panel.textSelection.selectingStartRow)
                 val thirdPart = sourceText.text.copyOfRange(panel.textSelection.selectingEndRow,sourceText.text.lastIndex)
                 val secondPart = sourceText.text[panel.textSelection.selectingStartRow].substring(0,panel.textSelection.selectingStartChar) +
-                        sourceText.text[panel.textSelection.selectingEndRow].substring(panel.textSelection.selectingEndChar,sourceText.text[panel.textSelection.selectingEndRow].lastIndex)
+                        sourceText.text[panel.textSelection.selectingEndRow].substring(panel.textSelection.selectingEndChar,sourceText.text[panel.textSelection.selectingEndRow].length)
                 sourceText.text = firstPart + secondPart + thirdPart
                 sourceText.activeRow = panel.textSelection.selectingStartRow
                 sourceText.positionInRow = panel.textSelection.selectingStartChar
