@@ -27,7 +27,7 @@ class KeyboardListener( panel : TextPanel,
     }
 
     override fun keyPressed(e: KeyEvent?) { //TODO При каждом нажатии repaint плохо
-        if (e!!.keyCode != 20 && e.keyCode != 18) { //Игнорирование CAPS Lock и Alt т.к. они в данном функционале не нужны
+        if (e!!.keyCode != 20 && e.keyCode != 18 && e.keyCode != 524) { //Игнорирование CAPS Lock и Alt т.к. они в данном функционале не нужны
             if (e!!.isShiftDown) {
                 if (e!!.keyCode != 16) {
                     when (e!!.keyCode) {
@@ -35,6 +35,7 @@ class KeyboardListener( panel : TextPanel,
                         40 -> textSelectionService.shiftDown()
                         37 -> textSelectionService.shiftLeft()
                         39 -> textSelectionService.shiftRight()
+                        8 -> textService.backspace()
                         else -> textService.char(e!!.keyChar.toString())
                     }
                 }
