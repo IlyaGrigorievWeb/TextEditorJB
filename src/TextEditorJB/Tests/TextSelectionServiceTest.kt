@@ -16,8 +16,7 @@ class TextSelectionServiceTest {
 
     val sourceText = SourceText()
     val panel = TextPanel(sourceText)
-    val fileService = FileService(panel,panel.workspaceService,sourceText)
-    val navigationService = NavigationService(panel,sourceText,fileService)
+    val navigationService = NavigationService(panel,sourceText)
     val textSelectionService = TextSelectionService(panel,navigationService,sourceText)
 
     @Before
@@ -27,13 +26,14 @@ class TextSelectionServiceTest {
         sourceText.positionInRow = 3
     }
 
-    @After
-    fun tearDown() {
-    }
-
     @Test
     fun shiftLeft() {
 
+        textSelectionService.shiftLeft()
+        val trueResult = sourceText.activeRow == 1 && sourceText.positionInRow == 2 &&
+                textSelectionService.textSelection.selectingStartRow == 1 && textSelectionService.textSelection.selectingEndRow == 1 &&
+                textSelectionService.textSelection.selectingStartChar == 2 && textSelectionService.textSelection.selectingEndChar == 3
+        assertTrue(trueResult)
     }
 
     @Test
@@ -49,18 +49,19 @@ class TextSelectionServiceTest {
 
     @Test
     fun shiftUp() {
+        textSelectionService.shiftUp()
+        val trueResult = sourceText.activeRow == 0 && sourceText.positionInRow == 3 &&
+                textSelectionService.textSelection.selectingStartRow == 0 && textSelectionService.textSelection.selectingEndRow == 1 &&
+                textSelectionService.textSelection.selectingStartChar == 3 && textSelectionService.textSelection.selectingEndChar == 3
+        assertTrue(trueResult)
     }
 
     @Test
     fun shiftDown() {
-    }
-
-    @Test
-    fun shiftClick() {
-        assertFalse(true)
-    }
-
-    @Test
-    fun getSelected() {
+        textSelectionService.shiftDown()
+        val trueResult = sourceText.activeRow == 2 && sourceText.positionInRow == 3 &&
+                textSelectionService.textSelection.selectingStartRow == 1 && textSelectionService.textSelection.selectingEndRow == 2 &&
+                textSelectionService.textSelection.selectingStartChar == 3 && textSelectionService.textSelection.selectingEndChar == 3
+        assertTrue(trueResult)
     }
 }

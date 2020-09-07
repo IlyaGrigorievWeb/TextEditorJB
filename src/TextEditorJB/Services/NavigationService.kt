@@ -4,11 +4,10 @@ import TextEditorJB.Components.TextPanel
 import TextEditorJB.Entities.SourceText
 
 //Сервис работы с навигацией по тексту
-class NavigationService(textPanel: TextPanel, sourceText: SourceText,fileService: FileService) {
+class NavigationService(textPanel: TextPanel, sourceText: SourceText) {
 
     val sourceText = sourceText
     val panel = textPanel
-    val fileService = fileService
     val linesToScroll = 2
 
     fun Up ()
@@ -16,24 +15,29 @@ class NavigationService(textPanel: TextPanel, sourceText: SourceText,fileService
         if (sourceText.activeRow > 0){
             sourceText.activeRow--
             //panel.caret.moveUp()
-        }
-        if (sourceText.text[sourceText.activeRow].lastIndex < sourceText.positionInRow)
-            sourceText.positionInRow = sourceText.text[sourceText.activeRow].lastIndex + 1
+            if (sourceText.activeRow  < panel.workspaceService.position +  1) //строка в воркспейсе предпоследняя скролить
+            {
+                panel.workspaceService.scrollUp()
+            }
 
-        if (sourceText.activeRow < panel.workspaceService.position + linesToScroll )
-            scrollUp()
+            if (sourceText.text[sourceText.activeRow].lastIndex < sourceText.positionInRow)
+                sourceText.positionInRow = sourceText.text[sourceText.activeRow].lastIndex + 1
+        }
+
     }
     fun Down ()
     {
         if (sourceText.activeRow < sourceText.text.lastIndex){
             sourceText.activeRow++
             //panel.caret.moveDown()
+            if ( sourceText.activeRow  > panel.workspaceService.position + panel.rowsInWorkspace - 1)
+            {
+                panel.workspaceService.scrollDown()
+            }
+            if (sourceText.text[sourceText.activeRow].lastIndex < sourceText.positionInRow)
+                sourceText.positionInRow = sourceText.text[sourceText.activeRow].lastIndex + 1
         }
-        if (sourceText.text[sourceText.activeRow].lastIndex < sourceText.positionInRow)
-            sourceText.positionInRow = sourceText.text[sourceText.activeRow].lastIndex + 1
 
-        if (sourceText.activeRow > panel.workspaceService.position + panel.rowsInWorkspace - linesToScroll)
-            scrollDown()
     }
     fun Left ()
     {
@@ -43,26 +47,32 @@ class NavigationService(textPanel: TextPanel, sourceText: SourceText,fileService
         {
             if (sourceText.activeRow > 0){
                 sourceText.activeRow--
-                sourceText.positionInRow = panel.workspaceText[sourceText.activeRow].length
+                sourceText.positionInRow = sourceText.text[sourceText.activeRow].length
             }
         }
-        if (sourceText.activeRow < panel.workspaceService.position + linesToScroll)
-            scrollUp()
+        if (sourceText.activeRow  < panel.workspaceService.position +  1) //строка в воркспейсе предпоследняя скролить
+        {
+            panel.workspaceService.scrollUp()
+        }
+
         //panel.caret.moveLeft()
     }
     fun Right ()
     {
-        if (sourceText.positionInRow < panel.workspaceText[sourceText.activeRow].length) {
+        if (sourceText.positionInRow < sourceText.text[sourceText.activeRow].length) {
             sourceText.positionInRow++
         }
         else{
-            if (sourceText.activeRow < panel.workspaceText.size-1){
+            if (sourceText.activeRow < sourceText.text.lastIndex){
                 sourceText.activeRow++
                 sourceText.positionInRow = 0
             }
         }
-        if (sourceText.activeRow > panel.workspaceService.position + panel.rowsInWorkspace - linesToScroll)
-            scrollDown()
+        if ( sourceText.activeRow  > panel.workspaceService.position + panel.rowsInWorkspace - 1)
+        {
+            panel.workspaceService.scrollDown()
+        }
+
 //        panel.caret.moveRight()
     }
     fun Home ()
@@ -79,7 +89,7 @@ class NavigationService(textPanel: TextPanel, sourceText: SourceText,fileService
     fun End ()
     {
         if (sourceText.text[sourceText.activeRow].lastIndex > sourceText.positionInRow) {
-            sourceText.positionInRow = panel.workspaceText[sourceText.activeRow].lastIndex + 1
+            sourceText.positionInRow = panel.sourceText.text[sourceText.activeRow].lastIndex + 1
         }
 //        panel.caret.moveEnd()
     }
@@ -90,8 +100,6 @@ class NavigationService(textPanel: TextPanel, sourceText: SourceText,fileService
         var lines = height / panel.lineSpacing
         for (i in 1..lines)
             Up()
-        if (sourceText.activeRow < panel.workspaceService.position + linesToScroll )
-            scrollUp()
     }
 
     fun PageDown ()
@@ -100,21 +108,8 @@ class NavigationService(textPanel: TextPanel, sourceText: SourceText,fileService
         var lines = height / panel.lineSpacing
         for (i in 1..lines)
             Down()
-        if (sourceText.activeRow > panel.workspaceService.position + panel.rowsInWorkspace - linesToScroll)
-            scrollDown()
     }
 
-    fun scrollUp()
-    {
-        panel.workspaceService.position--
-        panel.workspaceService.setWorkspace()
-    }
-
-    fun scrollDown(){
-        panel.workspaceService.position++
-        fileService.setSourceText(panel.rowsInWorkspace / 2)
-        panel.workspaceService.setWorkspace()
-    }
     fun NewLine(){
         sourceText.positionInRow = 0;
     }

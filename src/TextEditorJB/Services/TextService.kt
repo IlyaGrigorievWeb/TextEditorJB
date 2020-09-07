@@ -34,7 +34,6 @@ class TextService (textPanel: TextPanel, sourceText : SourceText, navigationServ
 
 
             //println(metrics.stringWidth(panel.fullText[panel.activeRow]))
-            panel.caret.positionX += width
         }
         else {
             var sb = StringBuilder(sourceText.text[sourceText.activeRow])
@@ -50,7 +49,6 @@ class TextService (textPanel: TextPanel, sourceText : SourceText, navigationServ
 
 
             //println(metrics.stringWidth(panel.fullText[panel.activeRow]))
-            panel.caret.positionX += width
         }
         if (char == "{" || char == "}")
             panel.coloringService.bracketsService.addBracket(sourceText.activeRow, sourceText.positionInRow, char[0])
@@ -59,7 +57,7 @@ class TextService (textPanel: TextPanel, sourceText : SourceText, navigationServ
         //workspaceService.setText(panel.sourceTextService.activeRow,panel.workspaceText[panel.sourceTextService.activeRow])
     }
 
-    fun enter() //TODO пофиксить каретку при переносе
+    fun enter()
     {
         if (sourceText.activeRow <= sourceText.text.lastIndex){
 
@@ -71,24 +69,20 @@ class TextService (textPanel: TextPanel, sourceText : SourceText, navigationServ
             firstPart[firstPart.lastIndex] = firstPart[firstPart.lastIndex].substring(0,sourceText.positionInRow)
 
             sourceText.text = firstPart + remains + secondPart
-
-            sourceText.activeRow++
         }
         else{
-            sourceText.activeRow++
-
             sourceText.text = sourceText.text.copyOf(sourceText.text.size+1) as Array<String>
             sourceText.text[sourceText.activeRow] = ""
             panel.rowY += panel.lineSpacing
         }
+
+        navigationService.Down()
         sourceText.positionInRow = 0
-        navigationService.scrollDown()
-        //workspaceService.setNewLineText()
     }
     fun backspace()
     {
         if (!panel.textSelection.drawingSelection) {
-            if (!(sourceText.positionInRow == 0 && sourceText.activeRow == 0)) {
+            if (!(sourceText.positionInRow <= 0 && sourceText.activeRow <= 0)) {
                 navigationService.Left()
                 delete()
             }
@@ -140,7 +134,8 @@ class TextService (textPanel: TextPanel, sourceText : SourceText, navigationServ
     }
     fun tab()
     {
-        sourceText.text[sourceText.activeRow]+= "    "
+        sourceText.text[sourceText.activeRow] = sourceText.text[sourceText.activeRow].substring(0,sourceText.positionInRow) +
+                "    " + sourceText.text[sourceText.activeRow].substring(sourceText.positionInRow,sourceText.text[sourceText.activeRow].count())
         sourceText.positionInRow += 4
     }
 

@@ -9,7 +9,7 @@ class AppForm {
 
     companion object{
 
-        var openingFile : File? = null
+
         var frame : JFrame = getFrame() as JFrame //TODO Повесить событие изменения размера окна
 
         private fun getFrame() : Any{

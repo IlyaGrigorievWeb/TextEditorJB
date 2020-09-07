@@ -18,28 +18,11 @@ class MouseService (textSelectionService: TextSelectionService, workspaceService
     fun mouseScroll(rotation : Int){
         if (rotation == 1) //вниз
         {
-            //if (TextPanel.position + 30 <= TextPanel.text.lastIndex) {
-            panel.navigationService.scrollDown()
-            //}
-//            if (TextPanel.position > 0)
-//            {
-//                var rowsCount = 50
-//                TextPanel.position--
-//                panel.fullText = TextPanel.text.copyOfRange(TextPanel.position,TextPanel.position + rowsCount)
-//                panel.repaint()
-//            }
+            workspaceService.scrollDown()
         }
         else if(rotation == -1) //вверх
         {
-//            if (TextPanel.position > 0) {
-            panel.navigationService.scrollUp()
-            //}
-//            if (TextPanel.position + 50 <= TextPanel.text.lastIndex) {
-//                var rowsCount = 50
-//                TextPanel.position++
-//                panel.fullText = TextPanel.text.copyOfRange(TextPanel.position, TextPanel.position + rowsCount)
-//                panel.repaint()
-//            }
+            workspaceService.scrollUp()
         }
         panel.repaint()
     }

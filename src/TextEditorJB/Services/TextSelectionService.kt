@@ -158,7 +158,7 @@ class TextSelectionService(textPanel: TextPanel,navigationService : NavigationSe
                     resultString += selectedTextArray[index].substring(textSelection.selectingStartChar, selectedTextArray[index].lastIndex+1)
                     resultString += "\n"
                 } else if (index == selectedTextArray.lastIndex) {
-                    resultString += selectedTextArray[index].substring(0, textSelection.selectingStartChar)
+                    resultString += selectedTextArray[index].substring(0, textSelection.selectingEndChar)
                 } else {
                     resultString += selectedTextArray[index]
                     resultString += "\n"

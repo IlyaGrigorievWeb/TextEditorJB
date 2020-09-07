@@ -12,8 +12,6 @@ class Caret( textPanel: TextPanel,sourceText: SourceText) : JComponent() { //TOD
 
     val sourceText = sourceText
     var panel = textPanel
-    var positionX = textPanel.borderX
-    var positionY = textPanel.borderY
     val charCaret = "|"
     //var positionInRow = 0;
     var isInsert = false
@@ -25,10 +23,6 @@ class Caret( textPanel: TextPanel,sourceText: SourceText) : JComponent() { //TOD
         {
             sourceText.activeRow  = 0 + panel.workspaceService.position;
         }
-//        else if(mousePositionY > panel.borderY + sourceText.text.size * panel.lineSpacing)
-//        {
-//            sourceText.activeRow  = sourceText.text.lastIndex  + panel.workspaceService.position;
-//        }
         else {
             for (position in panel.borderY..(panel.borderY - panel.lineSpacing) + sourceText.text.size * panel.lineSpacing step panel.lineSpacing) {
                 if (mousePositionY in position - metrics.height + 3..position) {
@@ -58,10 +52,8 @@ class Caret( textPanel: TextPanel,sourceText: SourceText) : JComponent() { //TOD
                 width = metrics.stringWidth(str)
                 charWidth = metrics.stringWidth(char.toString())
                 if (mousePositionX in posX..posX + charWidth / 2 + 2) {
-                    positionX = posX
                     sourceText.positionInRow = pos
                 } else if (mousePositionX in posX + charWidth / 2 + 2..posX + charWidth) {
-                    positionX = width + panel.borderX
                     sourceText.positionInRow = pos + 1
                 }
                 posX = width + panel.borderX
@@ -73,20 +65,26 @@ class Caret( textPanel: TextPanel,sourceText: SourceText) : JComponent() { //TOD
     override fun paintComponent(g: Graphics?) { //:TODO будет два варианта отрисовки, либо чар , либо прямоугольник размером с символ и перекрашенным сиволом внутри
         var g2 = g as Graphics2D;
 
-        if (sourceText.activeRow in panel.workspaceService.position until (panel.workspaceService.position + panel.rowsInWorkspace))
+        if (sourceText.activeRow in panel.workspaceService.position .. (panel.workspaceService.position + panel.rowsInWorkspace))
         {
-            var myFont: Font = Font("Calibri", 0, 20)
+            var myFont = Font("Calibri", 0, 20)
             (g as Graphics).font = myFont
             if (isInsert){
                 var symbol = ""
                 if (sourceText.positionInRow < sourceText.text[sourceText.activeRow].length)
                     symbol = sourceText.text[sourceText.activeRow][sourceText.positionInRow].toString()
                 else
-                    symbol =" "
+                    symbol = " "
 
                 val metrics = panel.getFontMetrics(panel.textFont)
-                val x = positionX + 5
+
+                val row = sourceText.activeRow - panel.workspaceService.position
+
+                val positionX = metrics.stringWidth(sourceText.text[sourceText.activeRow].substring(0,sourceText.positionInRow)) + panel.borderX
+                val positionY = panel.borderY  + row * panel.lineSpacing
+
                 val y = positionY - metrics.height + metrics.descent
+                val x = positionX + 4
                 val h = metrics.height
                 val w = metrics.stringWidth(symbol)
 
@@ -94,7 +92,7 @@ class Caret( textPanel: TextPanel,sourceText: SourceText) : JComponent() { //TOD
                 g2.color = Color.MAGENTA
                 g2.fill(rectangle)
                 g2.color = Color.WHITE
-                g2.drawString(symbol, positionX + 5, positionY)
+                g2.drawString(symbol, positionX + 4, positionY)
                 g2.color = Color.BLACK
             }
             else{

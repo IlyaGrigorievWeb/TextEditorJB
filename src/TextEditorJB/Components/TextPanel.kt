@@ -24,13 +24,13 @@ class TextPanel (sourceText: SourceText) : JPanel() {
     var coloringService = TextColorerService(this)
     val sourceText = sourceText
     val workspaceService = WorkspaceService(this, sourceText)
-    val fileService = FileService(this,workspaceService,sourceText)
-    val navigationService = NavigationService(this,sourceText,fileService)
+    val fileService = FileService(this,sourceText,workspaceService)
+    val navigationService = NavigationService(this,sourceText)
     var textSelection = TextSelection(this,sourceText, navigationService)
 
     val rowsInWorkspace : Int
         get() {
-            return this.size.height / lineSpacing
+            return (this.size.height / lineSpacing) - 1
         }
 
     override fun paintComponent(g: Graphics?)  {
