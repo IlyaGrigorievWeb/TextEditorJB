@@ -4,11 +4,10 @@ import TextEditorJB.Components.TextPanel
 import TextEditorJB.Entities.SourceText
 
 //Сервис работы с навигацией по тексту
-class NavigationService(textPanel: TextPanel, sourceText: SourceText) {
+class NavigationService( private val panel: TextPanel,private val sourceText: SourceText) {
 
-    val sourceText = sourceText
-    val panel = textPanel
-    val linesToScroll = 2
+//    val sourceText = sourceText
+//    val panel = textPanel
 
     fun Up ()
     {

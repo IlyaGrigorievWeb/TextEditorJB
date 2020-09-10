@@ -9,7 +9,7 @@ import java.awt.*
 import javax.swing.JPanel
 
 
-class TextPanel (sourceText: SourceText) : JPanel() {
+class TextPanel (private val sourceText: SourceText) : JPanel() {
 
     var workspaceText =  arrayOf("")
 
@@ -22,7 +22,6 @@ class TextPanel (sourceText: SourceText) : JPanel() {
 
 
     var coloringService = TextColorerService(this)
-    val sourceText = sourceText
     val workspaceService = WorkspaceService(this, sourceText)
     val fileService = FileService(this,sourceText,workspaceService)
     val navigationService = NavigationService(this,sourceText)
@@ -34,7 +33,7 @@ class TextPanel (sourceText: SourceText) : JPanel() {
         }
 
     override fun paintComponent(g: Graphics?)  {
-        var g2 = g as Graphics2D
+        val g2 = g as Graphics2D
         super.paintComponent(g)
 
         textSelection.paint(g)

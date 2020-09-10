@@ -8,20 +8,17 @@ import java.awt.Graphics2D
 import java.awt.geom.Rectangle2D
 import javax.swing.JComponent
 
-class Caret( textPanel: TextPanel,sourceText: SourceText) : JComponent() { //TODO Отрисовка должна проимходить от workspace  а не от всего текста
+class Caret(private val panel: TextPanel,private val sourceText: SourceText) : JComponent() { //TODO Отрисовка должна проимходить от workspace  а не от всего текста
 
-    val sourceText = sourceText
-    var panel = textPanel
-    val charCaret = "|"
-    //var positionInRow = 0;
+    private val charCaret = "|"
     var isInsert = false
 
     fun setPositionByMouseCoord(mousePositionX: Int,mousePositionY: Int) { //TODO: Долго работает, скорее всего из за того что при клике перерисовывается всё
         val metrics = panel.getFontMetrics(panel.textFont)
-        var row = 0;
+        var row = 0
         if (mousePositionY < panel.borderY - panel.lineSpacing)
         {
-            sourceText.activeRow  = 0 + panel.workspaceService.position;
+            sourceText.activeRow  = 0 + panel.workspaceService.position
         }
         else {
             for (position in panel.borderY..(panel.borderY - panel.lineSpacing) + sourceText.text.size * panel.lineSpacing step panel.lineSpacing) {
@@ -43,10 +40,10 @@ class Caret( textPanel: TextPanel,sourceText: SourceText) : JComponent() { //TOD
         }
         else{
             var str = ""
-            var posX = panel.borderX;
-            var pos = 0;
-            var width = 0
-            var charWidth = 0
+            var posX = panel.borderX
+            var pos = 0
+            var width : Int
+            var charWidth :Int
             for (char in sourceText.text[sourceText.activeRow]) {
                 str += char
                 width = metrics.stringWidth(str)
@@ -63,14 +60,14 @@ class Caret( textPanel: TextPanel,sourceText: SourceText) : JComponent() { //TOD
     }
 
     override fun paintComponent(g: Graphics?) { //:TODO будет два варианта отрисовки, либо чар , либо прямоугольник размером с символ и перекрашенным сиволом внутри
-        var g2 = g as Graphics2D;
+        val g2 = g as Graphics2D
 
         if (sourceText.activeRow in panel.workspaceService.position .. (panel.workspaceService.position + panel.rowsInWorkspace))
         {
-            var myFont = Font("Calibri", 0, 20)
+            val myFont = Font("Calibri", 0, 20)
             (g as Graphics).font = myFont
             if (isInsert){
-                var symbol = ""
+                val symbol: String
                 if (sourceText.positionInRow < sourceText.text[sourceText.activeRow].length)
                     symbol = sourceText.text[sourceText.activeRow][sourceText.positionInRow].toString()
                 else
@@ -96,9 +93,8 @@ class Caret( textPanel: TextPanel,sourceText: SourceText) : JComponent() { //TOD
                 g2.color = Color.BLACK
             }
             else{
-                //g2.drawString(charCaret, positionX, positionY)
                 val row = sourceText.activeRow - panel.workspaceService.position
-                val charPosition = sourceText.positionInRow
+                //val charPosition = sourceText.positionInRow
 
                 val metrics = panel.getFontMetrics(panel.textFont)
                 val y = panel.borderY  + row * panel.lineSpacing

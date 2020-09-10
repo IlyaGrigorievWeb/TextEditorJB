@@ -3,11 +3,12 @@ package TextEditorJB.Services
 import TextEditorJB.Components.TextPanel
 import TextEditorJB.Entities.SourceText
 
-class WorkspaceService (textPanel: TextPanel,sourceText: SourceText) {
+class WorkspaceService (private val panel : TextPanel,private val sourceText: SourceText) {
 
-    val sourceText = sourceText
+//    val sourceText = sourceText
+//
+//    val panel = textPanel
 
-    val panel = textPanel
     var position = 0
         set(value){
 //            if (field + panel.rowsInWorkspace <= sourceText.lastIndex && value >= 0) {

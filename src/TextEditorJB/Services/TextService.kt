@@ -5,11 +5,11 @@ import TextEditorJB.Entities.SourceText
 import java.awt.Font
 
 //Сервис работы с текстом
-class TextService (textPanel: TextPanel, sourceText : SourceText, navigationService: NavigationService){
+class TextService (private val panel: TextPanel,private val sourceText : SourceText,private val navigationService: NavigationService){
 
-    val panel = textPanel
-    val sourceText = sourceText
-    val navigationService = navigationService
+//    val panel = textPanel
+//    val sourceText = sourceText
+//    val navigationService = navigationService
 
     fun char(char : String)
     {

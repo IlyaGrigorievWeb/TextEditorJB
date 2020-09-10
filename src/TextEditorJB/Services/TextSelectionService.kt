@@ -3,12 +3,12 @@ package TextEditorJB.Services
 import TextEditorJB.Components.TextPanel
 import TextEditorJB.Entities.SourceText
 
-class TextSelectionService(textPanel: TextPanel,navigationService : NavigationService,sourceText: SourceText) {
+class TextSelectionService(private val panel: TextPanel,private val navigation : NavigationService,private val sourceText: SourceText) {
 
-    var panel = textPanel
-    val sourceText = sourceText
+//    var panel = textPanel
+//    val sourceText = sourceText
     val textSelection = panel.textSelection
-    var navigation = navigationService
+//    var navigation = navigationService
 
     fun shiftLeft ()
     {

@@ -5,11 +5,11 @@ import TextEditorJB.Entities.SourceText
 import java.io.*
 import javax.swing.JFileChooser
 
-class FileService (textPanel: TextPanel,sourceText: SourceText ,workspaceService: WorkspaceService) {
+class FileService (private val panel: TextPanel,private val sourceText: SourceText ,private val workspaceService: WorkspaceService) {
 
-    val panel = textPanel
-    val workspaceService = workspaceService
-    val sourceText = sourceText
+//    val panel = textPanel
+    //val workspaceService = workspaceService
+    //val sourceText = sourceText
     var openingFile : File? = null
 
     var readerPosition = 0

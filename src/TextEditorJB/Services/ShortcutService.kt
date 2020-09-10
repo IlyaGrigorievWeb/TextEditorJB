@@ -7,11 +7,11 @@ import java.awt.datatransfer.Clipboard
 import java.awt.datatransfer.DataFlavor
 import java.awt.datatransfer.StringSelection
 
-class ShortcutService (textPanel : TextPanel,textSelectionService : TextSelectionService,sourceText : SourceText) {
+class ShortcutService (private val panel : TextPanel,private val textSelectionService : TextSelectionService,private val sourceText : SourceText) {
 
-    val sourceText = sourceText
-    val textSelectionService = textSelectionService
-    val panel = textPanel
+//    val sourceText = sourceText
+//    val textSelectionService = textSelectionService
+//    val panel = textPanel
 
     fun copy(){
         var clipboard : Clipboard = Toolkit.getDefaultToolkit().systemClipboard
