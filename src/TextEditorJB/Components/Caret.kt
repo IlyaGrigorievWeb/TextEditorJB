@@ -1,6 +1,7 @@
 package TextEditorJB.Components
 
 import TextEditorJB.Entities.SourceText
+import TextEditorJB.TextColorer.BracketsService
 import java.awt.Color
 import java.awt.Font
 import java.awt.Graphics
@@ -8,7 +9,7 @@ import java.awt.Graphics2D
 import java.awt.geom.Rectangle2D
 import javax.swing.JComponent
 
-class Caret(private val panel: TextPanel,private val sourceText: SourceText) : JComponent() { //TODO Отрисовка должна проимходить от workspace  а не от всего текста
+class Caret(private val panel: TextPanel,private val sourceText: SourceText , private  val bracketsService : BracketsService) : JComponent() { //TODO Отрисовка должна проимходить от workspace  а не от всего текста
 
     private val charCaret = "|"
     var isInsert = false
@@ -106,6 +107,8 @@ class Caret(private val panel: TextPanel,private val sourceText: SourceText) : J
             }
         }
 
+        if(sourceText.text[sourceText.activeRow].length > 1)
+            bracketsService.searchBracket(sourceText.activeRow,sourceText.positionInRow,sourceText.text[sourceText.activeRow][sourceText.positionInRow-1])
         //TODO Когда пишет заносить скобку когда рисует каретку проверять нет ли рядом скобки и если есть поентиить обе
 
     }

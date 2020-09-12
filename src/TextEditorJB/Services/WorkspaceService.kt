@@ -23,12 +23,12 @@ class WorkspaceService (private val panel : TextPanel,private val sourceText: So
         {
             panel.workspaceText = sourceText.text.copyOfRange(position , sourceText.text.count())
             //panel.workspaceText += arrayOf(" "," "," ")
-            panel.repaint()
+            //panel.repaint()
         }
         else
         {
             panel.workspaceText = sourceText.text.copyOfRange(position,position + panel.rowsInWorkspace + 1)
-            panel.repaint()
+            //panel.repaint()
         }
     }
 

@@ -4,12 +4,13 @@ import TextEditorJB.Entities.SourceText
 import TextEditorJB.Services.FileService
 import TextEditorJB.Services.NavigationService
 import TextEditorJB.Services.WorkspaceService
+import TextEditorJB.TextColorer.BracketsService
 import TextEditorJB.TextColorer.TextColorerService
 import java.awt.*
 import javax.swing.JPanel
 
 
-class TextPanel (private val sourceText: SourceText) : JPanel() {
+class TextPanel (val sourceText: SourceText) : JPanel() {
 
     var workspaceText =  arrayOf("")
 
@@ -18,7 +19,7 @@ class TextPanel (private val sourceText: SourceText) : JPanel() {
     var lineSpacing = 20
     val borderX = 16
     var textFont = Font("Calibri",0,20)
-    var caret = Caret(this,sourceText)
+    var caret = Caret(this,sourceText, BracketsService(this,sourceText))
 
 
     var coloringService = TextColorerService(this)
@@ -36,19 +37,19 @@ class TextPanel (private val sourceText: SourceText) : JPanel() {
         val g2 = g as Graphics2D
         super.paintComponent(g)
 
-        textSelection.paint(g)
+        //textSelection.paint(g)
 
         (g as Graphics).font = textFont
-        if (sourceText.text[sourceText.activeRow].isNotEmpty()) {
-            if (sourceText.positionInRow in 1..sourceText.text[sourceText.activeRow].lastIndex) {
-                coloringService.paintBrackets(sourceText.activeRow, sourceText.positionInRow + 1, sourceText.text[sourceText.activeRow][sourceText.positionInRow], g)
-                coloringService.paintBrackets(sourceText.activeRow, sourceText.positionInRow, sourceText.text[sourceText.activeRow][sourceText.positionInRow - 1], g)
-            }
-            else if (sourceText.positionInRow == 0)
-                coloringService.paintBrackets(sourceText.activeRow, sourceText.positionInRow + 1, sourceText.text[sourceText.activeRow][sourceText.positionInRow], g)
-            else if (sourceText.positionInRow == sourceText.text[sourceText.activeRow].length)
-                coloringService.paintBrackets(sourceText.activeRow, sourceText.positionInRow, sourceText.text[sourceText.activeRow][sourceText.positionInRow - 1], g)
-        }
+//        if (sourceText.text[sourceText.activeRow].isNotEmpty()) {
+//            if (sourceText.positionInRow in 1..sourceText.text[sourceText.activeRow].lastIndex) {
+//                coloringService.paintBrackets(sourceText.activeRow, sourceText.positionInRow + 1, sourceText.text[sourceText.activeRow][sourceText.positionInRow], g)
+//                coloringService.paintBrackets(sourceText.activeRow, sourceText.positionInRow, sourceText.text[sourceText.activeRow][sourceText.positionInRow - 1], g)
+//            }
+//            else if (sourceText.positionInRow == 0)
+//                coloringService.paintBrackets(sourceText.activeRow, sourceText.positionInRow + 1, sourceText.text[sourceText.activeRow][sourceText.positionInRow], g)
+//            else if (sourceText.positionInRow == sourceText.text[sourceText.activeRow].length)
+//                coloringService.paintBrackets(sourceText.activeRow, sourceText.positionInRow, sourceText.text[sourceText.activeRow][sourceText.positionInRow - 1], g)
+//        }
 
         var coordY = borderY
 

@@ -6,10 +6,7 @@ import TextEditorJB.Entities.SourceText
 //Сервис работы с навигацией по тексту
 class NavigationService( private val panel: TextPanel,private val sourceText: SourceText) {
 
-//    val sourceText = sourceText
-//    val panel = textPanel
-
-    fun Up ()
+    fun up ()
     {
         if (sourceText.activeRow > 0){
             sourceText.activeRow--
@@ -24,7 +21,7 @@ class NavigationService( private val panel: TextPanel,private val sourceText: So
         }
 
     }
-    fun Down ()
+    fun down ()
     {
         if (sourceText.activeRow < sourceText.text.lastIndex){
             sourceText.activeRow++
@@ -38,7 +35,7 @@ class NavigationService( private val panel: TextPanel,private val sourceText: So
         }
 
     }
-    fun Left ()
+    fun left ()
     {
         if (sourceText.positionInRow > 0)
             sourceText.positionInRow--
@@ -56,7 +53,7 @@ class NavigationService( private val panel: TextPanel,private val sourceText: So
 
         //panel.caret.moveLeft()
     }
-    fun Right ()
+    fun right ()
     {
         if (sourceText.positionInRow < sourceText.text[sourceText.activeRow].length) {
             sourceText.positionInRow++
@@ -74,7 +71,7 @@ class NavigationService( private val panel: TextPanel,private val sourceText: So
 
 //        panel.caret.moveRight()
     }
-    fun Home ()
+    fun home ()
     {
         var count = 0
         for (char in sourceText.text[sourceText.activeRow]){
@@ -85,7 +82,7 @@ class NavigationService( private val panel: TextPanel,private val sourceText: So
         sourceText.positionInRow = count
 //        panel.caret.moveHome()
     }
-    fun End ()
+    fun end ()
     {
         if (sourceText.text[sourceText.activeRow].lastIndex > sourceText.positionInRow) {
             sourceText.positionInRow = panel.sourceText.text[sourceText.activeRow].lastIndex + 1
@@ -93,23 +90,23 @@ class NavigationService( private val panel: TextPanel,private val sourceText: So
 //        panel.caret.moveEnd()
     }
 
-    fun PageUp ()
+    fun pageUp ()
     {
-        var height = panel.height
-        var lines = height / panel.lineSpacing
+        val height = panel.height
+        val lines = height / panel.lineSpacing
         for (i in 1..lines)
-            Up()
+            up()
     }
 
-    fun PageDown ()
+    fun pageDown ()
     {
-        var height = panel.height
-        var lines = height / panel.lineSpacing
+        val height = panel.height
+        val lines = height / panel.lineSpacing
         for (i in 1..lines)
-            Down()
+            down()
     }
 
-    fun NewLine(){
-        sourceText.positionInRow = 0;
+    fun newLine(){
+        sourceText.positionInRow = 0
     }
 }

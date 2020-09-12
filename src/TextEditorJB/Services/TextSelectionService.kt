@@ -16,16 +16,16 @@ class TextSelectionService(private val panel: TextPanel,private val navigation :
             textSelection.drawingSelection = true
 
             textSelection.setEndState()
-            navigation.Left()
+            navigation.left()
             textSelection.setBeginState()
         }
         else{
             if (sourceText.activeRow == textSelection.selectingStartRow && sourceText.positionInRow == textSelection.selectingStartChar){
-                navigation.Left()
+                navigation.left()
                 textSelection.setBeginState()
             }
             else{
-                navigation.Left()
+                navigation.left()
                 textSelection.setEndState()
             }
         }
@@ -36,16 +36,16 @@ class TextSelectionService(private val panel: TextPanel,private val navigation :
             textSelection.drawingSelection = true
 
             textSelection.setBeginState()
-            navigation.Right()
+            navigation.right()
             textSelection.setEndState()
         }
         else{
             if (sourceText.activeRow == textSelection.selectingEndRow && sourceText.positionInRow == textSelection.selectingEndChar){
-                navigation.Right()
+                navigation.right()
                 textSelection.setEndState()
             }
             else{
-                navigation.Right()
+                navigation.right()
                 textSelection.setBeginState()
             }
         }
@@ -56,16 +56,16 @@ class TextSelectionService(private val panel: TextPanel,private val navigation :
             textSelection.drawingSelection = true
 
             textSelection.setEndState()
-            navigation.Up()
+            navigation.up()
             textSelection.setBeginState()
         }
         else{
             if (sourceText.activeRow == textSelection.selectingStartRow && sourceText.positionInRow == textSelection.selectingStartChar){
-                navigation.Up()
+                navigation.up()
                 textSelection.setBeginState()
             }
             else{
-                navigation.Up()
+                navigation.up()
                 textSelection.setEndState()
             }
         }
@@ -76,16 +76,16 @@ class TextSelectionService(private val panel: TextPanel,private val navigation :
             textSelection.drawingSelection = true
 
             textSelection.setBeginState()
-            navigation.Down()
+            navigation.down()
             textSelection.setEndState()
         }
         else{
             if (sourceText.activeRow == textSelection.selectingEndRow && sourceText.positionInRow == textSelection.selectingEndChar){
-                navigation.Down()
+                navigation.down()
                 textSelection.setEndState()
             }
             else{
-                navigation.Down()
+                navigation.down()
                 textSelection.setBeginState()
             }
         }

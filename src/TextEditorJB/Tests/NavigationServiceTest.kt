@@ -3,11 +3,8 @@ package TextEditorJB.Tests
 import TextEditorJB.Components.TextPanel
 import TextEditorJB.Entities.SourceText
 import TextEditorJB.Services.NavigationService
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
-
-import org.junit.Assert.*
 
 class NavigationServiceTest {
 
@@ -24,37 +21,37 @@ class NavigationServiceTest {
 
     @Test
     fun up() {
-        navigationService.Up()
+        navigationService.up()
         assert(sourceText.activeRow == 0 && sourceText.positionInRow == 3)
     }
 
     @Test
     fun down() {
-        navigationService.Down()
+        navigationService.down()
         assert(sourceText.activeRow == 2 && sourceText.positionInRow == 3)
     }
 
     @Test
     fun left() {
-        navigationService.Left()
+        navigationService.left()
         assert(sourceText.activeRow == 1 && sourceText.positionInRow == 2)
     }
 
     @Test
     fun right() {
-        navigationService.Right()
+        navigationService.right()
         assert(sourceText.activeRow == 1 && sourceText.positionInRow == 4)
     }
 
     @Test
     fun home() {
-        navigationService.Home()
+        navigationService.home()
         assert(sourceText.activeRow == 1 && sourceText.positionInRow == 0)
     }
 
     @Test
     fun end() {
-        navigationService.End()
+        navigationService.end()
         assert(sourceText.activeRow == 1 && sourceText.positionInRow == 6)
     }
 }
