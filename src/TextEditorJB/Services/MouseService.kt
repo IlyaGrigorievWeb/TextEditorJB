@@ -1,19 +1,14 @@
 package TextEditorJB.Services
 
 import TextEditorJB.Components.TextPanel
+import TextEditorJB.Entities.SourceText
 
-class MouseService (private val textSelectionService: TextSelectionService, private val workspaceService : WorkspaceService,private  val panel : TextPanel, fileService: FileService) {
-
-    //val workspaceService = workspaceService
-    //val textSelectionService = textSelectionService
-    //val panel = textPanel
+class MouseService (private val textSelectionService: TextSelectionService, private val workspaceService : WorkspaceService,private  val panel : TextPanel,private val sourceText: SourceText) {
 
     fun selectShiftClick(mouseX : Int, mouseY : Int){
-        textSelectionService.shiftClick(mouseX,mouseY)
+        textSelectionService.shiftClick(mouseX,mouseY,sourceText)
     }
-    fun movedMouse (mouseX : Int, mouseY : Int){
-        textSelectionService.shiftClick(mouseX,mouseY)
-    }
+
     fun mouseScroll(rotation : Int){
         if (rotation == 1) //вниз
         {

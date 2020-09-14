@@ -17,22 +17,18 @@ fun main(){
     val panel =  TextPanel(sourceText)
     panel.isVisible = true
     panel.cursor = Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR)
-            //frame.addMouseListener(CustomMouseListener())
-            //panel.setBounds(0,0,300,300)
 
-    val textSelectionService = TextSelectionService(panel,panel.navigationService,sourceText)
-    //val fileService = FileService(panel,panel.workspaceService,sourceText)
-    val textService = TextService(panel,sourceText, panel.navigationService)
-    val shortcutService = ShortcutService(panel,textSelectionService,sourceText)
+    val textService = TextService(panel, panel.navigationService)
+    val shortcutService = ShortcutService(panel.textSelectionService)
 
-    frame.jMenuBar  = getConfiguredMenu(panel.fileService)
+    frame.jMenuBar  = getConfiguredMenu(panel.fileService, sourceText)
     frame.add(panel)
     panel.add(panel.caret)
     panel.add(panel.textSelection)
 
-    frame.addKeyListener(KeyboardListener(panel, panel.navigationService, textSelectionService,textService,shortcutService, panel.workspaceService))
+    frame.addKeyListener(KeyboardListener(panel, panel.navigationService, panel.textSelectionService,textService,shortcutService, panel.workspaceService,sourceText))
 
-    val mouseService = MouseService(textSelectionService,panel.workspaceService,panel,panel.fileService)
+    val mouseService = MouseService(panel.textSelectionService,panel.workspaceService,panel,sourceText)
     val ml = MouseListener(mouseService,panel)
 
     panel.addMouseListener(ml)
@@ -43,7 +39,7 @@ fun main(){
     panel.revalidate()
 
 }
-fun getConfiguredMenu(fileService: FileService) : JMenuBar
+fun getConfiguredMenu(fileService: FileService, sourceText : SourceText) : JMenuBar
 {
     val jMenuBar  = JMenuBar()
 
@@ -56,9 +52,9 @@ fun getConfiguredMenu(fileService: FileService) : JMenuBar
     fileOption.add(open)
     fileOption.add(save)
 
-    open.addActionListener { fileService.open() }
+    open.addActionListener { fileService.open(sourceText) }
 
-    save.addActionListener { fileService.save() }
+    save.addActionListener { fileService.save(sourceText) }
     save.accelerator = KeyStroke.getKeyStroke(KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK)
 
     return jMenuBar

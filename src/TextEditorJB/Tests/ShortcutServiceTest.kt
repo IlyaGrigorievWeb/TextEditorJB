@@ -5,10 +5,8 @@ import TextEditorJB.Entities.SourceText
 import TextEditorJB.Services.NavigationService
 import TextEditorJB.Services.ShortcutService
 import TextEditorJB.Services.TextSelectionService
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
-
 import org.junit.Assert.*
 import java.awt.Toolkit
 import java.awt.datatransfer.Clipboard
@@ -19,13 +17,13 @@ class ShortcutServiceTest {
 
     val sourceText = SourceText()
     val panel = TextPanel(sourceText)
-    val navigationService = NavigationService(panel,sourceText)
-    val textSelectionService = TextSelectionService(panel,navigationService,sourceText)
-    val shortcutService = ShortcutService(panel,textSelectionService,sourceText)
+    val navigationService = NavigationService(panel)
+    val textSelectionService = TextSelectionService(panel,navigationService)
+    val shortcutService = ShortcutService(textSelectionService)
 
     @Before
     fun setUp() {
-        sourceText.text = arrayOf("qwerty","qwerty", "qwerty")
+        sourceText.text = mutableListOf("qwerty","qwerty", "qwerty")
         sourceText.activeRow = 1
         sourceText.positionInRow = 3
 
@@ -38,24 +36,24 @@ class ShortcutServiceTest {
         textSelectionService.textSelection.selectingEndRow = 1
         textSelectionService.textSelection.selectingEndChar = 2
 
-        shortcutService.copy()
+        shortcutService.copy(sourceText)
 
-        var clipboard : Clipboard = Toolkit.getDefaultToolkit().systemClipboard
-        var dataFlavor : DataFlavor = DataFlavor.stringFlavor
+        val clipboard : Clipboard = Toolkit.getDefaultToolkit().systemClipboard
+        val dataFlavor : DataFlavor = DataFlavor.stringFlavor
 
-        var string = clipboard.getData(dataFlavor).toString()
+        val string = clipboard.getData(dataFlavor).toString()
 
         assert(string == "qwerty\nqw")
     }
 
     @Test
     fun paste() {
-        var clipboard : Clipboard = Toolkit.getDefaultToolkit().systemClipboard
-        var stringSelection = StringSelection("abc")
+        val clipboard : Clipboard = Toolkit.getDefaultToolkit().systemClipboard
+        val stringSelection = StringSelection("abc")
         clipboard.setContents(stringSelection,null)
 
-        shortcutService.paste()
+        shortcutService.paste(sourceText)
 
-        assertArrayEquals(sourceText.text, arrayOf("qwerty","qweabcrty","qwerty"))
+        assertTrue(sourceText.text == mutableListOf("qwerty","qweabcrty","qwerty"))
     }
 }

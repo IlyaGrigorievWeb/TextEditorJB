@@ -1,101 +1,89 @@
 package TextEditorJB.Services
 
 import TextEditorJB.Components.TextPanel
+import TextEditorJB.Entities.FileInfo
 import TextEditorJB.Entities.SourceText
 import java.io.*
 import javax.swing.JFileChooser
 
-class FileService (private val panel: TextPanel,private val sourceText: SourceText ,private val workspaceService: WorkspaceService) {
+class FileService (private val panel: TextPanel,private val workspaceService: WorkspaceService,private val fileInfo : FileInfo) {
 
-//    val panel = textPanel
-    //val workspaceService = workspaceService
-    //val sourceText = sourceText
-    var openingFile : File? = null
+    fun readPartial(lines : Int,sourceText : SourceText) {
 
-    var readerPosition = 0
-
-    var fileReader : FileReader? = null
-    var buffer : BufferedReader? = null
-
-
-    fun setSourceText(rowsCount : Int) {
-
-        val file = openingFile
-        if (file != null && file!!.exists()) {
-
-//            if (readerPosition!=0)
-//                buffer.skip((readerPosition-1).toLong())
-
-            var i = 0
-            var listString: MutableList<String> = mutableListOf()
-            while (buffer!!.ready() && i < rowsCount) {
-                val line = buffer!!.readLine()
-                listString.add(line)
-                i++
-//                for ((index, char) in line.withIndex()) {
-//                    if (char == '{' || char == '}')
-//                        panel.coloringService.bracketsService.addBracket(readerPosition + i - 1, index + 1, char)
-//                }
+        val file = fileInfo.openingFile
+        if (file != null) {
+            if ( file.exists()) {
+                var i = 0
+                val listString: MutableList<String> = mutableListOf()
+                while (fileInfo.buffer!!.ready() && i < lines) {
+                    val line = fileInfo.buffer!!.readLine()
+                    listString.add(line)
+                    i++
+                }
+                if (fileInfo.readerPosition == 0)
+                    sourceText.text = listString
+                else
+                    sourceText.text.addAll(listString)
+                fileInfo.readerPosition += i
             }
-            val arrayStrings = listString.toTypedArray()
-            if (readerPosition == 0)
-                sourceText.text = arrayStrings
             else
-                sourceText.text += arrayStrings
-            readerPosition += i
+                throw FileNotFoundException()
         }
+
     }
 
-    fun open(){
+    fun open(sourceText : SourceText){
 
 
         sourceText.positionInRow = 0
         sourceText.activeRow = 0
-        sourceText.text = arrayOf("")
+        sourceText.text = mutableListOf("")
 
-        workspaceService.position = 0
+        panel.position = 0
 
-        var fileChooser = JFileChooser()
+        val fileChooser = JFileChooser()
         fileChooser.fileSelectionMode = JFileChooser.FILES_ONLY
 
 
         fileChooser.showOpenDialog(panel)
-        var file = fileChooser.selectedFile
+        val file = fileChooser.selectedFile
 
         if (file != null && file.exists()) {
-            readerPosition = 0
+            fileInfo.readerPosition = 0
 
-            fileReader = FileReader(file)
-            buffer = BufferedReader(fileReader)
+            fileInfo.fileReader = FileReader(file)
+            fileInfo.buffer = BufferedReader(fileInfo.fileReader!!)
 
 
-            openingFile = file
-            setSourceText(panel.rowsInWorkspace*2)
+            fileInfo.openingFile = file
+            readPartial(panel.rowsInWorkspace*2,sourceText)
             workspaceService.setWorkspace()
             panel.repaint()
         }
+        else
+            throw FileNotFoundException()
     }
 
-    fun save()
+    fun save(sourceText : SourceText)
     {
-        var fileChooser = JFileChooser()
+        val fileChooser = JFileChooser()
         fileChooser.fileSelectionMode = JFileChooser.FILES_ONLY
 
-        var file : File?
+        val file : File?
 
-        if (openingFile == null) {
+        if (fileInfo.openingFile == null) {
 
             fileChooser.showSaveDialog(panel)
             file = fileChooser.selectedFile
         }
         else{
-            file = openingFile!!
+            file = fileInfo.openingFile!!
         }
 
-        if(file!=null){
+        if(file!!.exists()){
 
-            var fileWriter = FileWriter(file)
-            var bufferWriter = BufferedWriter(fileWriter)
+            val fileWriter = FileWriter(file)
+            val bufferWriter = BufferedWriter(fileWriter)
             for(string in sourceText.text)
             {
                 bufferWriter.write(string)
@@ -104,5 +92,7 @@ class FileService (private val panel: TextPanel,private val sourceText: SourceTe
 
             bufferWriter.close()
         }
+        else
+            throw FileNotFoundException()
     }
 }

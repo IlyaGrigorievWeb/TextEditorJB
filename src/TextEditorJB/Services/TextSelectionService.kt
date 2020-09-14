@@ -2,96 +2,94 @@ package TextEditorJB.Services
 
 import TextEditorJB.Components.TextPanel
 import TextEditorJB.Entities.SourceText
+import java.awt.geom.Rectangle2D
 
-class TextSelectionService(private val panel: TextPanel,private val navigation : NavigationService,private val sourceText: SourceText) {
+class TextSelectionService(private val panel: TextPanel, private val navigationService : NavigationService) {
 
-//    var panel = textPanel
-//    val sourceText = sourceText
-    val textSelection = panel.textSelection
-//    var navigation = navigationService
+    val textSelection get() =  panel.textSelection
 
-    fun shiftLeft ()
+    fun shiftLeft (sourceText : SourceText)
     {
         if(!textSelection.drawingSelection){
             textSelection.drawingSelection = true
 
             textSelection.setEndState()
-            navigation.left()
+            navigationService.left(sourceText)
             textSelection.setBeginState()
         }
         else{
             if (sourceText.activeRow == textSelection.selectingStartRow && sourceText.positionInRow == textSelection.selectingStartChar){
-                navigation.left()
+                navigationService.left(sourceText)
                 textSelection.setBeginState()
             }
             else{
-                navigation.left()
+                navigationService.left(sourceText)
                 textSelection.setEndState()
             }
         }
     }
-    fun shiftRight ()
+    fun shiftRight (sourceText : SourceText)
     {
         if(!textSelection.drawingSelection){
             textSelection.drawingSelection = true
 
             textSelection.setBeginState()
-            navigation.right()
+            navigationService.right(sourceText)
             textSelection.setEndState()
         }
         else{
             if (sourceText.activeRow == textSelection.selectingEndRow && sourceText.positionInRow == textSelection.selectingEndChar){
-                navigation.right()
+                navigationService.right(sourceText)
                 textSelection.setEndState()
             }
             else{
-                navigation.right()
+                navigationService.right(sourceText)
                 textSelection.setBeginState()
             }
         }
     }
-    fun shiftUp ()
+    fun shiftUp (sourceText : SourceText)
     {
         if(!textSelection.drawingSelection){
             textSelection.drawingSelection = true
 
             textSelection.setEndState()
-            navigation.up()
+            navigationService.up(sourceText)
             textSelection.setBeginState()
         }
         else{
             if (sourceText.activeRow == textSelection.selectingStartRow && sourceText.positionInRow == textSelection.selectingStartChar){
-                navigation.up()
+                navigationService.up(sourceText)
                 textSelection.setBeginState()
             }
             else{
-                navigation.up()
+                navigationService.up(sourceText)
                 textSelection.setEndState()
             }
         }
     }
-    fun shiftDown ()
+    fun shiftDown (sourceText : SourceText)
     {
         if(!textSelection.drawingSelection){
             textSelection.drawingSelection = true
 
             textSelection.setBeginState()
-            navigation.down()
+            navigationService.down(sourceText)
             textSelection.setEndState()
         }
         else{
             if (sourceText.activeRow == textSelection.selectingEndRow && sourceText.positionInRow == textSelection.selectingEndChar){
-                navigation.down()
+                navigationService.down(sourceText)
                 textSelection.setEndState()
             }
             else{
-                navigation.down()
+                navigationService.down(sourceText)
                 textSelection.setBeginState()
             }
         }
     }
 
-    fun shiftClick (mouseX : Int, mouseY : Int)
+    fun shiftClick (mouseX : Int, mouseY : Int,sourceText : SourceText)
     {
 
         val previousRow  = sourceText.activeRow
@@ -143,17 +141,17 @@ class TextSelectionService(private val panel: TextPanel,private val navigation :
         }
     }
 
-    fun getSelected () : String
+    fun getSelected (sourceText : SourceText) : String
     {
         var resultString = ""
-        var selectedTextArray = sourceText.text.copyOfRange(textSelection.selectingStartRow,textSelection.selectingEndRow+1)
+        val selectedTextArray = sourceText.text.subList(textSelection.selectingStartRow,textSelection.selectingEndRow+1)
 
         if (textSelection.selectingStartRow == textSelection.selectingEndRow)
         {
             resultString = sourceText.text[sourceText.activeRow].substring(textSelection.selectingStartChar,textSelection.selectingEndChar)
         }
         else{
-            for ((index,string) in selectedTextArray.withIndex()) {
+            for ((index) in selectedTextArray.withIndex()) {
                 if (index == 0) {
                     resultString += selectedTextArray[index].substring(textSelection.selectingStartChar, selectedTextArray[index].lastIndex+1)
                     resultString += "\n"
@@ -167,5 +165,30 @@ class TextSelectionService(private val panel: TextPanel,private val navigation :
         }
 
         return resultString
+    }
+
+    fun getStringBox (row : Int, beginPosition : Int, endPosition : Int,sourceText : SourceText) : Rectangle2D {
+
+        val metrics = panel.getFontMetrics(panel.textFont)
+
+        val x = panel.borderX + 4 + metrics.stringWidth(sourceText.text[row].substring(0,beginPosition))
+        val y = panel.borderY + panel.lineSpacing * (row - panel.position) - metrics.height + 10
+        val height = metrics.height - 4
+        val width = metrics.stringWidth(sourceText.text[row].substring(beginPosition,endPosition))
+
+        return  Rectangle2D.Double(x.toDouble(),y.toDouble(),width.toDouble(),height.toDouble())
+
+    }
+    fun getLineBox (row : Int, beginPosition : Int,sourceText : SourceText) : Rectangle2D {
+
+        val metrics = panel.getFontMetrics(panel.textFont)
+
+        val x = panel.borderX + 4 + metrics.stringWidth(sourceText.text[row].substring(0,beginPosition))
+        val y = panel.borderY + panel.lineSpacing * (row - panel.position) - metrics.height + 10
+        val height = metrics.height - 4
+        val width = panel.size.width
+
+        return  Rectangle2D.Double(x.toDouble(),y.toDouble(),width.toDouble(),height.toDouble())
+
     }
 }

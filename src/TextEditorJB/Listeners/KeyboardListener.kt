@@ -1,6 +1,7 @@
 package TextEditorJB.Listeners
 
 import TextEditorJB.Components.TextPanel
+import TextEditorJB.Entities.SourceText
 import TextEditorJB.Services.*
 import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
@@ -10,50 +11,54 @@ class KeyboardListener( private val panel : TextPanel,
                         private val  textSelectionService: TextSelectionService,
                         private val  textService: TextService,
                         private val  shortcutService: ShortcutService,
-                        private val  workspaceService: WorkspaceService) : KeyAdapter(){
+                        private val  workspaceService: WorkspaceService,
+                        private val sourceText: SourceText) : KeyAdapter(){
 
     override fun keyPressed(e: KeyEvent) { //TODO При каждом нажатии repaint плохо
         if (e.keyCode != 20 && e.keyCode != 18 && e.keyCode != 524) { //Игнорирование CAPS Lock и Alt т.к. они в данном функционале не нужны
             if (e.isShiftDown) {
                 if (e.keyCode != 16) {
                     when (e.keyCode) {
-                        38 -> textSelectionService.shiftUp()
-                        40 -> textSelectionService.shiftDown()
-                        37 -> textSelectionService.shiftLeft()
-                        39 -> textSelectionService.shiftRight()
-                        8 -> textService.backspace()
-                        else -> textService.char(e.keyChar.toString())
+                        38 -> textSelectionService.shiftUp(sourceText)
+                        40 -> textSelectionService.shiftDown(sourceText)
+                        37 -> textSelectionService.shiftLeft(sourceText)
+                        39 -> textSelectionService.shiftRight(sourceText)
+                        8 -> textService.backspace(sourceText)
+                        else -> textService.char(e.keyChar.toString(),sourceText)
                     }
                     workspaceService.setWorkspace()
                     panel.repaint()
                 }
             } else if (e.isControlDown) {
                 when (e.keyCode) {
-                    67 -> shortcutService.copy()
-                    86 -> shortcutService.paste()
+                    67 -> shortcutService.copy(sourceText)
+                    86 -> shortcutService.paste(sourceText)
                     65 -> print('a')
                     88 -> print('x')
                 }
+                panel.textSelection.drawingSelection = false
+                workspaceService.setWorkspace()
+                panel.repaint()
             } else {
                 //panel.textSelection.drawingSelection = false
                 when (e.keyCode) {
-                    38 -> navigationService.up()
-                    40 -> navigationService.down()
-                    37 -> navigationService.left()
-                    39 -> navigationService.right()
-                    35 -> navigationService.end()
-                    36 -> navigationService.home()
-                    33 -> navigationService.pageUp()
-                    34 -> navigationService.pageDown()
+                    38 -> navigationService.up(sourceText)
+                    40 -> navigationService.down(sourceText)
+                    37 -> navigationService.left(sourceText)
+                    39 -> navigationService.right(sourceText)
+                    35 -> navigationService.end(sourceText)
+                    36 -> navigationService.home(sourceText)
+                    33 -> navigationService.pageUp(sourceText)
+                    34 -> navigationService.pageDown(sourceText)
 
 
                     155 -> textService.insert()
-                    8 -> textService.backspace()
-                    127 -> textService.delete()
-                    10 -> textService.enter()
-                    9 -> textService.tab()
+                    8 -> textService.backspace(sourceText)
+                    127 -> textService.delete(sourceText)
+                    10 -> textService.enter(sourceText)
+                    9 -> textService.tab(sourceText)
 
-                    else -> textService.char(e.keyChar.toString())
+                    else -> textService.char(e.keyChar.toString(),sourceText)
                 }
                 panel.textSelection.drawingSelection = false
                 workspaceService.setWorkspace()
@@ -61,8 +66,4 @@ class KeyboardListener( private val panel : TextPanel,
             }
         }
     }
-
-    override fun keyReleased(e: KeyEvent?) {
-    }
-
 }

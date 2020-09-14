@@ -1,7 +1,6 @@
 package TextEditorJB.Components
 
 import TextEditorJB.Entities.SourceText
-import TextEditorJB.TextColorer.BracketsService
 import java.awt.Color
 import java.awt.Font
 import java.awt.Graphics
@@ -9,30 +8,28 @@ import java.awt.Graphics2D
 import java.awt.geom.Rectangle2D
 import javax.swing.JComponent
 
-class Caret(private val panel: TextPanel,private val sourceText: SourceText , private  val bracketsService : BracketsService) : JComponent() { //TODO Отрисовка должна проимходить от workspace  а не от всего текста
+class Caret(private val panel: TextPanel,private val sourceText: SourceText) : JComponent() {
 
     private val charCaret = "|"
     var isInsert = false
 
-    fun setPositionByMouseCoord(mousePositionX: Int,mousePositionY: Int) { //TODO: Долго работает, скорее всего из за того что при клике перерисовывается всё
+    fun setPositionByMouseCoord(mousePositionX: Int,mousePositionY: Int) {
         val metrics = panel.getFontMetrics(panel.textFont)
         var row = 0
         if (mousePositionY < panel.borderY - panel.lineSpacing)
         {
-            sourceText.activeRow  = 0 + panel.workspaceService.position
+            sourceText.activeRow  = 0 + panel.position
         }
         else {
             for (position in panel.borderY..(panel.borderY - panel.lineSpacing) + sourceText.text.size * panel.lineSpacing step panel.lineSpacing) {
                 if (mousePositionY in position - metrics.height + 3..position) {
-                    //positionY = panel.borderY + row * panel.lineSpacing
-                    sourceText.activeRow = row  + panel.workspaceService.position
+                    sourceText.activeRow = row  + panel.position
                 }
                 row++
             }
         }
         if (mousePositionX < panel.borderX)
         {
-            //positionX = panel.borderX
             sourceText.positionInRow = 0
         }
         else if(mousePositionX > metrics.stringWidth(sourceText.text[sourceText.activeRow]) + panel.borderX)
@@ -60,13 +57,12 @@ class Caret(private val panel: TextPanel,private val sourceText: SourceText , pr
         }
     }
 
-    override fun paintComponent(g: Graphics?) { //:TODO будет два варианта отрисовки, либо чар , либо прямоугольник размером с символ и перекрашенным сиволом внутри
+    override fun paintComponent(g: Graphics?) {
         val g2 = g as Graphics2D
 
-        if (sourceText.activeRow in panel.workspaceService.position .. (panel.workspaceService.position + panel.rowsInWorkspace))
+        if (sourceText.activeRow in panel.position .. (panel.position + panel.rowsInWorkspace))
         {
-            val myFont = Font("Calibri", 0, 20)
-            (g as Graphics).font = myFont
+            (g as Graphics).font = Font("Calibri", 0, 20)
             if (isInsert){
                 val symbol: String
                 if (sourceText.positionInRow < sourceText.text[sourceText.activeRow].length)
@@ -76,7 +72,7 @@ class Caret(private val panel: TextPanel,private val sourceText: SourceText , pr
 
                 val metrics = panel.getFontMetrics(panel.textFont)
 
-                val row = sourceText.activeRow - panel.workspaceService.position
+                val row = sourceText.activeRow - panel.position
 
                 val positionX = metrics.stringWidth(sourceText.text[sourceText.activeRow].substring(0,sourceText.positionInRow)) + panel.borderX
                 val positionY = panel.borderY  + row * panel.lineSpacing
@@ -94,8 +90,7 @@ class Caret(private val panel: TextPanel,private val sourceText: SourceText , pr
                 g2.color = Color.BLACK
             }
             else{
-                val row = sourceText.activeRow - panel.workspaceService.position
-                //val charPosition = sourceText.positionInRow
+                val row = sourceText.activeRow - panel.position
 
                 val metrics = panel.getFontMetrics(panel.textFont)
                 val y = panel.borderY  + row * panel.lineSpacing
@@ -106,10 +101,5 @@ class Caret(private val panel: TextPanel,private val sourceText: SourceText , pr
                 g2.color = Color.BLACK
             }
         }
-
-        if(sourceText.text[sourceText.activeRow].length > 1)
-            bracketsService.searchBracket(sourceText.activeRow,sourceText.positionInRow,sourceText.text[sourceText.activeRow][sourceText.positionInRow-1])
-        //TODO Когда пишет заносить скобку когда рисует каретку проверять нет ли рядом скобки и если есть поентиить обе
-
     }
 }

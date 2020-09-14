@@ -1,17 +1,20 @@
 package TextEditorJB.TextColorer
 
 import TextEditorJB.Components.TextPanel
+import TextEditorJB.Entities.SourceText
+import TextEditorJB.Services.TextSelectionService
 import java.awt.Color
 import java.awt.FontMetrics
 import java.awt.Graphics
 import java.awt.Graphics2D
 import java.awt.geom.Rectangle2D
 
-class TextColorerService (textPanel : TextPanel) {
+class TextColorerService (textPanel : TextPanel,val textSelectionService: TextSelectionService) {
+
     val panel = textPanel
     var bracketsService = BracketsService(panel, panel.sourceText)
     fun paintKeyWords(string: String, graphics: Graphics, x: Int, y: Int) { //сколько скобок от начала столько скобок от конца
-        //var graphics = panel.graphics
+
         val metrics = graphics.getFontMetrics(graphics.font)
         var str = ""
 
@@ -63,64 +66,18 @@ class TextColorerService (textPanel : TextPanel) {
             keyWordsColors.put(string, Color.ORANGE)
     }
 
-//    fun paintBrackets(row: Int, position: Int,bracket : Char, g: Graphics) {
-//        //TODO Взял код из выделения, можно зарефакторить и вынести в одно место высчитывание координат и бокса по позиции
-//        var pairBracket = bracketsService.getPairBracket(row,position,bracket)
-//        if (pairBracket != null){
-//            val g2 = g as Graphics2D
-//            var metrics = g2.getFontMetrics(g2.font)
-//            var char = bracket
-//
-//            var x = panel.borderX + metrics.stringWidth(panel.workspaceText[row].substring(0,position))
-//            var y = panel.borderY + panel.lineSpacing * row - metrics.height + metrics.descent
-//            var height = metrics.height
-//            var width = metrics.charWidth(char)
-//            var firstBracketRectangle = Rectangle2D.Double(x.toDouble(),y.toDouble(),width.toDouble(),height.toDouble())
-//
-//            x = panel.borderX + metrics.stringWidth(panel.workspaceText[pairBracket.row].substring(0,pairBracket.position))
-//            y = panel.borderY + panel.lineSpacing * pairBracket.row - metrics.height + metrics.descent + 2
-//            height = metrics.height
-//            width = metrics.charWidth(char)
-//            var secondBracketRectangle = Rectangle2D.Double(x.toDouble(),y.toDouble(),width.toDouble(),height.toDouble())
-//
-//            g2.color = Color.GREEN
-//            g2.fill(firstBracketRectangle)
-//            g2.fill(secondBracketRectangle)
-//            g2.color = Color.BLACK
-//        }
-//    }
-    private fun getXbyPosition(row : Int,position : Int,metrics : FontMetrics) : Int
-    {
-        return 0
-    }
-    private fun getYbyRow(row : Int,metrics : FontMetrics) : Int
-    {
-        return panel.lineSpacing * row
-    }
+    fun paintBrackets(row: Int, position: Int,bracket : Char, g: Graphics,sourceText: SourceText) {
+        var pairBracket = bracketsService.searchBracket(row,position,bracket)
+        if (pairBracket != null){
+            val g2 = g as Graphics2D
 
+            var firstBracketRectangle = textSelectionService.getStringBox(row,position-1,position,sourceText)
+            var secondBracketRectangle = textSelectionService.getStringBox(pairBracket.row,pairBracket.position-1,pairBracket.position,sourceText)
 
-    fun brackets(row: Int, position: Int,bracket : Char, g: Graphics?) { //запасной метод для перебора во время написания
-        var fullText = panel .workspaceText
-        if (fullText[row][position] == '{' /*|| fullText[row][position-1] == '{'*/) {
-            var secondBracketRow = row
-            var secondBracketPosition = position
-            var counter = 1
-            while (counter != 0) {
-                if (fullText[secondBracketRow][secondBracketPosition] == '}') {
-                    counter--
-                    if (counter == 0)
-                        break
-                } else if (fullText[secondBracketRow][secondBracketPosition] == '{') {
-                    counter++
-                }
-                if (secondBracketPosition == fullText[secondBracketRow].lastIndex) {
-                    secondBracketRow++
-                    secondBracketPosition = 0
-                    if (secondBracketRow == fullText.lastIndex)
-                        counter = 0
-                } else
-                    secondBracketPosition++
-            }
+            g2.color = Color.GREEN
+            g2.fill(firstBracketRectangle)
+            g2.fill(secondBracketRectangle)
+            g2.color = Color.BLACK
         }
     }
 }
