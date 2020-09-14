@@ -2,11 +2,6 @@ package TextEditorJB.TextColorer
 
 import TextEditorJB.Components.TextPanel
 import TextEditorJB.Entities.SourceText
-import java.awt.Color
-import java.awt.FontMetrics
-import java.awt.Graphics
-import java.awt.Graphics2D
-import java.awt.geom.Rectangle2D
 
 class BracketsService (private val panel : TextPanel, private val sourceText: SourceText){
 
