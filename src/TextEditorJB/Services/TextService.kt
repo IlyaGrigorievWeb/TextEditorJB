@@ -2,6 +2,7 @@ package TextEditorJB.Services
 
 import TextEditorJB.Components.TextPanel
 import TextEditorJB.Entities.SourceText
+import TextEditorJB.Enums.Vector
 
 //Сервис работы с текстом
 class TextService (private val panel: TextPanel,private val navigationService: NavigationService){
@@ -45,14 +46,14 @@ class TextService (private val panel: TextPanel,private val navigationService: N
             panel.rowY += panel.lineSpacing
         }
 
-        navigationService.down(sourceText)
+        navigationService.setVector(sourceText, Vector.down)
         sourceText.positionInRow = 0
     }
     fun backspace(sourceText : SourceText)
     {
         if (!panel.textSelection.drawingSelection) {
             if (!(sourceText.positionInRow <= 0 && sourceText.activeRow <= 0)) {
-                navigationService.left(sourceText)
+                navigationService.setVector(sourceText,Vector.left)
                 delete(sourceText)
             }
         }

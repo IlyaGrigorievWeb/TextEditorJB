@@ -2,6 +2,7 @@ package TextEditorJB.Listeners
 
 import TextEditorJB.Components.TextPanel
 import TextEditorJB.Entities.SourceText
+import TextEditorJB.Enums.Vector
 import TextEditorJB.Services.*
 import java.awt.event.KeyAdapter
 import java.awt.event.KeyEvent
@@ -19,10 +20,14 @@ class KeyboardListener( private val panel : TextPanel,
             if (e.isShiftDown) {
                 if (e.keyCode != 16) {
                     when (e.keyCode) {
-                        38 -> textSelectionService.shiftUp(sourceText)
-                        40 -> textSelectionService.shiftDown(sourceText)
-                        37 -> textSelectionService.shiftLeft(sourceText)
-                        39 -> textSelectionService.shiftRight(sourceText)
+//                        38 -> textSelectionService.shiftUp(sourceText)
+//                        40 -> textSelectionService.shiftDown(sourceText)
+//                        37 -> textSelectionService.shiftLeft(sourceText)
+//                        39 -> textSelectionService.shiftRight(sourceText)
+                        38 -> textSelectionService.shiftNavigation(sourceText,Vector.up)
+                        40 -> textSelectionService.shiftNavigation(sourceText,Vector.down)
+                        37 -> textSelectionService.shiftNavigation(sourceText,Vector.left)
+                        39 -> textSelectionService.shiftNavigation(sourceText,Vector.right)
                         8 -> textService.backspace(sourceText)
                         else -> textService.char(e.keyChar.toString(),sourceText)
                     }
@@ -42,10 +47,18 @@ class KeyboardListener( private val panel : TextPanel,
             } else {
                 //panel.textSelection.drawingSelection = false
                 when (e.keyCode) {
-                    38 -> navigationService.up(sourceText)
-                    40 -> navigationService.down(sourceText)
-                    37 -> navigationService.left(sourceText)
-                    39 -> navigationService.right(sourceText)
+//                    38 -> navigationService.up(sourceText)
+//                    40 -> navigationService.down(sourceText)
+//                    37 -> navigationService.left(sourceText)
+//                    39 -> navigationService.right(sourceText)
+//                    0 -> sourceText.activeRow++//down
+//                    1 -> sourceText.positionInRow++ //right
+//                    2 -> sourceText.activeRow--//up
+//                    3 -> sourceText.positionInRow-- //left
+                    38 -> navigationService.setVector(sourceText,Vector.up)
+                    40 -> navigationService.setVector(sourceText,Vector.down)
+                    37 -> navigationService.setVector(sourceText,Vector.left)
+                    39 -> navigationService.setVector(sourceText,Vector.right)
                     35 -> navigationService.end(sourceText)
                     36 -> navigationService.home(sourceText)
                     33 -> navigationService.pageUp(sourceText)

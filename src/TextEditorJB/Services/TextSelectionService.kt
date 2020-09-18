@@ -2,90 +2,119 @@ package TextEditorJB.Services
 
 import TextEditorJB.Components.TextPanel
 import TextEditorJB.Entities.SourceText
+import TextEditorJB.Enums.Vector
 import java.awt.geom.Rectangle2D
 
 class TextSelectionService(private val panel: TextPanel, private val navigationService : NavigationService) {
 
     val textSelection get() =  panel.textSelection
 
-    fun shiftLeft (sourceText : SourceText)
+//    fun shiftLeft (sourceText : SourceText)
+//    {
+//        if(!textSelection.drawingSelection){
+//            textSelection.drawingSelection = true
+//
+//            textSelection.setEndState()
+//            navigationService.setVector(sourceText,Vector.left)
+//            textSelection.setBeginState()
+//        }
+//        else{
+//            if (sourceText.activeRow == textSelection.selectingStartRow && sourceText.positionInRow == textSelection.selectingStartChar){
+//                navigationService.setVector(sourceText,Vector.left)
+//                textSelection.setBeginState()
+//            }
+//            else{
+//                navigationService.setVector(sourceText,Vector.left)
+//                textSelection.setEndState()
+//            }
+//        }
+//    }
+//    fun shiftRight (sourceText : SourceText)
+//    {
+//        if(!textSelection.drawingSelection){
+//            textSelection.drawingSelection = true
+//
+//            textSelection.setBeginState()
+//            navigationService.setVector(sourceText,Vector.right)
+//            textSelection.setEndState()
+//        }
+//        else{
+//            if (sourceText.activeRow == textSelection.selectingEndRow && sourceText.positionInRow == textSelection.selectingEndChar){
+//                navigationService.setVector(sourceText,Vector.right)
+//                textSelection.setEndState()
+//            }
+//            else{
+//                navigationService.setVector(sourceText,Vector.right)
+//                textSelection.setBeginState()
+//            }
+//        }
+//    }
+//    fun shiftUp (sourceText : SourceText)
+//    {
+//        if(!textSelection.drawingSelection){
+//            textSelection.drawingSelection = true
+//
+//            textSelection.setEndState()
+//            navigationService.setVector(sourceText,Vector.up)
+//            textSelection.setBeginState()
+//        }
+//        else{
+//            if (sourceText.activeRow == textSelection.selectingStartRow && sourceText.positionInRow == textSelection.selectingStartChar){
+//                navigationService.setVector(sourceText,Vector.up)
+//                textSelection.setBeginState()
+//            }
+//            else{
+//                navigationService.setVector(sourceText,Vector.up)
+//                textSelection.setEndState()
+//            }
+//        }
+//    }
+//    fun shiftDown (sourceText : SourceText)
+//    {
+//        if(!textSelection.drawingSelection){
+//            textSelection.drawingSelection = true
+//
+//            textSelection.setBeginState()
+//            navigationService.setVector(sourceText,Vector.down)
+//            textSelection.setEndState()
+//        }
+//        else{
+//            if (sourceText.activeRow == textSelection.selectingEndRow && sourceText.positionInRow == textSelection.selectingEndChar){
+//                navigationService.setVector(sourceText,Vector.down)
+//                textSelection.setEndState()
+//            }
+//            else{
+//                navigationService.setVector(sourceText,Vector.down)
+//                textSelection.setBeginState()
+//            }
+//        }
+//    }
+
+    fun shiftNavigation (sourceText : SourceText, vector: Vector) //(sourceText: SourceText ,vector : Vector)
     {
         if(!textSelection.drawingSelection){
             textSelection.drawingSelection = true
 
-            textSelection.setEndState()
-            navigationService.left(sourceText)
             textSelection.setBeginState()
+            navigationService.setVector(sourceText,vector)
+            textSelection.setEndState()
         }
         else{
-            if (sourceText.activeRow == textSelection.selectingStartRow && sourceText.positionInRow == textSelection.selectingStartChar){
-                navigationService.left(sourceText)
+            if (sourceText.activeRow < textSelection.selectingEndRow || (sourceText.activeRow == textSelection.selectingEndRow && sourceText.positionInRow < textSelection.selectingEndChar))
+            {
+                navigationService.setVector(sourceText,vector)
                 textSelection.setBeginState()
             }
-            else{
-                navigationService.left(sourceText)
+            else if(sourceText.activeRow > textSelection.selectingStartRow || (sourceText.activeRow == textSelection.selectingStartRow && sourceText.positionInRow > textSelection.selectingStartChar))
+            {
+                navigationService.setVector(sourceText,vector)
                 textSelection.setEndState()
             }
-        }
-    }
-    fun shiftRight (sourceText : SourceText)
-    {
-        if(!textSelection.drawingSelection){
-            textSelection.drawingSelection = true
+            if (textSelection.selectingStartRow == textSelection.selectingEndRow && textSelection.selectingStartChar == textSelection.selectingEndChar)
+            {
+                textSelection.drawingSelection = false
+            }
 
-            textSelection.setBeginState()
-            navigationService.right(sourceText)
-            textSelection.setEndState()
-        }
-        else{
-            if (sourceText.activeRow == textSelection.selectingEndRow && sourceText.positionInRow == textSelection.selectingEndChar){
-                navigationService.right(sourceText)
-                textSelection.setEndState()
-            }
-            else{
-                navigationService.right(sourceText)
-                textSelection.setBeginState()
-            }
-        }
-    }
-    fun shiftUp (sourceText : SourceText)
-    {
-        if(!textSelection.drawingSelection){
-            textSelection.drawingSelection = true
-
-            textSelection.setEndState()
-            navigationService.up(sourceText)
-            textSelection.setBeginState()
-        }
-        else{
-            if (sourceText.activeRow == textSelection.selectingStartRow && sourceText.positionInRow == textSelection.selectingStartChar){
-                navigationService.up(sourceText)
-                textSelection.setBeginState()
-            }
-            else{
-                navigationService.up(sourceText)
-                textSelection.setEndState()
-            }
-        }
-    }
-    fun shiftDown (sourceText : SourceText)
-    {
-        if(!textSelection.drawingSelection){
-            textSelection.drawingSelection = true
-
-            textSelection.setBeginState()
-            navigationService.down(sourceText)
-            textSelection.setEndState()
-        }
-        else{
-            if (sourceText.activeRow == textSelection.selectingEndRow && sourceText.positionInRow == textSelection.selectingEndChar){
-                navigationService.down(sourceText)
-                textSelection.setEndState()
-            }
-            else{
-                navigationService.down(sourceText)
-                textSelection.setBeginState()
-            }
         }
     }
 
@@ -167,28 +196,30 @@ class TextSelectionService(private val panel: TextPanel, private val navigationS
         return resultString
     }
 
-    fun getStringBox (row : Int, beginPosition : Int, endPosition : Int,sourceText : SourceText) : Rectangle2D {
+    fun getStringBox (sourceText : SourceText , row : Int, beginPosition : Int, endPosition : Int = -1) : Rectangle2D {
 
         val metrics = panel.getFontMetrics(panel.textFont)
 
         val x = panel.borderX + 4 + metrics.stringWidth(sourceText.text[row].substring(0,beginPosition))
         val y = panel.borderY + panel.lineSpacing * (row - panel.position) - metrics.height + 10
         val height = metrics.height - 4
-        val width = metrics.stringWidth(sourceText.text[row].substring(beginPosition,endPosition))
+        var width = panel.size.width
+        if (endPosition != -1)
+            width = metrics.stringWidth(sourceText.text[row].substring(beginPosition,endPosition))
 
         return  Rectangle2D.Double(x.toDouble(),y.toDouble(),width.toDouble(),height.toDouble())
 
     }
-    fun getLineBox (row : Int, beginPosition : Int,sourceText : SourceText) : Rectangle2D {
-
-        val metrics = panel.getFontMetrics(panel.textFont)
-
-        val x = panel.borderX + 4 + metrics.stringWidth(sourceText.text[row].substring(0,beginPosition))
-        val y = panel.borderY + panel.lineSpacing * (row - panel.position) - metrics.height + 10
-        val height = metrics.height - 4
-        val width = panel.size.width
-
-        return  Rectangle2D.Double(x.toDouble(),y.toDouble(),width.toDouble(),height.toDouble())
-
-    }
+//    fun getLineBox (row : Int, beginPosition : Int,sourceText : SourceText) : Rectangle2D {
+//
+//        val metrics = panel.getFontMetrics(panel.textFont)
+//
+//        val x = panel.borderX + 4 + metrics.stringWidth(sourceText.text[row].substring(0,beginPosition))
+//        val y = panel.borderY + panel.lineSpacing * (row - panel.position) - metrics.height + 10
+//        val height = metrics.height - 4
+//        val width = panel.size.width
+//
+//        return  Rectangle2D.Double(x.toDouble(),y.toDouble(),width.toDouble(),height.toDouble())
+//
+//    }
 }

@@ -2,6 +2,7 @@ package TextEditorJB.Tests
 
 import TextEditorJB.Components.TextPanel
 import TextEditorJB.Entities.SourceText
+import TextEditorJB.Enums.Vector
 import TextEditorJB.Services.NavigationService
 import org.junit.Before
 import org.junit.Test
@@ -21,25 +22,25 @@ class NavigationServiceTest {
 
     @Test
     fun up() {
-        navigationService.up(sourceText)
+        navigationService.setVector(sourceText, Vector.up)
         assert(sourceText.activeRow == 0 && sourceText.positionInRow == 3)
     }
 
     @Test
     fun down() {
-        navigationService.down(sourceText)
+        navigationService.setVector(sourceText,Vector.down)
         assert(sourceText.activeRow == 2 && sourceText.positionInRow == 3)
     }
 
     @Test
     fun left() {
-        navigationService.left(sourceText)
+        navigationService.setVector(sourceText,Vector.left)
         assert(sourceText.activeRow == 1 && sourceText.positionInRow == 2)
     }
 
     @Test
     fun right() {
-        navigationService.right(sourceText)
+        navigationService.setVector(sourceText,Vector.right)
         assert(sourceText.activeRow == 1 && sourceText.positionInRow == 4)
     }
 

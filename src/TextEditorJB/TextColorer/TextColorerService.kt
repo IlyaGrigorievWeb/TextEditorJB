@@ -71,8 +71,8 @@ class TextColorerService (textPanel : TextPanel,val textSelectionService: TextSe
         if (pairBracket != null){
             val g2 = g as Graphics2D
 
-            var firstBracketRectangle = textSelectionService.getStringBox(row,position-1,position,sourceText)
-            var secondBracketRectangle = textSelectionService.getStringBox(pairBracket.row,pairBracket.position-1,pairBracket.position,sourceText)
+            var firstBracketRectangle = textSelectionService.getStringBox(sourceText,row,position-1,position)
+            var secondBracketRectangle = textSelectionService.getStringBox(sourceText,pairBracket.row,pairBracket.position-1,pairBracket.position)
 
             g2.color = Color.GREEN
             g2.fill(firstBracketRectangle)

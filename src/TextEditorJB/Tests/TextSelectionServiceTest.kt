@@ -2,6 +2,7 @@ package TextEditorJB.Tests
 
 import TextEditorJB.Components.TextPanel
 import TextEditorJB.Entities.SourceText
+import TextEditorJB.Enums.Vector
 import TextEditorJB.Services.NavigationService
 import TextEditorJB.Services.TextSelectionService
 import org.junit.Before
@@ -26,7 +27,7 @@ class TextSelectionServiceTest {
     @Test
     fun shiftLeft() {
 
-        textSelectionService.shiftLeft(sourceText)
+        textSelectionService.shiftNavigation(sourceText,Vector.left)
         assertTrue(sourceText.activeRow == 1 && sourceText.positionInRow == 2)
 
         assertTrue(textSelectionService.textSelection.selectingStartRow == 1 && textSelectionService.textSelection.selectingEndRow == 1)
@@ -36,7 +37,7 @@ class TextSelectionServiceTest {
     @Test
     fun shiftRight() {
 
-        textSelectionService.shiftRight(sourceText)
+        textSelectionService.shiftNavigation(sourceText,Vector.right)
         assertTrue(sourceText.activeRow == 1 && sourceText.positionInRow == 4)
 
         assertTrue(textSelectionService.textSelection.selectingStartRow == 1 && textSelectionService.textSelection.selectingEndRow == 1)
@@ -46,7 +47,7 @@ class TextSelectionServiceTest {
 
     @Test
     fun shiftUp() {
-        textSelectionService.shiftUp(sourceText)
+        textSelectionService.shiftNavigation(sourceText,Vector.up)
         assertTrue(sourceText.activeRow == 0 && sourceText.positionInRow == 3)
 
         assertTrue(textSelectionService.textSelection.selectingStartRow == 0 && textSelectionService.textSelection.selectingEndRow == 1)
@@ -55,7 +56,7 @@ class TextSelectionServiceTest {
 
     @Test
     fun shiftDown() {
-        textSelectionService.shiftDown(sourceText)
+        textSelectionService.shiftNavigation(sourceText,Vector.down)
 
         assertTrue(sourceText.activeRow == 2 && sourceText.positionInRow == 3)
         assertTrue(textSelectionService.textSelection.selectingStartRow == 1 && textSelectionService.textSelection.selectingEndRow == 2)

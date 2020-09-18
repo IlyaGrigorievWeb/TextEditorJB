@@ -10,17 +10,19 @@ import javax.swing.JComponent
 
 class TextSelection (private val sourceText: SourceText, private var textSelectionService: TextSelectionService) : JComponent() {
 
-    var selectingStartRow = 0
-    var selectingEndRow = 0
-    var selectingStartChar = 0
-    var selectingEndChar = 0
+    var selectingStartRow = -1
+    var selectingEndRow = -1
+    var selectingStartChar = -1
+    var selectingEndChar = -1
     var buffer = ""
     var drawingSelection = false
 
     set(value){
         if (!value) {
-            selectingStartChar = 0
-            selectingEndChar = 0
+            selectingStartRow = -1
+            selectingStartChar = -1
+            selectingEndRow = -1
+            selectingEndChar = -1
             buffer = ""
         }
         field = value
@@ -37,23 +39,23 @@ class TextSelection (private val sourceText: SourceText, private var textSelecti
             when (selectingEndRow - selectingStartRow)
             {
                 0 -> {
-                    rectangles = mutableListOf(textSelectionService.getStringBox(selectingStartRow,selectingStartChar,selectingEndChar,sourceText))
+                    rectangles = mutableListOf(textSelectionService.getStringBox(sourceText,selectingStartRow,selectingStartChar,selectingEndChar))
                 }
                 1 -> {
-                    val firstRectangle =  textSelectionService.getLineBox(selectingStartRow,selectingStartChar,sourceText)
-                    val secondRectangle =  textSelectionService.getStringBox(selectingEndRow,0,selectingEndChar,sourceText)
+                    val firstRectangle =  textSelectionService.getStringBox(sourceText,selectingStartRow,selectingStartChar)
+                    val secondRectangle =  textSelectionService.getStringBox(sourceText,selectingEndRow,0,selectingEndChar)
                     rectangles = mutableListOf(firstRectangle,secondRectangle)
                 }
                 else -> {
-                    val firstRectangle =  textSelectionService.getLineBox(selectingStartRow,selectingStartChar,sourceText) //1 с трока ебется
+                    val firstRectangle =  textSelectionService.getStringBox(sourceText,selectingStartRow,selectingStartChar)
                     rectangles = mutableListOf(firstRectangle)
 
                     for (row in selectingStartRow+1 until selectingEndRow)
                     {
-                        rectangles.add(textSelectionService.getLineBox(row,0,sourceText))
+                        rectangles.add(textSelectionService.getStringBox(sourceText,row,0))
                     }
 
-                    rectangles.add(textSelectionService.getStringBox(selectingEndRow,0,selectingEndChar,sourceText))
+                    rectangles.add(textSelectionService.getStringBox(sourceText,selectingEndRow,0,selectingEndChar))
                 }
             }
 
@@ -64,23 +66,33 @@ class TextSelection (private val sourceText: SourceText, private var textSelecti
             g2.paint = Color.BLACK
         }
     }
-    fun setBeginState()
-    {
-        selectingStartRow = sourceText.activeRow
-        selectingStartChar = sourceText.positionInRow
-    }
-    fun setEndState()
-    {
-        selectingEndRow = sourceText.activeRow
-        selectingEndChar = sourceText.positionInRow
-    }
-    fun setBeginState(row : Int, position : Int)
+
+    fun setBeginState(row : Int = sourceText.activeRow, position : Int  = sourceText.positionInRow) //суть метода в том что он сохраняет 2 позиции, при этом меньшая всегда стартовая а большая конечная
     {
         selectingStartRow = row
         selectingStartChar = position
+        if (selectingEndRow != -1 && (row > selectingEndRow || (row == selectingEndRow && position > selectingEndChar)))
+        {
+            swapSelectingPositions()
+        }
     }
-    fun setEndState(row : Int, position : Int)
+    fun setEndState(row : Int = sourceText.activeRow, position : Int  = sourceText.positionInRow)
     {
+        selectingEndRow = row
+        selectingEndChar = position
+        if (selectingStartRow != -1 && (row < selectingStartRow || (row == selectingStartRow && position < selectingStartChar)))
+        {
+            swapSelectingPositions()
+        }
+    }
+    private fun swapSelectingPositions()
+    {
+        val row = selectingStartRow
+        val position = selectingStartChar
+
+        selectingStartRow = selectingEndRow
+        selectingStartChar =selectingEndChar
+
         selectingEndRow = row
         selectingEndChar = position
     }
