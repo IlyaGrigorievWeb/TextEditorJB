@@ -44,6 +44,7 @@ class TextPanel (val sourceText: SourceText) : JPanel() {
         }
 
     override fun paintComponent(g: Graphics?)  {
+        workspaceService.setWorkspace()
         val g2 = g as Graphics2D
         super.paintComponent(g)
 

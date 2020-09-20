@@ -4,13 +4,13 @@ import TextEditorJB.Listeners.KeyboardListener
 import TextEditorJB.Listeners.MouseListener
 import TextEditorJB.Services.*
 import java.awt.Cursor
+import java.awt.Dimension
 import java.awt.event.KeyEvent
 import javax.swing.*
 
 fun main(){
 
     val frame = getFrame() //TODO Повесить событие изменения размера окна
-
 
     val sourceText = SourceText()
 
@@ -64,7 +64,7 @@ private fun getFrame() : JFrame{
     frame.isVisible = true
     frame.setBounds(750,250,500,500)
     frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
-
+    frame.addWindowStateListener{ print(10)}
     frame.focusTraversalKeysEnabled = false
     return frame
 }

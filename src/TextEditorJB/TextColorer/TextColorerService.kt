@@ -4,21 +4,19 @@ import TextEditorJB.Components.TextPanel
 import TextEditorJB.Entities.SourceText
 import TextEditorJB.Services.TextSelectionService
 import java.awt.Color
-import java.awt.FontMetrics
 import java.awt.Graphics
 import java.awt.Graphics2D
-import java.awt.geom.Rectangle2D
 
 class TextColorerService (textPanel : TextPanel,val textSelectionService: TextSelectionService) {
 
     val panel = textPanel
-    var bracketsService = BracketsService(panel, panel.sourceText)
+    private var bracketsService = BracketsService(panel, panel.sourceText)
     fun paintKeyWords(string: String, graphics: Graphics, x: Int, y: Int) { //сколько скобок от начала столько скобок от конца
 
         val metrics = graphics.getFontMetrics(graphics.font)
         var str = ""
 
-        var words = string.split(" ")
+        val words = string.split(" ")
         for ((index, word) in words.withIndex()) {
             if (types.containsKey(word)) {
                 setIdentifier(words[index + 1])
@@ -28,7 +26,6 @@ class TextColorerService (textPanel : TextPanel,val textSelectionService: TextSe
                 graphics.drawString("$word ", x + metrics.stringWidth(str), y)
                 graphics.color = Color.BLACK
             }
-            //else if(word.indexOf("//") != -1)
             else if (word == "//" || word.startsWith("//")) {
                 graphics.color = Color.PINK
                 graphics.drawString("$word ", x + metrics.stringWidth(str), y)
@@ -40,7 +37,7 @@ class TextColorerService (textPanel : TextPanel,val textSelectionService: TextSe
         graphics.color = Color.BLACK
     }
 
-    val keyWordsColors: MutableMap<String, Color> = mutableMapOf(
+    private val keyWordsColors: MutableMap<String, Color> = mutableMapOf(
             "byte" to Color.BLUE, "short" to Color.BLUE, "int" to Color.BLUE, "long" to Color.BLUE,
             "char" to Color.BLUE, "float" to Color.BLUE, "double" to Color.BLUE, "boolean" to Color.BLUE,
             "if" to Color.GREEN, "else" to Color.GREEN, "switch" to Color.GREEN, "case" to Color.BLUE,
@@ -55,24 +52,24 @@ class TextColorerService (textPanel : TextPanel,val textSelectionService: TextSe
             "instanceof" to Color.BLUE, "enum" to Color.BLUE, "assert" to Color.BLUE, "transient" to Color.BLUE,
             "strictfp" to Color.BLUE
     )
-    val types: MutableMap<String, Color> = mutableMapOf(
+    private val types: MutableMap<String, Color> = mutableMapOf(
             "byte" to Color.BLUE, "short" to Color.BLUE, "int" to Color.BLUE, "long" to Color.BLUE,
             "char" to Color.BLUE, "float" to Color.BLUE, "double" to Color.BLUE, "boolean" to Color.BLUE,
             "var" to Color.GREEN, "val" to Color.GREEN
     )
 
-    fun setIdentifier(string: String) {
+    private fun setIdentifier(string: String) {
         if (!keyWordsColors.containsKey(string))
-            keyWordsColors.put(string, Color.ORANGE)
+            keyWordsColors[string] = Color.ORANGE
     }
 
     fun paintBrackets(row: Int, position: Int,bracket : Char, g: Graphics,sourceText: SourceText) {
-        var pairBracket = bracketsService.searchBracket(row,position,bracket)
+        val pairBracket = bracketsService.searchBracket(row,position,bracket)
         if (pairBracket != null){
             val g2 = g as Graphics2D
 
-            var firstBracketRectangle = textSelectionService.getStringBox(sourceText,row,position-1,position)
-            var secondBracketRectangle = textSelectionService.getStringBox(sourceText,pairBracket.row,pairBracket.position-1,pairBracket.position)
+            val firstBracketRectangle = textSelectionService.getStringBox(sourceText,row,position-1,position)
+            val secondBracketRectangle = textSelectionService.getStringBox(sourceText,pairBracket.row,pairBracket.position-1,pairBracket.position)
 
             g2.color = Color.GREEN
             g2.fill(firstBracketRectangle)

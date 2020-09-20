@@ -91,7 +91,7 @@ class TextService (private val panel: TextPanel,private val navigationService: N
                 val remains = sourceText.text[panel.textSelection.selectingStartRow].substring(0,panel.textSelection.selectingStartChar) +
                         sourceText.text[panel.textSelection.selectingEndRow].substring(panel.textSelection.selectingEndChar,sourceText.text[panel.textSelection.selectingEndRow].length)
 
-                val removedList = sourceText.text.subList(panel.textSelection.selectingStartRow,panel.textSelection.selectingEndRow)
+                val removedList = sourceText.text.subList(panel.textSelection.selectingStartRow,panel.textSelection.selectingEndRow+1)
 
                 sourceText.text.removeAll(removedList)
                 sourceText.text.add(panel.textSelection.selectingStartRow,remains)
