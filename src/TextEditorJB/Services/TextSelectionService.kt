@@ -9,87 +9,6 @@ class TextSelectionService(private val panel: TextPanel, private val navigationS
 
     val textSelection get() =  panel.textSelection
 
-//    fun shiftLeft (sourceText : SourceText)
-//    {
-//        if(!textSelection.drawingSelection){
-//            textSelection.drawingSelection = true
-//
-//            textSelection.setEndState()
-//            navigationService.setVector(sourceText,Vector.left)
-//            textSelection.setBeginState()
-//        }
-//        else{
-//            if (sourceText.activeRow == textSelection.selectingStartRow && sourceText.positionInRow == textSelection.selectingStartChar){
-//                navigationService.setVector(sourceText,Vector.left)
-//                textSelection.setBeginState()
-//            }
-//            else{
-//                navigationService.setVector(sourceText,Vector.left)
-//                textSelection.setEndState()
-//            }
-//        }
-//    }
-//    fun shiftRight (sourceText : SourceText)
-//    {
-//        if(!textSelection.drawingSelection){
-//            textSelection.drawingSelection = true
-//
-//            textSelection.setBeginState()
-//            navigationService.setVector(sourceText,Vector.right)
-//            textSelection.setEndState()
-//        }
-//        else{
-//            if (sourceText.activeRow == textSelection.selectingEndRow && sourceText.positionInRow == textSelection.selectingEndChar){
-//                navigationService.setVector(sourceText,Vector.right)
-//                textSelection.setEndState()
-//            }
-//            else{
-//                navigationService.setVector(sourceText,Vector.right)
-//                textSelection.setBeginState()
-//            }
-//        }
-//    }
-//    fun shiftUp (sourceText : SourceText)
-//    {
-//        if(!textSelection.drawingSelection){
-//            textSelection.drawingSelection = true
-//
-//            textSelection.setEndState()
-//            navigationService.setVector(sourceText,Vector.up)
-//            textSelection.setBeginState()
-//        }
-//        else{
-//            if (sourceText.activeRow == textSelection.selectingStartRow && sourceText.positionInRow == textSelection.selectingStartChar){
-//                navigationService.setVector(sourceText,Vector.up)
-//                textSelection.setBeginState()
-//            }
-//            else{
-//                navigationService.setVector(sourceText,Vector.up)
-//                textSelection.setEndState()
-//            }
-//        }
-//    }
-//    fun shiftDown (sourceText : SourceText)
-//    {
-//        if(!textSelection.drawingSelection){
-//            textSelection.drawingSelection = true
-//
-//            textSelection.setBeginState()
-//            navigationService.setVector(sourceText,Vector.down)
-//            textSelection.setEndState()
-//        }
-//        else{
-//            if (sourceText.activeRow == textSelection.selectingEndRow && sourceText.positionInRow == textSelection.selectingEndChar){
-//                navigationService.setVector(sourceText,Vector.down)
-//                textSelection.setEndState()
-//            }
-//            else{
-//                navigationService.setVector(sourceText,Vector.down)
-//                textSelection.setBeginState()
-//            }
-//        }
-//    }
-
     fun shiftNavigation (sourceText : SourceText, vector: Vector) //(sourceText: SourceText ,vector : Vector)
     {
         if(!textSelection.drawingSelection){
@@ -210,16 +129,4 @@ class TextSelectionService(private val panel: TextPanel, private val navigationS
         return  Rectangle2D.Double(x.toDouble(),y.toDouble(),width.toDouble(),height.toDouble())
 
     }
-//    fun getLineBox (row : Int, beginPosition : Int,sourceText : SourceText) : Rectangle2D {
-//
-//        val metrics = panel.getFontMetrics(panel.textFont)
-//
-//        val x = panel.borderX + 4 + metrics.stringWidth(sourceText.text[row].substring(0,beginPosition))
-//        val y = panel.borderY + panel.lineSpacing * (row - panel.position) - metrics.height + 10
-//        val height = metrics.height - 4
-//        val width = panel.size.width
-//
-//        return  Rectangle2D.Double(x.toDouble(),y.toDouble(),width.toDouble(),height.toDouble())
-//
-//    }
 }

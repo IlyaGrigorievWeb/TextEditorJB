@@ -7,66 +7,6 @@ import TextEditorJB.Enums.Vector
 //Сервис работы с навигацией по тексту
 class NavigationService( private val panel: TextPanel) {
 
-//    fun up (sourceText : SourceText)
-//    {
-//        if (sourceText.activeRow > 0){
-//            sourceText.activeRow--
-//            if (sourceText.activeRow  < panel.position +  1) //строка в воркспейсе предпоследняя скролить
-//            {
-//                panel.workspaceService.scrollUp()
-//            }
-//
-//            if (sourceText.text[sourceText.activeRow].lastIndex < sourceText.positionInRow)
-//                sourceText.positionInRow = sourceText.text[sourceText.activeRow].lastIndex + 1
-//        }
-//
-//    }
-//    fun down (sourceText : SourceText)
-//    {
-//        if (sourceText.activeRow < sourceText.text.lastIndex){
-//            sourceText.activeRow++
-//            if ( sourceText.activeRow  > panel.position + panel.rowsInWorkspace - 1)
-//            {
-//                panel.workspaceService.scrollDown()
-//            }
-//            if (sourceText.text[sourceText.activeRow].lastIndex < sourceText.positionInRow)
-//                sourceText.positionInRow = sourceText.text[sourceText.activeRow].lastIndex + 1
-//        }
-//
-//    }
-//    fun left (sourceText : SourceText)
-//    {
-//        if (sourceText.positionInRow > 0)
-//            sourceText.positionInRow--
-//        else
-//        {
-//            if (sourceText.activeRow > 0){
-//                sourceText.activeRow--
-//                sourceText.positionInRow = sourceText.text[sourceText.activeRow].length
-//            }
-//        }
-//        if (sourceText.activeRow  < panel.position +  1) //строка в воркспейсе предпоследняя скролить
-//        {
-//            panel.workspaceService.scrollUp()
-//        }
-//    }
-//    fun right (sourceText : SourceText)
-//    {
-//        if (sourceText.positionInRow < sourceText.text[sourceText.activeRow].length) {
-//            sourceText.positionInRow++
-//        }
-//        else{
-//            if (sourceText.activeRow < sourceText.text.lastIndex){
-//                sourceText.activeRow++
-//                sourceText.positionInRow = 0
-//            }
-//        }
-//        if ( sourceText.activeRow  > panel.position + panel.rowsInWorkspace - 1)
-//        {
-//            panel.workspaceService.scrollDown()
-//        }
-//    }
-
     fun setVector (sourceText: SourceText ,vector : Vector)
     {
         when(vector){
@@ -75,7 +15,7 @@ class NavigationService( private val panel: TextPanel) {
             Vector.up -> sourceText.activeRow--//up
             Vector.left -> sourceText.positionInRow-- //left
         }
-        if (sourceText.activeRow  < panel.position +  1) //строка в воркспейсе предпоследняя скролить
+        if (sourceText.activeRow  < panel.position +  1) //если строка в воркспейсе предпоследняя - скролить
         {
             panel.workspaceService.scrollUp()
         }

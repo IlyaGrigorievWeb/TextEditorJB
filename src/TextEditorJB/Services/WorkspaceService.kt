@@ -20,7 +20,7 @@ class WorkspaceService (private val panel : TextPanel,private val sourceText: So
         {
             panel.workspaceText = sourceText.text.subList(panel.position,panel.position + panel.rowsInWorkspace + 1)
         }
-        panel.repaint()
+        //panel.repaint()
     }
 
     fun scrollUp()

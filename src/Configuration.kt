@@ -64,7 +64,6 @@ private fun getFrame() : JFrame{
     frame.isVisible = true
     frame.setBounds(750,250,500,500)
     frame.defaultCloseOperation = JFrame.EXIT_ON_CLOSE
-    frame.addWindowStateListener{ print(10)}
     frame.focusTraversalKeysEnabled = false
     return frame
 }
