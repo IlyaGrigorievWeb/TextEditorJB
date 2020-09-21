@@ -15,7 +15,7 @@ class KeyboardListener( private val panel : TextPanel,
                         private val  workspaceService: WorkspaceService,
                         private val sourceText: SourceText) : KeyAdapter(){
 
-    override fun keyPressed(e: KeyEvent) { //TODO При каждом нажатии repaint плохо
+    override fun keyPressed(e: KeyEvent) {
         if (e.keyCode != 20 && e.keyCode != 18 && e.keyCode != 524) { //Игнорирование CAPS Lock и Alt т.к. они в данном функционале не нужны
             if (e.isShiftDown) {
                 if (e.keyCode != 16) {

@@ -4,7 +4,7 @@ import TextEditorJB.Components.TextPanel
 import TextEditorJB.Services.MouseService
 import java.awt.event.*
 
-class MouseListener(private val mouseService : MouseService, private val panel : TextPanel) : MouseAdapter() { //сделать 2 метода, получение строки в который пршиел клик и получение позиции символа в который пригел клик //сначала падение, потом выделение //TODO Разделить маус листенеры что бы они не перемешивались
+class MouseListener(private val mouseService : MouseService, private val panel : TextPanel) : MouseAdapter() {
 
     private var pressed = false
 
@@ -25,7 +25,7 @@ class MouseListener(private val mouseService : MouseService, private val panel :
     override fun mouseReleased(e: MouseEvent) {
         pressed = false
     }
-    override fun mouseClicked(e: MouseEvent) { //клик
+    override fun mouseClicked(e: MouseEvent) {
         if (e.isShiftDown){
                 mouseService.selectShiftClick(e.x,e.y)
         }
