@@ -27,7 +27,7 @@ class TextSelectionServiceTest {
     @Test
     fun shiftLeft() {
 
-        textSelectionService.shiftNavigation(sourceText,Vector.left)
+        textSelectionService.shiftNavigation(sourceText,Vector.Left)
         assertTrue(sourceText.activeRow == 1 && sourceText.positionInRow == 2)
 
         assertTrue(textSelectionService.textSelection.selectingStartRow == 1 && textSelectionService.textSelection.selectingEndRow == 1)
@@ -37,7 +37,7 @@ class TextSelectionServiceTest {
     @Test
     fun shiftRight() {
 
-        textSelectionService.shiftNavigation(sourceText,Vector.right)
+        textSelectionService.shiftNavigation(sourceText,Vector.Right)
         assertTrue(sourceText.activeRow == 1 && sourceText.positionInRow == 4)
 
         assertTrue(textSelectionService.textSelection.selectingStartRow == 1 && textSelectionService.textSelection.selectingEndRow == 1)
@@ -47,7 +47,7 @@ class TextSelectionServiceTest {
 
     @Test
     fun shiftUp() {
-        textSelectionService.shiftNavigation(sourceText,Vector.up)
+        textSelectionService.shiftNavigation(sourceText,Vector.Up)
         assertTrue(sourceText.activeRow == 0 && sourceText.positionInRow == 3)
 
         assertTrue(textSelectionService.textSelection.selectingStartRow == 0 && textSelectionService.textSelection.selectingEndRow == 1)
@@ -56,7 +56,7 @@ class TextSelectionServiceTest {
 
     @Test
     fun shiftDown() {
-        textSelectionService.shiftNavigation(sourceText,Vector.down)
+        textSelectionService.shiftNavigation(sourceText,Vector.Down)
 
         assertTrue(sourceText.activeRow == 2 && sourceText.positionInRow == 3)
         assertTrue(textSelectionService.textSelection.selectingStartRow == 1 && textSelectionService.textSelection.selectingEndRow == 2)

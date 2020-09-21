@@ -46,14 +46,14 @@ class TextService (private val panel: TextPanel,private val navigationService: N
             panel.rowY += panel.lineSpacing
         }
 
-        navigationService.setVector(sourceText, Vector.down)
+        navigationService.setVector(sourceText, Vector.Down)
         sourceText.positionInRow = 0
     }
     fun backspace(sourceText : SourceText)
     {
         if (!panel.textSelection.drawingSelection) {
             if (!(sourceText.positionInRow <= 0 && sourceText.activeRow <= 0)) {
-                navigationService.setVector(sourceText,Vector.left)
+                navigationService.setVector(sourceText,Vector.Left)
                 delete(sourceText)
             }
         }

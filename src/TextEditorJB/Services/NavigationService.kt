@@ -10,10 +10,10 @@ class NavigationService( private val panel: TextPanel) {
     fun setVector (sourceText: SourceText ,vector : Vector)
     {
         when(vector){
-            Vector.down -> sourceText.activeRow++//down
-            Vector.right -> sourceText.positionInRow++ //right
-            Vector.up -> sourceText.activeRow--//up
-            Vector.left -> sourceText.positionInRow-- //left
+            Vector.Down -> sourceText.activeRow++//down
+            Vector.Right -> sourceText.positionInRow++ //right
+            Vector.Up -> sourceText.activeRow--//up
+            Vector.Left -> sourceText.positionInRow-- //left
         }
         if (sourceText.activeRow  < panel.position +  1) //если строка в воркспейсе предпоследняя - скролить
         {
@@ -32,6 +32,11 @@ class NavigationService( private val panel: TextPanel) {
             if (char.isWhitespace()) {
                 count++
             }
+            else
+            {
+                sourceText.positionInRow = count
+                return
+            }
         }
         sourceText.positionInRow = count
     }
@@ -47,7 +52,7 @@ class NavigationService( private val panel: TextPanel) {
         val height = panel.height
         val lines = height / panel.lineSpacing
         for (i in 1..lines)
-            setVector(sourceText,Vector.up)
+            setVector(sourceText,Vector.Up)
     }
 
     fun pageDown (sourceText : SourceText)
@@ -55,6 +60,6 @@ class NavigationService( private val panel: TextPanel) {
         val height = panel.height
         val lines = height / panel.lineSpacing
         for (i in 1..lines)
-            setVector(sourceText,Vector.down)
+            setVector(sourceText,Vector.Down)
     }
 }

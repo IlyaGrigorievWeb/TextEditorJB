@@ -9,7 +9,7 @@ class TextSelectionService(private val panel: TextPanel, private val navigationS
 
     val textSelection get() =  panel.textSelection
 
-    fun shiftNavigation (sourceText : SourceText, vector: Vector) //(sourceText: SourceText ,vector : Vector)
+    fun shiftNavigation (sourceText : SourceText, vector: Vector)
     {
         if(!textSelection.drawingSelection){
             textSelection.drawingSelection = true

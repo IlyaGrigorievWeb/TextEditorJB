@@ -11,14 +11,15 @@ class TextColorerService (textPanel : TextPanel,val textSelectionService: TextSe
 
     val panel = textPanel
     private var bracketsService = BracketsService(panel, panel.sourceText)
-    fun paintKeyWords(string: String, graphics: Graphics, x: Int, y: Int) { //сколько скобок от начала столько скобок от конца
+    fun paintKeyWords(string: String, graphics: Graphics, x: Int, y: Int) {
 
         val metrics = graphics.getFontMetrics(graphics.font)
         var str = ""
 
         val words = string.split(" ")
+
         for ((index, word) in words.withIndex()) {
-            if (types.containsKey(word)) {
+            if (types.containsKey(word) && words.lastIndex != index && index + 1 != words.lastIndex) {
                 setIdentifier(words[index + 1])
             }
             if (keyWordsColors.containsKey(word)) {
@@ -50,7 +51,7 @@ class TextColorerService (textPanel : TextPanel,val textSelectionService: TextSe
             "new" to Color.BLUE, "return" to Color.BLUE, "this" to Color.BLUE, "super" to Color.BLUE,
             "synchronized" to Color.BLUE, "volatile" to Color.BLUE, "const" to Color.BLUE, "goto" to Color.BLUE,
             "instanceof" to Color.BLUE, "enum" to Color.BLUE, "assert" to Color.BLUE, "transient" to Color.BLUE,
-            "strictfp" to Color.BLUE
+            "strictfp" to Color.BLUE, "var" to Color.BLUE,"val" to Color.BLUE
     )
     private val types: MutableMap<String, Color> = mutableMapOf(
             "byte" to Color.BLUE, "short" to Color.BLUE, "int" to Color.BLUE, "long" to Color.BLUE,

@@ -22,25 +22,25 @@ class NavigationServiceTest {
 
     @Test
     fun up() {
-        navigationService.setVector(sourceText, Vector.up)
+        navigationService.setVector(sourceText, Vector.Up)
         assert(sourceText.activeRow == 0 && sourceText.positionInRow == 3)
     }
 
     @Test
     fun down() {
-        navigationService.setVector(sourceText,Vector.down)
+        navigationService.setVector(sourceText,Vector.Down)
         assert(sourceText.activeRow == 2 && sourceText.positionInRow == 3)
     }
 
     @Test
     fun left() {
-        navigationService.setVector(sourceText,Vector.left)
+        navigationService.setVector(sourceText,Vector.Left)
         assert(sourceText.activeRow == 1 && sourceText.positionInRow == 2)
     }
 
     @Test
     fun right() {
-        navigationService.setVector(sourceText,Vector.right)
+        navigationService.setVector(sourceText,Vector.Right)
         assert(sourceText.activeRow == 1 && sourceText.positionInRow == 4)
     }
 
